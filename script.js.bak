@@ -1,0 +1,5137 @@
+
+// ============================================
+// 1. 文物数据 - 模拟数据库
+// ============================================
+const artifactsData = [
+    {
+        id: 1,
+        title: "革命家书",
+        category: "文献资料",
+        era: "解放战争时期",
+        location: "中国人民革命军事博物馆",
+        year: "1948年",
+        description: "这是一封珍贵的革命家书，写于1948年解放战争时期。信的作者是一位年轻的革命战士，在奔赴前线前写给家人的最后一封信。",
+        detailedDesc: `
+            <h3>文物详情</h3>
+            <p><strong>年代：</strong>1948年</p>
+            <p><strong>出土地点：</strong>河北省石家庄市</p>
+            <p><strong>材质：</strong>纸质</p>
+            <p><strong>尺寸：</strong>21cm × 15cm</p>
+            <p><strong>保存状况：</strong>良好，字迹清晰</p>
+            
+            <h4>历史背景</h4>
+            <p>1948年正值解放战争的关键时期，这封家书反映了当时革命战士的崇高理想和坚定信念。信中既有对家人的思念，更有对革命胜利的坚定信心。</p>
+            
+            <h4>教育意义</h4>
+            <ul>
+                <li>展现了革命者的家国情怀</li>
+                <li>体现了革命乐观主义精神</li>
+                <li>是革命传统教育的生动教材</li>
+            </ul>
+        `,
+        funFact: "这封家书的收信人一直珍藏着它，直到2005年才捐赠给博物馆。",
+        image: "<i class="fa-solid fa-envelope-open-text"></i>"
+    },
+    {
+        id: 2,
+        title: "军用匕首",
+        category: "武器装备",
+        era: "抗日战争时期",
+        location: "中国人民抗日战争纪念馆",
+        year: "1938年",
+        description: "抗战时期游击队使用的武器，见证了艰苦卓绝的革命岁月。",
+        detailedDesc: `
+            <h3>文物详情</h3>
+            <p><strong>年代：</strong>1938年</p>
+            <p><strong>使用部队：</strong>冀中军区游击队</p>
+            <p><strong>材质：</strong>钢质刀身，木质刀柄</p>
+            <p><strong>长度：</strong>32.5厘米</p>
+            <p><strong>重量：</strong>485克</p>
+            
+            <h4>历史背景</h4>
+            <p>1938年，冀中军区游击队在艰苦条件下开展敌后斗争。这把匕首由当地铁匠手工打造，虽然简陋，但在多次战斗中发挥了重要作用。</p>
+            
+            <h4>战斗经历</h4>
+            <ul>
+                <li>参与过夜袭日军据点的行动</li>
+                <li>曾用于切断敌军通讯线路</li>
+                <li>见证了多场重要战斗</li>
+            </ul>
+        `,
+        funFact: "刀柄上的磨损痕迹显示了它的长期使用历史。",
+        image: "<i class="fa-solid fa-khanda"></i>"
+    },
+    {
+        id: 3,
+        title: "革命报刊",
+        category: "宣传资料",
+        era: "新文化运动时期",
+        location: "国家博物馆",
+        year: "1919年",
+        description: "《新青年》等进步刊物，传播革命思想的重要载体。",
+        detailedDesc: `
+            <h3>文物详情</h3>
+            <p><strong>刊物名称：</strong>《新青年》第七卷第一号</p>
+            <p><strong>出版时间：</strong>1919年12月</p>
+            <p><strong>主编：</strong>陈独秀</p>
+            <p><strong>页数：</strong>128页</p>
+            <p><strong>印刷：</strong>铅印</p>
+            
+            <h4>历史意义</h4>
+            <p>《新青年》是五四运动时期最重要的进步刊物之一，对马克思主义在中国的传播起到了关键作用。这一期发表了李大钊的《我的马克思主义观》等重要文章。</p>
+            
+            <h4>主要内容</h4>
+            <ul>
+                <li>宣传民主与科学思想</li>
+                <li>介绍马克思主义理论</li>
+                <li>批判封建礼教</li>
+                <li>倡导文学革命</li>
+            </ul>
+        `,
+        funFact: "这一期《新青年》在当时发行量达到1.5万份，影响广泛。",
+        image: "<i class="fa-solid fa-newspaper"></i>"
+    },
+    {
+        id: 4,
+        title: "荣誉勋章",
+        category: "荣誉证章",
+        era: "解放战争时期",
+        location: "平津战役纪念馆",
+        year: "1949年",
+        description: "授予革命英雄的荣誉勋章，彰显革命精神的光辉。",
+        detailedDesc: `
+            <h3>文物详情</h3>
+            <p><strong>勋章名称：</strong>解放华北纪念章</p>
+            <p><strong>颁发时间：</strong>1949年10月</p>
+            <p><strong>颁发机构：</strong>华北军区</p>
+            <p><strong>材质：</strong>铜质镀金</p>
+            <p><strong>直径：</strong>3.5厘米</p>
+            
+            <h4>颁发背景</h4>
+            <p>为表彰在解放华北战役中作出突出贡献的指战员，华北军区于1949年10月颁发此纪念章。获得者需参加解放华北的重要战役并立有战功。</p>
+            
+            <h4>设计含义</h4>
+            <ul>
+                <li>红色五角星：象征革命</li>
+                <li>麦穗和齿轮：代表工农联盟</li>
+                <li"华北"二字：标明战役区域</li>
+                <li>绶带颜色：红色象征革命胜利</li>
+            </ul>
+        `,
+        funFact: "这枚勋章的主人是参加过平津战役的老战士，后捐赠给纪念馆。",
+        image: "<i class="fa-solid fa-medal"></i>"
+    }
+];
+
+// ============================================
+// 2. 用户学习进度管理
+// ============================================
+let userProgress = {
+    completedTasks: [],
+    visitedArtifacts: [],
+    collectedAchievements: [],
+    lastVisit: new Date().toISOString(),
+    mapLocations: {
+        visited: []  // 添加地图地点访问记录
+    }
+};
+
+// 检查本地是否有保存的学习进度
+function loadUserProgress() {
+    const saved = localStorage.getItem('redMuseumProgress');
+    if (saved) {
+        userProgress = JSON.parse(saved);
+        // 确保mapLocations存在
+        if (!userProgress.mapLocations) {
+            userProgress.mapLocations = { visited: [] };
+        }
+        console.log('已加载用户学习进度');
+    }
+}
+
+// 保存学习进度到本地
+function saveUserProgress() {
+    userProgress.lastVisit = new Date().toISOString();
+    localStorage.setItem('redMuseumProgress', JSON.stringify(userProgress));
+    console.log('学习进度已保存');
+}
+
+// 检查并显示用户进度
+function checkUserProgress() {
+    loadUserProgress();
+    
+    // 如果有进度，显示欢迎回来的消息
+    if (userProgress.visitedArtifacts.length > 0 || userProgress.completedTasks.length > 0) {
+        const totalVisits = userProgress.visitedArtifacts.length;
+        const totalTasks = userProgress.completedTasks.length;
+        
+        setTimeout(() => {
+            alert(`欢迎回来！\n\n[数据] 你的学习进度：\n• 已参观文物：${totalVisits}件\n• 已完成任务：${totalTasks}个\n\n继续加油！`);
+        }, 1000);
+    }
+}
+
+// ============================================
+// 3. 文物详情弹窗功能
+// ============================================
+function showArtifactDetail(artifactId) {
+    // 查找文物数据
+    const artifact = artifactsData.find(item => item.id === artifactId);
+    if (!artifact) {
+        alert('文物信息加载失败');
+        return;
+    }
+    
+    // 记录用户访问
+    if (!userProgress.visitedArtifacts.includes(artifactId)) {
+        userProgress.visitedArtifacts.push(artifactId);
+        saveUserProgress();
+    }
+    
+    // 创建弹窗HTML
+    const modalHTML = `
+        <div class="artifact-modal-overlay" id="artifactModal">
+            <div class="artifact-modal">
+                <div class="modal-header">
+                    <h2>${artifact.image} ${artifact.title}</h2>
+                    <button onclick="closeModal()" class="close-btn">×</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="artifact-basic-info">
+                        <div class="info-row">
+                            <span class="info-label"><i class="fa-solid fa-calendar-days"></i> 年代：</span>
+                            <span class="info-value">${artifact.year}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fa-solid fa-landmark"></i> 馆藏：</span>
+                            <span class="info-value">${artifact.location}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fa-solid fa-folder-open"></i> 类别：</span>
+                            <span class="info-value">${artifact.category}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fa-solid fa-hourglass-half"></i> 时期：</span>
+                            <span class="info-value">${artifact.era}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="artifact-description">
+                        <h3><i class="fa-solid fa-book"></i> 文物简介</h3>
+                        <p>${artifact.description}</p>
+                        
+                        <div class="detailed-content">
+                            ${artifact.detailedDesc}
+                        </div>
+                    </div>
+                    
+                    <div class="artifact-fun-fact">
+                        <h3><i class="fa-solid fa-lightbulb"></i> 你知道吗？</h3>
+                        <p>${artifact.funFact}</p>
+                    </div>
+                    
+                    <div class="learning-tips">
+                        <h3><i class="fa-solid fa-bullseye"></i> 学习建议</h3>
+                        <ul>
+                            <li>思考这件文物反映了怎样的历史背景</li>
+                            <li>了解相关历史人物的故事</li>
+                            <li>与其他文物对比，发现历史脉络</li>
+                            <li>写下你的观后感想</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <div class="progress-info">
+                        这是你参观的第 <strong>${userProgress.visitedArtifacts.length}</strong> 件文物
+                    </div>
+                    <div class="modal-actions">
+                        <button onclick="markAsLearned(${artifactId})" class="learn-btn">
+                            <i class="fa-solid fa-circle-check"></i> 标记为已学习
+                        </button>
+                        <button onclick="closeModal()" class="close-modal-btn">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 添加到页面
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // 禁止背景滚动
+    document.body.style.overflow = 'hidden';
+}
+
+// 关闭弹窗
+function closeModal() {
+    const modal = document.getElementById('artifactModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// 标记为已学习
+function markAsLearned(artifactId) {
+    if (!userProgress.collectedAchievements.includes(artifactId)) {
+        userProgress.collectedAchievements.push(artifactId);
+        saveUserProgress();
+        
+        // 显示成就提示
+        const achievementMsg = document.createElement('div');
+        achievementMsg.className = 'achievement-toast';
+        achievementMsg.innerHTML = `
+            <div class="achievement-content">
+                <span class="achievement-icon"><i class="fa-solid fa-trophy"></i></span>
+                <div>
+                    <strong>成就达成！</strong>
+                    <p>已学习 "${artifactsData.find(a => a.id === artifactId)?.title}"</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(achievementMsg);
+        
+        // 3秒后自动消失
+        setTimeout(() => {
+            achievementMsg.remove();
+        }, 3000);
+    }
+    closeModal();
+}
+
+// ============================================
+// 4. 任务系统功能
+// ============================================
+function startTask(taskId) {
+    const taskData = {
+        1: {
+            title: "文物解说员",
+            description: "选择一件文物，从以下角度撰写解说词：\n\n1. 文物基本信息\n2. 历史背景\n3. 革命意义\n4. 当代价值",
+            requirements: "字数：200-300字\n格式：Word文档或PDF\n提交截止：一周内",
+            tips: "可以参考博物馆官方解说，加入自己的理解"
+        },
+        2: {
+            title: "时间轴制作",
+            description: "梳理1919-1949年京津冀地区重大革命事件",
+            requirements: "包含至少10个重要事件\n每个事件需有日期、地点、简介\n制作成时间轴图",
+            tips: "可以使用PPT、在线时间轴工具制作"
+        },
+        3: {
+            title: "红色足迹地图",
+            description: "在京津冀地图上标记重要革命遗址",
+            requirements: "标记至少8处遗址\n每处需有照片、简介、历史意义\n制作成电子地图或手绘地图",
+            tips: "可以使用百度地图API或手工绘制"
+        }
+    };
+    
+    const task = taskData[taskId];
+    if (!task) return;
+    
+    const userChoice = confirm(
+        `<i class="fa-solid fa-clipboard-list"></i> 任务详情\n\n` +
+        `任务名称：${task.title}\n\n` +
+        `任务描述：${task.description}\n\n` +
+        `任务要求：${task.requirements}\n\n` +
+        `<i class="fa-solid fa-lightbulb"></i> 小提示：${task.tips}\n\n` +
+        `是否开始这个任务？`
+    );
+    
+    if (userChoice) {
+        // 记录任务开始
+        if (!userProgress.completedTasks.includes(taskId)) {
+            // 显示任务面板
+            showTaskPanel(taskId, task.title);
+        } else {
+            alert('你已经完成过这个任务了！');
+        }
+    }
+}
+
+// 显示任务面板
+function showTaskPanel(taskId, taskTitle) {
+    const panelHTML = `
+        <div class="task-panel-overlay" id="taskPanel">
+            <div class="task-panel">
+                <div class="task-header">
+                    <h2><i class="fa-solid fa-file-pen"></i> ${taskTitle}</h2>
+                    <button onclick="closeTaskPanel()" class="close-btn">×</button>
+                </div>
+                
+                <div class="task-content">
+                    <div class="task-section">
+                        <h3><i class="fa-solid fa-clipboard-list"></i> 任务要求</h3>
+                        <p>请按照任务提示完成作品，完成后可以：</p>
+                        <ul>
+                            <li>上传文件（图片、文档等）</li>
+                            <li>填写作品描述</li>
+                            <li>提交给老师或小组讨论</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="task-section">
+                        <h3><i class="fa-solid fa-upload"></i> 提交作品</h3>
+                        <textarea id="taskSubmission" 
+                                  placeholder="请描述你的作品内容、创作思路和学习收获..." 
+                                  rows="5"></textarea>
+                        
+                        <div class="upload-area" onclick="simulateUpload()">
+                            <div class="upload-icon"><i class="fa-solid fa-paperclip"></i></div>
+                            <p>点击上传文件（支持图片、PDF、Word）</p>
+                            <p class="upload-hint">或将文件拖拽到这里</p>
+                        </div>
+                    </div>
+                    
+                    <div class="task-section">
+                        <h3><i class="fa-solid fa-trophy"></i> 完成任务奖励</h3>
+                        <div class="rewards">
+                            <div class="reward-item">
+                                <span class="reward-icon"><i class="fa-solid fa-star"></i></span>
+                                <span>学习积分 +50</span>
+                            </div>
+                            <div class="reward-item">
+                                <span class="reward-icon"><i class="fa-solid fa-scroll"></i></span>
+                                <span>电子证书一份</span>
+                            </div>
+                            <div class="reward-item">
+                                <span class="reward-icon"><i class="fa-solid fa-palette"></i></span>
+                                <span>作品展示机会</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="task-actions">
+                    <button onclick="saveTaskDraft(${taskId})" class="draft-btn">
+                        <i class="fa-solid fa-floppy-disk"></i> 保存草稿
+                    </button>
+                    <button onclick="submitTask(${taskId})" class="submit-btn">
+                        <i class="fa-solid fa-circle-check"></i> 提交任务
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', panelHTML);
+    document.body.style.overflow = 'hidden';
+}
+
+// 关闭任务面板
+function closeTaskPanel() {
+    const panel = document.getElementById('taskPanel');
+    if (panel) {
+        panel.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// 模拟文件上传
+function simulateUpload() {
+    alert('文件上传功能演示\n\n实际项目中可以连接后端服务器实现真实文件上传。\n目前为演示版本，已模拟上传成功。');
+    
+    // 显示上传成功提示
+    const uploadArea = document.querySelector('.upload-area');
+    if (uploadArea) {
+        uploadArea.innerHTML = `
+            <div class="upload-success">
+                <span class="success-icon"><i class="fa-solid fa-circle-check"></i></span>
+                <p>文件上传成功！</p>
+                <p class="file-info">示例文件.jpg (2.3MB)</p>
+            </div>
+        `;
+    }
+}
+
+// 保存任务草稿
+function saveTaskDraft(taskId) {
+    const textarea = document.getElementById('taskSubmission');
+    const content = textarea.value;
+    
+    if (content.trim()) {
+        // 保存到本地存储
+        localStorage.setItem(`taskDraft_${taskId}`, content);
+        alert('草稿已保存！下次可以继续编辑。');
+    } else {
+        alert('请输入作品描述再保存草稿');
+    }
+}
+
+// 提交任务
+function submitTask(taskId) {
+    const textarea = document.getElementById('taskSubmission');
+    const content = textarea.value;
+    
+    if (!content.trim()) {
+        alert('请填写作品描述再提交！');
+        return;
+    }
+    
+    if (!userProgress.completedTasks.includes(taskId)) {
+        userProgress.completedTasks.push(taskId);
+        saveUserProgress();
+        
+        // 显示提交成功
+        alert(`[完成] 任务提交成功！\n\n感谢你的参与，作品将进入评审环节。\n你已获得学习积分和电子证书。`);
+        
+        // 更新页面上的任务状态
+        updateTaskDisplay(taskId);
+        
+        // 关闭面板
+        closeTaskPanel();
+    }
+}
+
+// 更新任务显示状态
+function updateTaskDisplay(taskId) {
+    const taskButtons = document.querySelectorAll(`[onclick*="startTask(${taskId})"]`);
+    taskButtons.forEach(button => {
+        button.innerHTML = '<i class="fa-solid fa-circle-check"></i> 已完成';
+        button.style.backgroundColor = '#27ae60';
+        button.onclick = null;
+    });
+}
+
+// ============================================
+// 5. 虚拟展厅功能
+// ============================================
+function enterMuseum() {
+    const modalHTML = `
+        <div class="museum-modal-overlay" id="museumModal">
+            <div class="museum-modal">
+                <div class="museum-header">
+                    <h2><i class="fa-solid fa-landmark"></i> 虚拟展厅体验</h2>
+                    <button onclick="closeMuseumModal()" class="close-btn">×</button>
+                </div>
+                
+                <div class="museum-content">
+                    <div class="museum-preview">
+                        <div class="preview-scene">
+                            <div class="scene-placeholder">
+                                <div class="loading-3d"></div>
+                                <p>3D展厅加载中...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="scene-controls">
+                            <button onclick="navigateScene('left')" class="nav-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                            <button onclick="navigateScene('right')" class="nav-btn"><i class="fa-solid fa-arrow-right"></i></button>
+                            <button onclick="zoomScene('in')" class="zoom-btn">+</button>
+                            <button onclick="zoomScene('out')" class="zoom-btn">-</button>
+                        </div>
+                    </div>
+                    
+                    <div class="museum-info">
+                        <h3>展厅介绍</h3>
+                        <p>这是一个模拟的3D虚拟展厅，展示了京津冀地区的红色革命历史。</p>
+                        
+                        <div class="exhibition-list">
+                            <h4><i class="fa-solid fa-tent"></i> 主题展览</h4>
+                            <ul>
+                                <li onclick="selectExhibition(1)">冀中革命斗争展</li>
+                                <li onclick="selectExhibition(2)">平津战役专题展</li>
+                                <li onclick="selectExhibition(3)">革命先驱人物展</li>
+                                <li onclick="selectExhibition(4)">红色文艺作品展</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="visitor-stats">
+                            <h4><i class="fa-solid fa-users"></i> 参观统计</h4>
+                            <p>今日参观人数：<strong>1,248</strong> 人</p>
+                            <p>累计参观人数：<strong>45,672</strong> 人</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="museum-actions">
+                    <button onclick="startGuidedTour()" class="tour-btn">
+                        <i class="fa-solid fa-headphones"></i> 开始语音导览
+                    </button>
+                    <button onclick="takeScreenshot()" class="screenshot-btn">
+                        <i class="fa-solid fa-camera-retro"></i> 展厅截图
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.style.overflow = 'hidden';
+}
+
+// 展厅相关函数
+function closeMuseumModal() {
+    const modal = document.getElementById('museumModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function navigateScene(direction) {
+    alert(`展厅视角${direction === 'left' ? '向左' : '向右'}移动`);
+}
+
+function zoomScene(action) {
+    alert(`展厅${action === 'in' ? '放大' : '缩小'}`);
+}
+
+function selectExhibition(id) {
+    const exhibitions = {
+        1: "冀中革命斗争展：展示冀中平原的革命斗争历史",
+        2: "平津战役专题展：展示平津战役全过程",
+        3: "革命先驱人物展：介绍京津冀地区的革命先驱",
+        4: "红色文艺作品展：展示革命时期的文艺作品"
+    };
+    alert(`已选择：${exhibitions[id]}`);
+}
+
+function startGuidedTour() {
+    alert("语音导览开始播放...\n\n现在为您介绍冀中革命斗争展。\n冀中平原是抗日战争的重要战场...");
+}
+
+function takeScreenshot() {
+    alert("展厅截图已保存！\n\n可以分享给同学或用于学习报告。");
+}
+
+// ============================================
+// 6. 页面加载时初始化
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("红色数字博物馆平台初始化完成");
+    
+    // 加载用户进度
+    loadUserProgress();
+    
+    // 更新文物卡片的事件
+    setTimeout(() => {
+        updateArtifactCards();
+    }, 500);
+});
+
+// 更新文物卡片的事件绑定
+function updateArtifactCards() {
+    // 移除旧的事件绑定
+    const cards = document.querySelectorAll('.artifact-card .artifact-btn');
+    cards.forEach((card, index) => {
+        // 移除原来的onclick属性
+        card.removeAttribute('onclick');
+        // 添加新的事件监听
+        card.addEventListener('click', function(e) {
+            e.preventDefault();
+            showArtifactDetail(index + 1);
+        });
+    });
+}// ============================================
+// 学习进度管理功能
+// ============================================
+
+// 学习记录数据结构
+userProgress.learningHistory = userProgress.learningHistory || [];
+
+// 添加学习记录
+function addLearningRecord(type, content) {
+    const record = {
+        id: Date.now(),
+        type: type, // 'artifact', 'task', 'achievement'
+        content: content,
+        time: new Date().toISOString(),
+        timestamp: Date.now()
+    };
+    
+    userProgress.learningHistory.unshift(record); // 添加到开头
+    if (userProgress.learningHistory.length > 20) {
+        userProgress.learningHistory = userProgress.learningHistory.slice(0, 20); // 只保留20条
+    }
+    
+    saveUserProgress();
+    updateProgressDashboard();
+}
+
+// 更新进度仪表盘
+function updateProgressDashboard() {
+    // 计算进度
+    const totalArtifacts = artifactsData.length;
+    const visitedArtifacts = userProgress.visitedArtifacts.length;
+    const completedTasks = userProgress.completedTasks.length;
+    const totalAchievements = userProgress.collectedAchievements.length;
+    
+    // 总体进度（文物参观占50%，任务完成占30%，成就占20%）
+    const progress = Math.min(100, 
+        (visitedArtifacts / totalArtifacts) * 50 + 
+        (completedTasks / 3) * 30 + 
+        (totalAchievements / 5) * 20
+    );
+    
+    // 更新总体进度
+    const percentElement = document.querySelector('.progress-percent');
+    const fillElement = document.querySelector('.progress-fill');
+    if (percentElement) {
+        percentElement.textContent = `${Math.round(progress)}%`;
+    }
+    if (fillElement) {
+        fillElement.style.width = `${progress}%`;
+    }
+    
+    // 更新统计数字
+    const statValues = document.querySelectorAll('.stat-value');
+    if (statValues.length >= 3) {
+        statValues[0].textContent = visitedArtifacts;
+        statValues[1].textContent = completedTasks;
+        
+        // 计算学习时长（每次学习记录算5分钟）
+        const learningMinutes = userProgress.learningHistory.length * 5;
+        statValues[2].textContent = learningMinutes;
+    }
+    
+    // 更新详细记录
+    updateProgressList();
+    
+    // 更新学习建议
+    updateLearningSuggestions();
+}
+
+// 更新学习记录列表
+function updateProgressList() {
+    const progressList = document.getElementById('progressList');
+    if (!progressList) return;
+    
+    if (userProgress.learningHistory.length === 0) {
+        progressList.innerHTML = `
+            <div class="empty-state">
+                <div style="font-size: 3rem; color: #bdc3c7;"><i class="fa-solid fa-book-open"></i></div>
+                <p>还没有学习记录，快去探索文物吧！</p>
+                <button onclick="showArtifactDetail(1)" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background-color: #b71c1c; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    开始学习
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    // 生成记录列表
+    let listHTML = '';
+    userProgress.learningHistory.forEach(record => {
+        let icon = '<i class="fa-solid fa-book"></i>';
+        let color = '#3498db';
+        
+        switch (record.type) {
+            case 'artifact':
+                icon = '<i class="fa-solid fa-landmark"></i>';
+                color = '#b71c1c';
+                break;
+            case 'task':
+                icon = '<i class="fa-solid fa-circle-check"></i>';
+                color = '#27ae60';
+                break;
+            case 'achievement':
+                icon = '<i class="fa-solid fa-trophy"></i>';
+                color = '#f39c12';
+                break;
+        }
+        
+        const time = new Date(record.time).toLocaleString('zh-CN', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        listHTML += `
+            <div class="progress-item" style="border-left-color: ${color}">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 1.2rem;">${icon}</span>
+                    <div>
+                        <div style="font-weight: 500;">${record.content}</div>
+                        <div class="progress-time">${time}</div>
+                    </div>
+                </div>
+                <span style="font-size: 0.9rem; color: #666;">完成</span>
+            </div>
+        `;
+    });
+    
+    progressList.innerHTML = listHTML;
+}
+
+// 更新学习建议
+function updateLearningSuggestions() {
+    const suggestionsList = document.getElementById('suggestionsList');
+    if (!suggestionsList) return;
+    
+    const visitedCount = userProgress.visitedArtifacts.length;
+    const taskCount = userProgress.completedTasks.length;
+    const suggestions = [];
+    
+    // 基于用户进度生成个性化建议
+    if (visitedCount === 0) {
+        suggestions.push('开始参观第一件文物，了解革命历史');
+        suggestions.push('从"革命家书"开始，感受革命者的家国情怀');
+    } else if (visitedCount < 3) {
+        suggestions.push('继续探索其他文物，了解更多革命故事');
+        suggestions.push('尝试完成一个学习任务，巩固所学知识');
+    } else if (visitedCount >= 3 && taskCount === 0) {
+        suggestions.push('很棒！你已经参观了多件文物，现在可以挑战学习任务了');
+        suggestions.push('尝试"文物解说员"任务，展示你的理解');
+    } else if (taskCount > 0) {
+        suggestions.push('恭喜你完成任务！可以继续探索虚拟展厅');
+        suggestions.push('查看你的学习成就，继续努力获得更多徽章');
+    }
+    
+    if (userProgress.visitedArtifacts.length === artifactsData.length) {
+        suggestions.push('<i class="fa-solid fa-champagne-glasses"></i> 太棒了！你已经参观了所有文物！');
+        suggestions.push('考虑整理学习笔记，形成完整的红色文化认知体系');
+    }
+    
+    let suggestionsHTML = '';
+    suggestions.forEach((suggestion, index) => {
+        suggestionsHTML += `
+            <li>
+                <span class="suggestion-icon">${index === 0 ? '<i class="fa-solid fa-hand-point-right"></i>' : '<i class="fa-solid fa-thumbtack"></i>'}</span>
+                ${suggestion}
+            </li>
+        `;
+    });
+    
+    suggestionsList.innerHTML = suggestionsHTML;
+}
+
+// 修改原有的函数，添加学习记录
+function enhancedShowArtifactDetail(artifactId) {
+    const originalFunc = showArtifactDetail;
+    return function() {
+        // 调用原始函数
+        const result = originalFunc.apply(this, arguments);
+        
+        // 添加学习记录
+        const artifact = artifactsData.find(a => a.id === artifactId);
+        if (artifact) {
+            addLearningRecord('artifact', `参观了文物：${artifact.title}`);
+        }
+        
+        return result;
+    };
+}
+
+// 重写原有的showArtifactDetail函数
+const originalShowArtifactDetail = showArtifactDetail;
+showArtifactDetail = function(artifactId) {
+    // 调用原始函数
+    originalShowArtifactDetail(artifactId);
+    
+    // 添加学习记录
+    const artifact = artifactsData.find(a => a.id === artifactId);
+    if (artifact) {
+        addLearningRecord('artifact', `参观了文物：${artifact.title}`);
+    }
+};
+
+// 修改任务提交函数，添加学习记录
+function enhancedSubmitTask(taskId) {
+    const originalFunc = submitTask;
+    return function() {
+        // 调用原始函数
+        const result = originalFunc.apply(this, arguments);
+        
+        // 添加学习记录
+        const taskTitles = {
+            1: '文物解说员',
+            2: '时间轴制作',
+            3: '红色足迹地图'
+        };
+        
+        addLearningRecord('task', `完成了任务：${taskTitles[taskId]}`);
+        
+        return result;
+    };
+}
+
+// 在页面加载时初始化仪表盘
+document.addEventListener('DOMContentLoaded', function() {
+    // 确保进度仪表盘更新
+    setTimeout(() => {
+        updateProgressDashboard();
+    }, 1000);
+    
+    // 在导航栏添加进度入口
+    addProgressNavItem();
+});
+
+// 在导航栏添加"学习进度"入口
+function addProgressNavItem() {
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer && !document.querySelector('.nav-progress')) {
+        const progressNav = document.createElement('a');
+        progressNav.href = '#progress';
+        progressNav.className = 'nav-link nav-progress';
+        progressNav.innerHTML = '<i class="fa-solid fa-chart-simple"></i> 学习进度';
+        progressNav.onclick = function(e) {
+            e.preventDefault();
+            showProgressDashboard();
+        };
+        navContainer.appendChild(progressNav);
+    }
+}
+
+// 显示进度仪表盘
+function showProgressDashboard() {
+    // 显示进度区域
+    const progressSection = document.getElementById('progress');
+    if (progressSection) {
+        progressSection.style.display = 'block';
+        
+        // 滚动到进度区域
+        progressSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // 更新数据
+        updateProgressDashboard();
+    }
+}
+// ============================================
+// 成就系统
+// ============================================
+
+// 成就数据
+const achievementsData = [
+    {
+        id: 1,
+        title: "初识红色",
+        description: "参观第一件文物",
+        icon: "<i class="fa-solid fa-magnifying-glass"></i>",
+        requirement: { type: "artifact", count: 1 },
+        points: 10,
+        unlocked: false
+    },
+    {
+        id: 2,
+        title: "文物探索者",
+        description: "参观所有文物",
+        icon: "<i class="fa-solid fa-landmark"></i>",
+        requirement: { type: "artifact", count: 4 },
+        points: 50,
+        unlocked: false
+    },
+    {
+        id: 3,
+        title: "任务达人",
+        description: "完成第一个学习任务",
+        icon: "<i class="fa-solid fa-circle-check"></i>",
+        requirement: { type: "task", count: 1 },
+        points: 20,
+        unlocked: false
+    },
+    {
+        id: 4,
+        title: "全能学者",
+        description: "完成所有学习任务",
+        icon: "<i class="fa-solid fa-graduation-cap"></i>",
+        requirement: { type: "task", count: 3 },
+        points: 100,
+        unlocked: false
+    },
+    {
+        id: 5,
+        title: "连续学习者",
+        description: "连续学习3天",
+        icon: "<i class="fa-solid fa-fire"></i>",
+        requirement: { type: "streak", count: 3 },
+        points: 30,
+        unlocked: false
+    },
+    {
+        id: 6,
+        title: "红色文化传承者",
+        description: "获得所有基础成就",
+        icon: "<i class="fa-solid fa-trophy"></i>",
+        requirement: { type: "combo", count: 4 },
+        points: 200,
+        unlocked: false
+    },
+    {
+        id: 7,
+        title: "深度思考者",
+        description: "为3件文物撰写感想",
+        icon: "<i class="fa-solid fa-comment-dots"></i>",
+        requirement: { type: "reflection", count: 3 },
+        points: 40,
+        unlocked: false
+    },
+    {
+        id: 8,
+        title: "分享大使",
+        description: "分享学习成果3次",
+        icon: "<i class="fa-solid fa-bullhorn"></i>",
+        requirement: { type: "share", count: 3 },
+        points: 25,
+        unlocked: false
+    }
+];
+
+// 初始化用户成就数据
+userProgress.achievements = userProgress.achievements || {
+    unlocked: [],
+    points: 0,
+    streak: 0,
+    lastVisit: null
+};
+
+// 检查并更新成就
+function checkAchievements() {
+    const visitedCount = userProgress.visitedArtifacts.length;
+    const taskCount = userProgress.completedTasks.length;
+    
+    // 更新连续学习天数
+    updateStreak();
+    
+    // 检查每个成就
+    achievementsData.forEach(achievement => {
+        if (userProgress.achievements.unlocked.includes(achievement.id)) {
+            return; // 已经解锁
+        }
+        
+        let requirementMet = false;
+        
+        switch (achievement.requirement.type) {
+            case 'artifact':
+                requirementMet = visitedCount >= achievement.requirement.count;
+                break;
+            case 'task':
+                requirementMet = taskCount >= achievement.requirement.count;
+                break;
+            case 'streak':
+                requirementMet = userProgress.achievements.streak >= achievement.requirement.count;
+                break;
+            case 'combo':
+                // 解锁基础成就的数量
+                const basicAchievements = [1, 2, 3, 4];
+                const unlockedBasic = basicAchievements.filter(id => 
+                    userProgress.achievements.unlocked.includes(id)
+                ).length;
+                requirementMet = unlockedBasic >= achievement.requirement.count;
+                break;
+        }
+        
+        if (requirementMet) {
+            unlockAchievement(achievement.id);
+        }
+    });
+    
+    saveUserProgress();
+    updateAchievementsDisplay();
+}
+
+// 解锁成就 小邓好累
+function unlockAchievement(achievementId) {
+    if (userProgress.achievements.unlocked.includes(achievementId)) {
+        return; // 已经解锁
+    }
+    
+    const achievement = achievementsData.find(a => a.id === achievementId);
+    if (!achievement) return;
+    
+    // 添加到已解锁列表
+    userProgress.achievements.unlocked.push(achievementId);
+    userProgress.achievements.points += achievement.points;
+    
+    // 添加学习记录
+    addLearningRecord('achievement', `获得成就：${achievement.title}`);
+    
+    // 显示解锁通知
+    showAchievementNotification(achievement);
+    
+    saveUserProgress();
+}
+
+// 显示成就解锁通知
+function showAchievementNotification(achievement) {
+    const notification = document.createElement('div');
+    notification.className = 'achievement-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">${achievement.icon}</div>
+            <div class="notification-text">
+                <div class="notification-title"><i class="fa-solid fa-trophy"></i> 成就解锁！</div>
+                <div class="notification-achievement">${achievement.title}</div>
+                <div class="notification-desc">${achievement.description}</div>
+                <div class="notification-points">+${achievement.points} 积分</div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // 3秒后自动消失
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// 更新连续学习天数
+function updateStreak() {
+    const today = new Date().toDateString();
+    const lastVisit = userProgress.achievements.lastVisit;
+    
+    if (!lastVisit) {
+        // 第一次访问
+        userProgress.achievements.streak = 1;
+    } else {
+        const lastVisitDate = new Date(lastVisit);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        if (lastVisitDate.toDateString() === yesterday.toDateString()) {
+            // 连续访问
+            userProgress.achievements.streak++;
+        } else if (lastVisitDate.toDateString() !== today) {
+            // 中断，重新开始
+            userProgress.achievements.streak = 1;
+        }
+    }
+    
+    userProgress.achievements.lastVisit = new Date().toISOString();
+}
+
+// 更新成就显示
+function updateAchievementsDisplay() {
+    const totalAchievements = document.getElementById('totalAchievements');
+    const achievementProgress = document.getElementById('achievementProgress');
+    const currentStreak = document.getElementById('currentStreak');
+    const achievementsGrid = document.getElementById('achievementsGrid');
+    
+    if (!achievementsGrid) return;
+    
+    // 更新统计数据
+    if (totalAchievements) {
+        totalAchievements.textContent = userProgress.achievements.unlocked.length;
+    }
+    
+    if (achievementProgress) {
+        const progress = Math.round((userProgress.achievements.unlocked.length / achievementsData.length) * 100);
+        achievementProgress.textContent = `${progress}%`;
+    }
+    
+    if (currentStreak) {
+        currentStreak.textContent = userProgress.achievements.streak;
+    }
+    
+    // 生成成就卡片
+    let gridHTML = '';
+    achievementsData.forEach(achievement => {
+        const isUnlocked = userProgress.achievements.unlocked.includes(achievement.id);
+        const cardClass = isUnlocked ? 'achievement-card unlocked' : 'achievement-card locked';
+        
+        let progressHTML = '';
+        if (!isUnlocked) {
+            let current = 0;
+            switch (achievement.requirement.type) {
+                case 'artifact':
+                    current = userProgress.visitedArtifacts.length;
+                    break;
+                case 'task':
+                    current = userProgress.completedTasks.length;
+                    break;
+                case 'streak':
+                    current = userProgress.achievements.streak;
+                    break;
+                case 'combo':
+                    const basicAchievements = [1, 2, 3, 4];
+                    current = basicAchievements.filter(id => 
+                        userProgress.achievements.unlocked.includes(id)
+                    ).length;
+                    break;
+            }
+            
+            const progressPercent = Math.min(100, (current / achievement.requirement.count) * 100);
+            progressHTML = `
+                <div class="achievement-progress">
+                    <div class="achievement-progress-fill" style="width: ${progressPercent}%"></div>
+                </div>
+                <div style="font-size: 0.8rem; color: #999; margin-top: 0.5rem;">
+                    ${current}/${achievement.requirement.count}
+                </div>
+            `;
+        }
+        
+        gridHTML += `
+            <div class="${cardClass}">
+                ${isUnlocked ? '<div class="achievement-badge"><i class="fa-solid fa-check"></i></div>' : ''}
+                <div class="achievement-icon">${achievement.icon}</div>
+                <div class="achievement-title">${achievement.title}</div>
+                <div class="achievement-desc">${achievement.description}</div>
+                ${progressHTML}
+                <div style="font-size: 0.8rem; color: #f39c12; margin-top: 0.5rem;">
+                    ${achievement.points} 积分
+                </div>
+            </div>
+        `;
+    });
+    
+    achievementsGrid.innerHTML = gridHTML;
+}
+
+// 在导航栏添加成就入口
+function addAchievementsNavItem() {
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer && !document.querySelector('.nav-achievements')) {
+        const achievementsNav = document.createElement('a');
+        achievementsNav.href = '#achievements';
+        achievementsNav.className = 'nav-link nav-achievements';
+        achievementsNav.innerHTML = '<i class="fa-solid fa-trophy"></i> 我的成就';
+        achievementsNav.onclick = function(e) {
+            e.preventDefault();
+            showAchievementsDashboard();
+        };
+        navContainer.appendChild(achievementsNav);
+    }
+}
+
+// 显示成就仪表盘
+function showAchievementsDashboard() {
+    const achievementsSection = document.getElementById('achievements');
+    if (achievementsSection) {
+        achievementsSection.style.display = 'block';
+        achievementsSection.scrollIntoView({ behavior: 'smooth' });
+        updateAchievementsDisplay();
+    }
+}
+
+// 成就通知样式
+const achievementNotificationStyle = `
+.achievement-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+    border-left: 4px solid #f39c12;
+    max-width: 300px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-icon {
+    font-size: 2.5rem;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #f39c12;
+}
+
+.notification-achievement {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0.2rem 0;
+}
+
+.notification-desc {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.notification-points {
+    color: #f1c40f;
+    font-weight: bold;
+    margin-top: 0.3rem;
+}
+`;
+
+// 添加成就通知样式
+const style = document.createElement('style');
+style.textContent = achievementNotificationStyle;
+document.head.appendChild(style);
+
+// 修改页面加载函数
+document.addEventListener('DOMContentLoaded', function() {
+    // ... 其他初始化代码 ...
+    
+    // 检查成就
+    checkAchievements();
+    
+    // 添加成就导航
+    addAchievementsNavItem();
+});
+
+// 修改原有的参观文物和完成任务函数，自动检查成就
+const originalVisitArtifact = showArtifactDetail;
+showArtifactDetail = function(artifactId) {
+    originalVisitArtifact(artifactId);
+    
+    // 延迟检查成就（确保数据已更新）
+    setTimeout(() => {
+        checkAchievements();
+    }, 500);
+};
+
+const originalTaskSubmit = submitTask;
+submitTask = function(taskId) {
+    originalTaskSubmit(taskId);
+    
+    setTimeout(() => {
+        checkAchievements();
+    }, 500);
+};
+// ============================================
+// 学习资源库功能
+// ============================================
+
+// 学习资源数据
+const learningResources = [
+    {
+        id: 1,
+        title: "《中国共产党简史》电子版",
+        type: "document",
+        level: "beginner",
+        description: "系统介绍中国共产党发展历程的权威读物，适合初学者全面了解党史。",
+        source: "中共中央党史和文献研究院",
+        duration: "约15小时阅读",
+        url: "#",
+        tags: ["党史", "电子书", "入门"],
+        collected: false
+    },
+    {
+        id: 2,
+        title: "红色家书选集",
+        type: "document",
+        level: "beginner",
+        description: "收录革命先辈的家书信件，展现革命者的家国情怀和崇高理想。",
+        source: "国家图书馆",
+        duration: "约8小时阅读",
+        url: "#",
+        tags: ["家书", "革命精神", "情感教育"],
+        collected: false
+    },
+    {
+        id: 3,
+        title: "党史专题讲座视频",
+        type: "video",
+        level: "beginner",
+        description: "由党史专家主讲的系列讲座，生动讲解中国共产党的重要历史事件。",
+        source: "学习强国平台",
+        duration: "12集 × 45分钟",
+        url: "#",
+        tags: ["视频课程", "专家讲解", "系列讲座"],
+        collected: false
+    },
+    {
+        id: 4,
+        title: "《红岩》在线阅读",
+        type: "book",
+        level: "intermediate",
+        description: "经典革命文学作品，描写重庆解放前夕革命者的狱中斗争。",
+        source: "人民文学出版社",
+        duration: "约20小时阅读",
+        url: "#",
+        tags: ["革命文学", "经典作品", "在线阅读"],
+        collected: false
+    },
+    {
+        id: 5,
+        title: "革命文物3D展示",
+        type: "website",
+        level: "intermediate",
+        description: "利用3D技术展示珍贵革命文物，可360度查看文物细节。",
+        source: "中国国家博物馆",
+        duration: "互动体验",
+        url: "#",
+        tags: ["3D技术", "文物展示", "互动"],
+        collected: false
+    },
+    {
+        id: 6,
+        title: "毛泽东选集（精选）",
+        type: "document",
+        level: "advanced",
+        description: "收录毛泽东同志的重要著作，学习毛泽东思想的理论精髓。",
+        source: "人民出版社",
+        duration: "约30小时阅读",
+        url: "#",
+        tags: ["毛泽东著作", "理论著作", "高级阅读"],
+        collected: false
+    },
+    {
+        id: 7,
+        title: "抗战历史纪录片《东方主战场》",
+        type: "video",
+        level: "intermediate",
+        description: "全面反映中国人民抗日战争作为东方主战场历史地位的纪录片。",
+        source: "中央电视台",
+        duration: "8集 × 50分钟",
+        url: "#",
+        tags: ["纪录片", "抗日战争", "历史影像"],
+        collected: false
+    },
+    {
+        id: 8,
+        title: "红色经典音乐欣赏",
+        type: "website",
+        level: "beginner",
+        description: "在线欣赏《黄河大合唱》等红色经典音乐作品，配有历史背景介绍。",
+        source: "中央音乐学院",
+        duration: "音频资源",
+        url: "#",
+        tags: ["音乐欣赏", "红色经典", "艺术教育"],
+        collected: false
+    },
+    {
+        id: 9,
+        title: "《习近平谈治国理政》学习资料",
+        type: "document",
+        level: "advanced",
+        description: "学习习近平新时代中国特色社会主义思想的重要参考资料。",
+        source: "外文出版社",
+        duration: "系统学习",
+        url: "#",
+        tags: ["习近平著作", "治国理政", "理论学习"],
+        collected: false
+    },
+    {
+        id: 10,
+        title: "革命旧址VR虚拟参观",
+        type: "website",
+        level: "intermediate",
+        description: "利用VR技术虚拟参观延安、西柏坡等重要革命旧址。",
+        source: "国家文物局",
+        duration: "VR体验",
+        url: "#",
+        tags: ["VR技术", "虚拟参观", "沉浸式体验"],
+        collected: false
+    }
+];
+
+// 初始化用户资源数据
+userProgress.learningResources = userProgress.learningResources || {
+    collected: [],
+    viewed: [],
+    lastView: null
+};
+
+// 显示学习资源库
+function showResourcesLibrary() {
+    const resourcesSection = document.getElementById('resources');
+    if (resourcesSection) {
+        resourcesSection.style.display = 'block';
+        resourcesSection.scrollIntoView({ behavior: 'smooth' });
+        generateResourcesGrid();
+        updateResourcesStats();
+    }
+}
+
+// 生成资源网格
+function generateResourcesGrid(filterType = 'all', filterLevel = 'all', searchTerm = '') {
+    const grid = document.getElementById('resourcesGrid');
+    if (!grid) return;
+    
+    // 筛选资源
+    let filteredResources = learningResources.filter(resource => {
+        // 类型筛选
+        const typeMatch = filterType === 'all' || resource.type === filterType;
+        // 级别筛选
+        const levelMatch = filterLevel === 'all' || resource.level === filterLevel;
+        // 搜索筛选
+        const searchMatch = searchTerm === '' || 
+            resource.title.toLowerCase().includes(searchTerm) ||
+            resource.description.toLowerCase().includes(searchTerm) ||
+            resource.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+        
+        return typeMatch && levelMatch && searchMatch;
+    });
+    
+    if (filteredResources.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h3>未找到相关资源</h3>
+                <p>请尝试其他筛选条件或搜索关键词</p>
+                <button onclick="resetFilters()" style="
+                    margin-top: 1rem;
+                    padding: 0.5rem 1.5rem;
+                    background: #b71c1c;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                ">重置筛选</button>
+            </div>
+        `;
+        return;
+    }
+    
+    // 生成资源卡片
+    let gridHTML = '';
+    filteredResources.forEach(resource => {
+        const isCollected = userProgress.learningResources.collected.includes(resource.id);
+        
+        // 类型图标和颜色
+        let typeIcon = '<i class="fa-solid fa-file-lines"></i>';
+        let typeColor = '#666';
+        switch(resource.type) {
+            case 'video': 
+                typeIcon = '<i class="fa-solid fa-film"></i>'; 
+                typeColor = '#e74c3c';
+                break;
+            case 'book': 
+                typeIcon = '<i class="fa-solid fa-book"></i>'; 
+                typeColor = '#3498db';
+                break;
+            case 'website': 
+                typeIcon = '<i class="fa-solid fa-globe"></i>'; 
+                typeColor = '#2ecc71';
+                break;
+        }
+        
+        // 级别标签
+        let levelText = '入门';
+        let levelColor = '#27ae60';
+        switch(resource.level) {
+            case 'intermediate': 
+                levelText = '进阶'; 
+                levelColor = '#f39c12';
+                break;
+            case 'advanced': 
+                levelText = '深入'; 
+                levelColor = '#e74c3c';
+                break;
+        }
+        
+        gridHTML += `
+            <div class="resource-card">
+                <div class="resource-header">
+                    <div class="resource-type" style="background: ${typeColor}20; color: ${typeColor}">
+                        ${typeIcon} ${getTypeName(resource.type)}
+                    </div>
+                    <div class="resource-level" style="background: ${levelColor}20; color: ${levelColor}">
+                        ${levelText}
+                    </div>
+                    <h3 class="resource-title">${resource.title}</h3>
+                    <p class="resource-description">${resource.description}</p>
+                </div>
+                
+                <div class="resource-body">
+                    <div class="resource-meta">
+                        <div class="resource-source">
+                            <span>来源：</span>
+                            <strong>${resource.source}</strong>
+                        </div>
+                        <div class="resource-duration">
+                            <span><i class="fa-solid fa-stopwatch"></i></span>
+                            <span>${resource.duration}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-tags">
+                        ${resource.tags.map(tag => 
+                            `<span style="
+                                display: inline-block;
+                                background: #f0f0f0;
+                                color: #666;
+                                padding: 0.2rem 0.6rem;
+                                border-radius: 12px;
+                                font-size: 0.75rem;
+                                margin-right: 0.5rem;
+                                margin-bottom: 0.5rem;
+                            ">${tag}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="resource-footer">
+                    <button class="collect-btn ${isCollected ? 'collected' : ''}" 
+                            onclick="toggleCollectResource(${resource.id})">
+                        ${isCollected ? '<i class="fa-solid fa-star"></i> 已收藏' : '<i class="fa-solid fa-star"></i> 收藏'}
+                    </button>
+                    <a href="${resource.url}" class="view-btn" target="_blank" 
+                       onclick="recordResourceView(${resource.id})">
+                        查看资源
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+    
+    grid.innerHTML = gridHTML;
+}
+
+// 获取类型名称
+function getTypeName(type) {
+    const typeNames = {
+        'document': '文献资料',
+        'video': '视频课程',
+        'book': '书籍推荐',
+        'website': '网站链接'
+    };
+    return typeNames[type] || type;
+}
+
+// 更新资源统计
+function updateResourcesStats() {
+    const total = document.getElementById('totalResources');
+    const videoCount = document.getElementById('videoCount');
+    const bookCount = document.getElementById('bookCount');
+    const collectedCount = document.getElementById('collectedCount');
+    
+    if (total) total.textContent = learningResources.length;
+    
+    if (videoCount) {
+        const videos = learningResources.filter(r => r.type === 'video').length;
+        videoCount.textContent = videos;
+    }
+    
+    if (bookCount) {
+        const books = learningResources.filter(r => r.type === 'book').length;
+        bookCount.textContent = books;
+    }
+    
+    if (collectedCount) {
+        collectedCount.textContent = userProgress.learningResources.collected.length;
+    }
+}
+
+// 切换收藏状态
+function toggleCollectResource(resourceId) {
+    const index = userProgress.learningResources.collected.indexOf(resourceId);
+    
+    if (index === -1) {
+        // 添加到收藏
+        userProgress.learningResources.collected.push(resourceId);
+        showNotification('资源已添加到收藏夹', 'success');
+    } else {
+        // 从收藏移除
+        userProgress.learningResources.collected.splice(index, 1);
+        showNotification('资源已从收藏夹移除', 'info');
+    }
+    
+    saveUserProgress();
+    generateResourcesGrid();
+    updateResourcesStats();
+}
+
+// 记录资源查看
+function recordResourceView(resourceId) {
+    if (!userProgress.learningResources.viewed.includes(resourceId)) {
+        userProgress.learningResources.viewed.push(resourceId);
+        userProgress.learningResources.lastView = new Date().toISOString();
+        saveUserProgress();
+    }
+}
+
+// 搜索资源
+function searchResources() {
+    const searchInput = document.getElementById('resourceSearch');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    
+    // 获取当前筛选状态
+    const activeType = document.querySelector('.filter-btn[data-type].active')?.dataset.type || 'all';
+    const activeLevel = document.querySelector('.filter-btn[data-level].active')?.dataset.level || 'all';
+    
+    generateResourcesGrid(activeType, activeLevel, searchTerm);
+}
+
+// 筛选资源
+function filterResources(type, level) {
+    // 更新按钮状态
+    document.querySelectorAll('.filter-btn[data-type]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+    });
+    
+    document.querySelectorAll('.filter-btn[data-level]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.level === level);
+    });
+    
+    const searchInput = document.getElementById('resourceSearch');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    
+    generateResourcesGrid(type, level, searchTerm);
+}
+
+// 重置筛选
+function resetFilters() {
+    document.getElementById('resourceSearch').value = '';
+    filterResources('all', 'all');
+}
+
+// 显示通知
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `resource-notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-icon">
+                ${type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : type === 'error' ? '<i class="fa-solid fa-circle-xmark"></i>' : '<i class="fa-solid fa-circle-info"></i>'}
+            </span>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // 3秒后自动消失
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// 添加通知样式
+const resourceNotificationStyle = `
+.resource-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 9999;
+    animation: slideInRight 0.3s ease;
+    border-left: 4px solid #b71c1c;
+}
+
+.resource-notification.success {
+    border-left-color: #27ae60;
+}
+
+.resource-notification.error {
+    border-left-color: #e74c3c;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.notification-icon {
+    font-size: 1.2rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+`;
+
+// 添加样式到页面
+const resourceStyle = document.createElement('style');
+resourceStyle.textContent = resourceNotificationStyle;
+document.head.appendChild(resourceStyle);
+
+// 在导航栏添加资源库入口
+function addResourcesNavItem() {
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer && !document.querySelector('.nav-resources')) {
+        const resourcesNav = document.createElement('a');
+        resourcesNav.href = '#resources';
+        resourcesNav.className = 'nav-link nav-resources';
+        resourcesNav.innerHTML = '<i class="fa-solid fa-book-open"></i> 资源库';
+        resourcesNav.onclick = function(e) {
+            e.preventDefault();
+            showResourcesLibrary();
+        };
+        
+        // 在关于我们链接前插入
+        const aboutLink = navContainer.querySelector('a[href="#about"]');
+        if (aboutLink) {
+            navContainer.insertBefore(resourcesNav, aboutLink);
+        } else {
+            navContainer.appendChild(resourcesNav);
+        }
+        
+        console.log("已添加资源库导航链接");
+    }
+}
+
+// 页面加载时初始化资源库
+document.addEventListener('DOMContentLoaded', function() {
+    // 绑定筛选按钮事件
+    setTimeout(() => {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.dataset.type) {
+                    const activeType = document.querySelector('.filter-btn[data-type].active');
+                    const type = activeType ? activeType.dataset.type : 'all';
+                    filterResources(this.dataset.type, type);
+                } else if (this.dataset.level) {
+                    const activeLevel = document.querySelector('.filter-btn[data-level].active');
+                    const level = activeLevel ? activeLevel.dataset.level : 'all';
+                    filterResources('all', this.dataset.level);
+                }
+            });
+        });
+        
+        // 绑定搜索输入回车键
+        const searchInput = document.getElementById('resourceSearch');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchResources();
+                }
+            });
+        }
+        
+        // 添加资源库导航
+        addResourcesNavItem();
+        
+        console.log("资源库功能初始化完成");
+    }, 1000);
+});
+// ============================================
+// 用户反馈系统功能
+// ============================================
+
+// 反馈数据（模拟初始数据）
+const feedbackData = [
+    {
+        id: 1,
+        type: 'praise',
+        title: '网站设计很精美',
+        content: '红色主题很有感染力，界面设计专业，学习体验很好！',
+        rating: 5,
+        date: '2026-01-15',
+        status: 'solved',
+        contact: 'user1@example.com'
+    },
+    {
+        id: 2,
+        type: 'suggestion',
+        title: '建议增加更多文物资料',
+        content: '希望增加一些更详细的文物历史背景和图片资料。',
+        rating: 4,
+        date: '2026-01-14',
+        status: 'reviewed',
+        contact: ''
+    },
+    {
+        id: 3,
+        type: 'bug',
+        title: '地图加载有时会卡顿',
+        content: '在旧版浏览器中，地图加载比较慢，希望能优化一下性能。',
+        rating: 3,
+        date: '2026-01-13',
+        status: 'pending',
+        contact: ''
+    }
+];
+
+// 初始化用户反馈数据
+userProgress.feedbacks = userProgress.feedbacks || {
+    submitted: [],
+    lastSubmit: null
+};
+
+// 显示反馈系统
+function showFeedbackSystem() {
+    const feedbackSection = document.getElementById('feedback');
+    if (feedbackSection) {
+        feedbackSection.style.display = 'block';
+        feedbackSection.scrollIntoView({ behavior: 'smooth' });
+        generateFeedbackList();
+        updateFeedbackStats();
+        setupFeedbackForm();
+    }
+}
+
+// 设置反馈表单
+function setupFeedbackForm() {
+    // 评分星星交互
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = parseInt(this.dataset.value);
+            setRating(value);
+        });
+    });
+    
+    // 字符计数
+    const textarea = document.getElementById('feedbackContent');
+    const charCount = document.getElementById('charCount');
+    
+    textarea.addEventListener('input', function() {
+        charCount.textContent = this.value.length;
+    });
+    
+    // 表单提交
+    const form = document.getElementById('feedbackForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitFeedback();
+    });
+}
+
+// 设置评分
+function setRating(value) {
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('feedbackRating');
+    
+    stars.forEach(star => {
+        const starValue = parseInt(star.dataset.value);
+        if (starValue <= value) {
+            star.textContent = '*';
+            star.classList.add('active');
+        } else {
+            star.textContent = '*';
+            star.classList.remove('active');
+        }
+    });
+    
+    ratingInput.value = value;
+}
+
+// 提交反馈
+function submitFeedback() {
+    const type = document.getElementById('feedbackType').value;
+    const title = document.getElementById('feedbackTitle').value.trim();
+    const content = document.getElementById('feedbackContent').value.trim();
+    const rating = parseInt(document.getElementById('feedbackRating').value) || 0;
+    const contact = document.getElementById('contactInfo').value.trim();
+    
+    // 验证
+    if (!type) {
+        showFeedbackMessage('请选择反馈类型', 'error');
+        return;
+    }
+    
+    if (!title || !content) {
+        showFeedbackMessage('请填写标题和内容', 'error');
+        return;
+    }
+    
+    if (content.length < 10) {
+        showFeedbackMessage('反馈内容至少10个字符', 'error');
+        return;
+    }
+    
+    // 创建新反馈
+    const newFeedback = {
+        id: Date.now(),
+        type: type,
+        title: title,
+        content: content,
+        rating: rating,
+        date: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        contact: contact || ''
+    };
+    
+    // 添加到数据
+    feedbackData.unshift(newFeedback);
+    
+    // 记录用户提交
+    if (!userProgress.feedbacks.submitted.includes(newFeedback.id)) {
+        userProgress.feedbacks.submitted.push(newFeedback.id);
+        userProgress.feedbacks.lastSubmit = new Date().toISOString();
+        saveUserProgress();
+    }
+    
+    // 重置表单
+    resetFeedbackForm();
+    
+    // 更新UI
+    generateFeedbackList();
+    updateFeedbackStats();
+    
+    // 显示成功消息
+    showFeedbackMessage('感谢您的反馈！我们会认真考虑您的意见。', 'success');
+    
+    // 模拟发送到服务器（实际项目中这里应该有API调用）
+    console.log('反馈已提交：', newFeedback);
+}
+
+// 重置反馈表单
+function resetFeedbackForm() {
+    document.getElementById('feedbackForm').reset();
+    document.getElementById('feedbackRating').value = '0';
+    document.getElementById('charCount').textContent = '0';
+    
+    // 重置星星
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.textContent = '*';
+        star.classList.remove('active');
+    });
+}
+
+// 生成反馈列表
+function generateFeedbackList(filter = 'all', page = 1) {
+    const list = document.getElementById('feedbackList');
+    const pagination = document.getElementById('feedbackPagination');
+    
+    if (!list) return;
+    
+    // 筛选反馈
+    let filteredFeedbacks = feedbackData;
+    if (filter !== 'all') {
+        filteredFeedbacks = feedbackData.filter(f => f.type === filter);
+    }
+    
+    // 分页设置
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(filteredFeedbacks.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageFeedbacks = filteredFeedbacks.slice(startIndex, endIndex);
+    
+    // 如果没有反馈
+    if (pageFeedbacks.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-comments"></i></div>
+                <p>暂无反馈</p>
+                ${filter !== 'all' ? '<p>试试其他筛选条件</p>' : '<p>快来第一个发言吧！</p>'}
+            </div>
+        `;
+        pagination.innerHTML = '';
+        return;
+    }
+    
+    // 生成反馈项
+    let listHTML = '';
+    pageFeedbacks.forEach(feedback => {
+        // 类型名称
+        const typeNames = {
+            'bug': '问题反馈',
+            'suggestion': '功能建议',
+            'improvement': '改进意见',
+            'praise': '好评表扬',
+            'other': '其他'
+        };
+        
+        // 状态名称
+        const statusNames = {
+            'pending': '待处理',
+            'reviewed': '已查看',
+            'solved': '已处理'
+        };
+        
+        // 评分星星
+        let starsHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            starsHTML += i <= feedback.rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-solid fa-star"></i>';
+        }
+        
+        listHTML += `
+            <div class="feedback-item ${feedback.type}">
+                <div class="feedback-header">
+                    <span class="feedback-type ${feedback.type}">
+                        ${typeNames[feedback.type] || feedback.type}
+                    </span>
+                    <span class="feedback-date">${feedback.date}</span>
+                </div>
+                
+                <h4 class="feedback-title">${feedback.title}</h4>
+                <p class="feedback-content">${feedback.content}</p>
+                
+                <div class="feedback-footer">
+                    <div class="feedback-rating">
+                        ${feedback.rating > 0 ? starsHTML + ` (${feedback.rating}.0)` : '未评分'}
+                    </div>
+                    <span class="feedback-status ${feedback.status}">
+                        ${statusNames[feedback.status]}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+    
+    list.innerHTML = listHTML;
+    
+    // 生成分页
+    if (totalPages > 1) {
+        let paginationHTML = '';
+        
+        // 上一页按钮
+        paginationHTML += `
+            <button class="page-btn ${page === 1 ? 'disabled' : ''}" 
+                    onclick="changeFeedbackPage(${page - 1})" 
+                    ${page === 1 ? 'disabled' : ''}>
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        `;
+        
+        // 页码按钮
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHTML += `
+                <button class="page-btn ${i === page ? 'active' : ''}" 
+                        onclick="changeFeedbackPage(${i})">
+                    ${i}
+                </button>
+            `;
+        }
+        
+        // 下一页按钮
+        paginationHTML += `
+            <button class="page-btn ${page === totalPages ? 'disabled' : ''}" 
+                    onclick="changeFeedbackPage(${page + 1})" 
+                    ${page === totalPages ? 'disabled' : ''}>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        `;
+        
+        pagination.innerHTML = paginationHTML;
+    } else {
+        pagination.innerHTML = '';
+    }
+}
+
+// 更改反馈页面
+function changeFeedbackPage(page) {
+    const activeFilter = document.querySelector('.feedback-filters .active')?.dataset.filter || 'all';
+    generateFeedbackList(activeFilter, page);
+}
+
+// 筛选反馈
+function filterFeedback(filter) {
+    // 更新按钮状态
+    document.querySelectorAll('.feedback-filters .filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
+    
+    generateFeedbackList(filter, 1);
+}
+
+// 更新反馈统计
+function updateFeedbackStats() {
+    const total = document.getElementById('totalFeedbacks');
+    const averageRating = document.getElementById('averageRating');
+    const solvedCount = document.getElementById('solvedCount');
+    const suggestionCount = document.getElementById('suggestionCount');
+    
+    if (total) total.textContent = feedbackData.length;
+    
+    if (averageRating) {
+        const ratedFeedbacks = feedbackData.filter(f => f.rating > 0);
+        const totalRating = ratedFeedbacks.reduce((sum, f) => sum + f.rating, 0);
+        const avg = ratedFeedbacks.length > 0 ? (totalRating / ratedFeedbacks.length).toFixed(1) : '0.0';
+        averageRating.textContent = avg;
+    }
+    
+    if (solvedCount) {
+        const solved = feedbackData.filter(f => f.status === 'solved').length;
+        solvedCount.textContent = solved;
+    }
+    
+    if (suggestionCount) {
+        const suggestions = feedbackData.filter(f => f.type === 'suggestion').length;
+        suggestionCount.textContent = suggestions;
+    }
+}
+
+// 显示反馈消息
+function showFeedbackMessage(message, type = 'info') {
+    // 移除现有的消息
+    const existingMessage = document.querySelector('.feedback-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // 创建新消息
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `feedback-message ${type}`;
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <span class="message-icon">
+                ${type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : type === 'error' ? '<i class="fa-solid fa-circle-xmark"></i>' : '<i class="fa-solid fa-circle-info"></i>'}
+            </span>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    // 添加到表单顶部
+    const formContainer = document.querySelector('.feedback-form-container');
+    if (formContainer) {
+        formContainer.insertBefore(messageDiv, formContainer.firstChild);
+        
+        // 3秒后自动消失
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.style.opacity = '0';
+                setTimeout(() => messageDiv.remove(), 300);
+            }
+        }, 3000);
+    }
+}
+
+// 设置常见问题交互
+function setupFAQ() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', function() {
+            item.classList.toggle('active');
+        });
+    });
+}
+
+// 在导航栏添加反馈入口
+function addFeedbackNavItem() {
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer && !document.querySelector('.nav-feedback')) {
+        const feedbackNav = document.createElement('a');
+        feedbackNav.href = '#feedback';
+        feedbackNav.className = 'nav-link nav-feedback';
+        feedbackNav.innerHTML = '<i class="fa-solid fa-comments"></i> 反馈';
+        feedbackNav.onclick = function(e) {
+            e.preventDefault();
+            showFeedbackSystem();
+        };
+        
+        // 在关于我们链接前插入
+        const aboutLink = navContainer.querySelector('a[href="#about"]');
+        if (aboutLink) {
+            navContainer.insertBefore(feedbackNav, aboutLink);
+        } else {
+            navContainer.appendChild(feedbackNav);
+        }
+        
+        console.log("已添加反馈系统导航链接");
+    }
+}
+
+// 页面加载时初始化反馈系统
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟执行
+    setTimeout(() => {
+        // 设置常见问题
+        setupFAQ();
+        
+        // 绑定筛选按钮事件
+        document.querySelectorAll('.feedback-filters .filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterFeedback(this.dataset.filter);
+            });
+        });
+        
+        // 添加反馈导航
+        addFeedbackNavItem();
+        
+        console.log("反馈系统初始化完成");
+    }, 1000);
+});
+
+// 添加反馈消息样式
+const feedbackMessageStyle = `
+.feedback-message {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid #b71c1c;
+    animation: slideDown 0.3s ease;
+}
+
+.feedback-message.success {
+    border-left-color: #27ae60;
+}
+
+.feedback-message.error {
+    border-left-color: #e74c3c;
+}
+
+.message-content {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.message-icon {
+    font-size: 1.2rem;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+`;
+
+// 添加样式到页面
+const feedbackStyle = document.createElement('style');
+feedbackStyle.textContent = feedbackMessageStyle;
+document.head.appendChild(feedbackStyle);
+// ============================================
+// 京津冀红色遗址数据（带完整详情）
+// ============================================
+const redLocationsData = [
+    // ========== 北京地区 ==========
+    {
+        id: 1,
+        name: "天安门广场",
+        city: "北京东城",
+        type: "革命纪念地",
+        coordinates: [116.397389, 39.903179],
+        address: "北京市东城区东长安街",
+        year: "1949年",
+        description: "1949年10月1日，中华人民共和国开国大典在此举行，毛泽东主席庄严宣告新中国成立。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-flag"></i>",
+        details: {
+            history: "明清两代是皇城正门，1958年扩建，成为新中国象征。",
+            event: "五四运动、一二九运动、开国大典等重大历史事件发生地。",
+            architecture: "总建筑面积8800平方米，高34.7米，是全国重点文物保护单位。"
+        },
+        tips: "每天清晨的升旗仪式值得观看"
+    },
+    {
+        id: 2,
+        name: "中国人民抗日战争纪念馆",
+        city: "北京丰台",
+        type: "纪念馆",
+        coordinates: [116.219378, 39.866343],
+        address: "北京市丰台区卢沟桥宛平城内街101号",
+        year: "1987年",
+        description: "全国唯一全面反映中国人民抗日战争历史的大型综合性专题纪念馆。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-khanda"></i>",
+        details: {
+            history: "1987年七七事变50周年时建成开放，2015年扩建。",
+            exhibition: "展出文物3000余件，图片600余幅，全面展现抗战历史。",
+            architecture: "建筑面积3.6万平方米，主体建筑呈金字塔形，象征抗战精神。"
+        },
+        tips: "紧邻卢沟桥，可一并参观"
+    },
+    {
+        id: 3,
+        name: "毛主席纪念堂",
+        city: "北京东城",
+        type: "纪念堂",
+        coordinates: [116.397428, 39.902061],
+        address: "北京市东城区前门东大街11号",
+        year: "1977年",
+        description: "安放毛泽东同志遗体的纪念堂，是瞻仰缅怀伟人的重要场所。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-crown"></i>",
+        details: {
+            history: "1976年11月奠基，1977年9月9日落成开放。",
+            architecture: "建筑面积2.8万平方米，高33.6米，呈正方形，庄严肃穆。",
+            visit: "瞻仰厅安放毛泽东水晶棺，可瞻仰遗容。"
+        },
+        tips: "参观需预约，不得拍照"
+    },
+    {
+        id: 4,
+        name: "北大红楼",
+        city: "北京东城",
+        type: "旧址",
+        coordinates: [116.397056, 39.923706],
+        address: "北京市东城区五四大街29号",
+        year: "1918年",
+        description: "北京大学旧址，五四运动发源地，李大钊、陈独秀、毛泽东曾在此工作。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-landmark"></i>",
+        details: {
+            history: "1918年建成，是北大文学院所在地，新文化运动中心。",
+            figures: "李大钊任图书馆主任，毛泽东在此工作，陈独秀主编《新青年》。",
+            event: "1919年五四游行从红楼出发，火烧赵家楼。"
+        },
+        tips: "现为北京新文化运动纪念馆"
+    },
+    {
+        id: 5,
+        name: "香山革命纪念馆",
+        city: "北京海淀",
+        type: "纪念馆",
+        coordinates: [116.208511, 39.994972],
+        address: "北京市海淀区香山街道红旗村1号",
+        year: "2019年",
+        description: "中共中央在香山时期（1949年3月-9月）的历史见证，指挥渡江战役、筹备建国。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-leaf"></i>",
+        details: {
+            history: "1949年3月25日，中共中央从西柏坡迁至香山，在此指挥渡江战役。",
+            exhibition: "展出文物1200余件，包括毛泽东双清别墅复原场景。",
+            architecture: "建筑面积1.8万平方米，现代风格与传统园林结合。"
+        },
+        tips: "双清别墅是毛泽东住所"
+    },
+    {
+        id: 6,
+        name: "李大钊故居",
+        city: "北京西城",
+        type: "故居",
+        coordinates: [116.368645, 39.929672],
+        address: "北京市西城区文华胡同24号",
+        year: "1920-1924年",
+        description: "中国共产党主要创始人李大钊同志在北京居住4年的地方。",
+        importance: "省级",
+        icon: "<i class="fa-solid fa-user-tie"></i>",
+        details: {
+            history: "1920年春至1924年1月，李大钊在此居住，期间发表文章100余篇。",
+            architecture: "三合院民居，北房3间，东西耳房各2间，东厢房3间。",
+            event: "在此接待过共产国际代表维经斯基，与陈独秀通信讨论建党。"
+        },
+        tips: "故居内陈列有李大钊手稿"
+    },
+    
+    // ========== 天津地区 ==========
+    {
+        id: 7,
+        name: "平津战役纪念馆",
+        city: "天津红桥",
+        type: "纪念馆",
+        coordinates: [117.126541, 39.174885],
+        address: "天津市红桥区平津道8号",
+        year: "1997年",
+        description: "全面展现平津战役伟大胜利的专题纪念馆，展示解放战争三大战役之一。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-medal"></i>",
+        details: {
+            history: "1997年7月23日建成开放，纪念平津战役胜利48周年。",
+            exhibition: "展出文物2500余件，包括毛泽东指挥三大战役的电报手稿。",
+            architecture: "建筑面积1.2万平方米，主体建筑像一艘扬帆起航的战舰。"
+        },
+        tips: "馆内有全景画《解放天津》"
+    },
+    {
+        id: 8,
+        name: "周恩来邓颖超纪念馆",
+        city: "天津南开",
+        type: "纪念馆",
+        coordinates: [117.168752, 39.098293],
+        address: "天津市南开区水上公园西路9号",
+        year: "1998年",
+        description: "纪念周恩来、邓颖超两位伟人的专题纪念馆，展现他们光辉的一生。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-users"></i>",
+        details: {
+            history: "1998年2月28日周恩来百年诞辰时开放。",
+            exhibition: "展出文物1000余件，包括周恩来南开中学毕业证书。",
+            architecture: "建筑面积1.3万平方米，三幢建筑呈品字形排列。"
+        },
+        tips: "西花厅仿建中南海西花厅"
+    },
+    {
+        id: 9,
+        name: "觉悟社旧址",
+        city: "天津河北",
+        type: "旧址",
+        coordinates: [117.201389, 39.156111],
+        address: "天津市河北区三马路三戒里49号",
+        year: "1919年",
+        description: "周恩来等组织的进步团体觉悟社活动旧址，五四运动重要社团。",
+        importance: "省级",
+        icon: "<i class="fa-solid fa-lightbulb"></i>",
+        details: {
+            history: "1919年9月16日成立，社员21人，周恩来、邓颖超、马骏等。",
+            activity: "出版《觉悟》杂志，讨论新思想，开展爱国运动。",
+            architecture: "七间青砖平房小院，现为纪念馆。"
+        },
+        tips: "周恩来在此用化名'伍豪'"
+    },
+    
+    // ========== 河北地区 ==========
+    {
+        id: 10,
+        name: "西柏坡纪念馆",
+        city: "河北石家庄",
+        type: "纪念馆",
+        coordinates: [114.157282, 38.436419],
+        address: "河北省石家庄市平山县西柏坡镇",
+        year: "1948-1949年",
+        description: "中国革命最后一个农村指挥所，七届二中全会会址，新中国从这里走来。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-mountain-sun"></i>",
+        details: {
+            history: "1948年5月至1949年3月，中共中央在此指挥三大战役，召开七届二中全会。",
+            exhibition: "展出文物2000余件，包括毛泽东用过的办公桌、周恩来用过的电话。",
+            architecture: "复原中共中央旧址，包括毛泽东旧居、中央军委作战室。",
+            significance: "提出'两个务必'，规划建国蓝图。"
+        },
+        tips: "七届二中全会会场必看"
+    },
+    {
+        id: 11,
+        name: "狼牙山五勇士陈列馆",
+        city: "河北保定",
+        type: "纪念馆",
+        coordinates: [115.209427, 39.052297],
+        address: "河北省保定市易县狼牙山镇",
+        year: "1942年",
+        description: "纪念狼牙山五壮士英勇跳崖事迹，1941年9月25日，五战士为掩护主力转移跳崖。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-mountain"></i>",
+        details: {
+            history: "1941年9月25日，马宝玉、胡德林、胡福才、葛振林、宋学义五位战士跳崖。",
+            exhibition: "展出五壮士遗物、照片，还原战斗场景。",
+            architecture: "陈列馆依山而建，可远眺狼牙山主峰。"
+        },
+        tips: "可登顶狼牙山感受五壮士的英雄气概"
+    },
+    {
+        id: 12,
+        name: "白洋淀雁翎队纪念馆",
+        city: "河北雄安",
+        type: "纪念馆",
+        coordinates: [115.936287, 38.933512],
+        address: "河北省雄安新区安新县白洋淀景区",
+        year: "1991年",
+        description: "展现白洋淀水上抗日游击队英勇事迹，雁翎队利用芦苇荡打击日寇。",
+        importance: "省级",
+        icon: "<i class="fa-solid fa-sailboat"></i>",
+        details: {
+            history: "1939年成立，利用白洋淀芦苇荡开展游击战，击毙日伪军千余人。",
+            exhibition: "展出木船、步枪、土炮等文物，还原雁翎队战斗场景。",
+            features: "电影《小兵张嘎》原型地，嘎子村就在附近。"
+        },
+        tips: "夏季荷花盛开时最美"
+    },
+    {
+        id: 13,
+        name: "晋察冀军区司令部旧址",
+        city: "河北张家口",
+        type: "旧址",
+        coordinates: [114.879883, 40.824418],
+        address: "河北省张家口市涞源县",
+        year: "1937年",
+        description: "晋察冀抗日根据地核心指挥机构所在地，聂荣臻在此指挥抗战。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-anchor"></i>",
+        details: {
+            history: "1937年11月成立，是八路军第一个敌后抗日根据地。",
+            figures: "聂荣臻任司令员兼政委，指挥黄土岭战斗，击毙日军阿部规秀。",
+            architecture: "青砖灰瓦四合院，保留司令部会议室、聂荣臻办公室。"
+        },
+        tips: "附近有黄土岭战役遗址"
+    },
+    {
+        id: 14,
+        name: "华北军区烈士陵园",
+        city: "河北石家庄",
+        type: "陵园",
+        coordinates: [114.487692, 38.037057],
+        address: "河北省石家庄市中山西路343号",
+        year: "1954年",
+        description: "安葬大革命、抗日战争时期牺牲的烈士，包括白求恩、柯棣华墓。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-dove"></i>",
+        details: {
+            history: "1954年建成，占地21万平方米，安葬烈士318位。",
+            figures: "白求恩墓、柯棣华墓、马本斋墓均在此。",
+            architecture: "烈士纪念碑高25米，正面镌刻毛泽东题词。"
+        },
+        tips: "每年清明举行大型祭扫活动"
+    },
+    {
+        id: 15,
+        name: "李大钊纪念馆",
+        city: "河北唐山",
+        type: "纪念馆",
+        coordinates: [118.699351, 39.631449],
+        address: "河北省唐山市乐亭县新城区大钊路",
+        year: "1997年",
+        description: "李大钊同志故乡建立的综合性纪念馆，展示其革命一生。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-user-tie"></i>",
+        details: {
+            history: "1997年8月16日建成开放，占地100亩。",
+            exhibition: "展出文物、照片、资料500余件，包括李大钊就义绞刑架复制品。",
+            architecture: "八根功绩柱象征李大钊八大功绩。"
+        },
+        tips: "故居距纪念馆1公里"
+    },
+    {
+        id: 16,
+        name: "前南峪抗日军政大学旧址",
+        city: "河北邢台",
+        type: "旧址",
+        coordinates: [114.344778, 37.059056],
+        address: "河北省邢台市信都区前南峪村",
+        year: "1940年",
+        description: "中国人民抗日军政大学敌后总校所在地，培养2万余名军政干部。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-graduation-cap"></i>",
+        details: {
+            history: "1940年11月至1943年1月，抗大总校在此办学。",
+            education: "培养学员2万余人，包括将军以上干部100余人。",
+            architecture: "保留校部、教室、学员宿舍等旧址。"
+        },
+        tips: "现为爱国主义教育基地"
+    },
+    {
+        id: 17,
+        name: "涉县八路军129师司令部旧址",
+        city: "河北邯郸",
+        type: "旧址",
+        coordinates: [113.689, 36.573],
+        address: "河北省邯郸市涉县赤岸村",
+        year: "1940年",
+        description: "八路军129师司令部驻地，刘伯承、邓小平在此指挥作战6年。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-star"></i>",
+        details: {
+            history: "1940年6月至1945年12月，129师司令部驻赤岸村。",
+            figures: "刘伯承师长、邓小平政委在此指挥大小战役3万余次。",
+            architecture: "保存司令部、刘伯承旧居、邓小平旧居。"
+        },
+        tips: "附近有将军岭，安葬129师将士"
+    },
+    {
+        id: 18,
+        name: "喜峰口长城抗战遗址",
+        city: "河北唐山",
+        type: "遗址",
+        coordinates: [118.45, 40.40],
+        address: "河北省唐山市迁西县喜峰口",
+        year: "1933年",
+        description: "长城抗战重要战场，二十九军大刀队奋勇杀敌，《大刀进行曲》原型地。",
+        importance: "省级",
+        icon: "<i class="fa-solid fa-khanda"></i>",
+        details: {
+            history: "1933年3月，日军进攻喜峰口，二十九军大刀队夜袭敌营，砍杀日军500余人。",
+            battle: "此战震动全国，激发《大刀进行曲》创作。",
+            architecture: "保存长城敌楼、战壕、纪念碑。"
+        },
+        tips: "可参观喜峰口长城抗战博物馆"
+    },
+    {
+        id: 19,
+        name: "冉庄地道战遗址",
+        city: "河北保定",
+        type: "遗址",
+        coordinates: [115.367, 38.567],
+        address: "河北省保定市清苑区冉庄镇",
+        year: "1942年",
+        description: "抗日战争时期地道战的典范，电影《地道战》原型地，地道全长16公里。",
+        importance: "国家级",
+        icon: "<i class="fa-solid fa-arrows-to-dot"></i>",
+        details: {
+            history: "1942年始建，户户相连、村村相通，开展地道战130余次。",
+            features: "地上地下结合，设有射击孔、陷阱、指挥部。",
+            architecture: "保留高房工事、牲口槽、锅台等伪装出入口。"
+        },
+        tips: "可亲身钻地道体验"
+    }
+];
+
+// 2. 地图全局变量
+let amap = null; // 高德地图实例
+let markers = []; // 存储所有标记点
+let infoWindow = null; // 信息窗口实例
+let currentRoute = null; // 当前路线
+
+// ============================================
+// 初始化地图（带安全密钥）
+// ============================================
+function initAMap() {
+    // 高德API Key
+    const amapKey = '678476efa0efef3b33fe85620f03b6e5';  // 替换成你的Key
+    
+    const securityJsCode = '4fe8ddad24d2061d4a5d012783b07689';  // 替换成你的安全密钥
+    
+    window._AMapSecurityConfig = {
+        securityJsCode: securityJsCode  // 直接配置安全密钥
+        // 如果是生产环境，也可以用代理服务器方式：serviceHost: '你的代理地址/_AMapService'
+    };
+    
+    // 2. 如果已经加载过，直接创建地图
+    if (window.AMap) {
+        createMap();
+        return;
+    }
+    
+    // 3. 动态加载高德地图（注意：不需要在URL中加安全密钥）
+    const script = document.createElement('script');
+    script.src = `https://webapi.amap.com/maps?v=2.0&key=${amapKey}`;  // URL中只带Key
+    script.async = true;
+    script.onload = function() {
+        console.log('高德地图加载成功');
+        setTimeout(createMap, 300);
+    };
+    script.onerror = function() {
+        console.error('高德地图加载失败');
+        document.getElementById('mapContainer').innerHTML = `
+            <div style="padding:50px; text-align:center; color:#666;">
+                <h3>地图加载失败</h3>
+                <p>请检查API Key和安全密钥配置</p>
+            </div>
+        `;
+    };
+    document.head.appendChild(script);
+}
+// 创建更美观的标记点 2026 2 17 新年快乐小邓  ；）
+// ============================================
+// 创建美观标记（包含所有功能）
+// ============================================
+function createBeautifulMarker(location) {
+    // 添加安全检查
+    if (!userProgress.mapLocations) {
+        userProgress.mapLocations = { visited: [] };
+    }
+    
+    // 验证坐标
+    if (!location.coordinates || 
+        !Array.isArray(location.coordinates) || 
+        location.coordinates.length !== 2) {
+        console.error('地点坐标格式错误:', location.name, location.coordinates);
+        return null;
+    }
+    
+    const lng = parseFloat(location.coordinates[0]);
+    const lat = parseFloat(location.coordinates[1]);
+    
+    if (isNaN(lng) || isNaN(lat)) {
+        console.error('地点坐标无效:', location.name, location.coordinates);
+        return null;
+    }
+    
+    const isVisited = userProgress.mapLocations.visited.includes(location.id);
+    
+    // 标记HTML样式（美观部分）
+    const markerHTML = `
+        <div class="beautiful-marker ${isVisited ? 'visited' : ''}" 
+             style="
+                position: relative;
+                width: 50px;
+                height: 60px;
+                cursor: pointer;
+             "
+             data-id="${location.id}">
+            <div class="marker-main" style="
+                width: 40px;
+                height: 40px;
+                background: ${isVisited ? '#27ae60' : '#b71c1c'};
+                border-radius: 50%;
+                border: 3px solid white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                color: white;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                margin: 0 auto;
+            ">
+                ${location.icon}
+            </div>
+            <div class="marker-label" style="
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                white-space: nowrap;
+                margin-top: 5px;
+                display: none;
+                z-index: 1000;
+            ">
+                ${location.name}
+            </div>
+        </div>
+    `;
+    
+    // 创建高德Marker
+    const marker = new AMap.Marker({
+        position: location.coordinates,
+        content: markerHTML,
+        offset: new AMap.Pixel(-25, -50),  // 调整偏移使标记对准坐标点
+        title: location.name,
+        extData: location,
+        zIndex: location.importance === "国家级" ? 200 : 100
+    });
+    
+    // ===== 鼠标悬停事件（显示名称）=====
+    marker.on('mouseover', function() {
+        console.log('鼠标悬停:', location.name);
+        // 找到标记中的label元素并显示
+        const content = marker.getContent();
+        const label = content.querySelector('.marker-label');
+        if (label) {
+            label.style.display = 'block';
+        }
+        
+        // 放大效果
+        const main = content.querySelector('.marker-main');
+        if (main) {
+            main.style.transform = 'scale(1.1)';
+            main.style.transition = 'all 0.3s';
+        }
+    });
+    
+    // ===== 鼠标离开事件（隐藏名称）=====
+    marker.on('mouseout', function() {
+        console.log('鼠标离开:', location.name);
+        const content = marker.getContent();
+        const label = content.querySelector('.marker-label');
+        if (label) {
+            label.style.display = 'none';
+        }
+        
+        // 恢复大小
+        const main = content.querySelector('.marker-main');
+        if (main) {
+            main.style.transform = 'scale(1)';
+        }
+    });
+    
+    // ===== 点击事件（显示详情）=====
+    marker.on('click', function() {
+        console.log('点击了:', location.name);
+        // 这里调用你之前添加的详情函数
+        if (typeof showSiteDetail === 'function') {
+            showSiteDetail(location);
+        } else {
+            // 如果还没有详情函数，先用alert测试
+            alert(`您点击了：${location.name}\n${location.description}`);
+        }
+    });
+    
+    return marker;
+}
+
+// 显示地点预览
+function showLocationPreview(location, position) {
+    const preview = document.getElementById('locationPreview');
+    if (!preview) return;
+    
+    preview.innerHTML = `
+        <div class="preview-content">
+            <h4>${location.icon} ${location.name}</h4>
+            <p>${location.city} · ${location.type}</p>
+            <p class="preview-desc">${location.description.substring(0, 60)}...</p>
+            <div class="preview-tags">
+                ${location.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+        </div>
+    `;
+    preview.style.display = 'block';
+}
+
+// 显示地点详情（完整版）
+function showLocationDetail(location) {
+    const modalHTML = `
+        <div class="location-detail-modal">
+            <div class="modal-header">
+                <h2>${location.icon} ${location.name}</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-basic">
+                    <div class="detail-item">
+                        <span class="label"><i class="fa-solid fa-location-dot"></i> 地址</span>
+                        <span class="value">${location.address}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="fa-solid fa-calendar-days"></i> 年代</span>
+                        <span class="value">${location.year}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="fa-solid fa-tag"></i> 类型</span>
+                        <span class="value">${location.type}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="fa-solid fa-star"></i> 级别</span>
+                        <span class="value importance-${location.importance === '国家级' ? 'national' : 'provincial'}">
+                            ${location.importance}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fa-solid fa-book"></i> 历史背景</h3>
+                    <p>${location.description}</p>
+                </div>
+                
+                ${location.tags.length > 0 ? `
+                <div class="detail-section">
+                    <h3><i class="fa-solid fa-bookmark"></i> 关键词</h3>
+                    <div class="tags-container">
+                        ${location.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div class="detail-section">
+                    <h3><i class="fa-solid fa-map-location-dot"></i> 地理位置</h3>
+                    <div id="miniMap" style="height: 200px; border-radius: 8px;"></div>
+                </div>
+                
+                <div class="detail-actions">
+                    <button onclick="markAsVisited(${location.id})" class="visit-btn">
+                        ${userProgress.mapLocations.visited.includes(location.id) ? '<i class="fa-solid fa-check"></i> 已参观' : '标记为已参观'}
+                    </button>
+                    <button onclick="addToLearningPlan(${location.id})" class="plan-btn">
+                        <i class="fa-solid fa-calendar-days"></i> 加入学习计划
+                    </button>
+                    <button onclick="shareLocation(${location.id})" class="share-btn">
+                        <i class="fa-solid fa-upload"></i> 分享
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // 初始化小地图
+    setTimeout(() => {
+        initMiniMap(location.coordinates);
+    }, 100);
+    
+    // 绑定关闭事件
+    document.querySelector('.close-modal').onclick = function() {
+        document.querySelector('.location-detail-modal').remove();
+    };
+}
+
+// ============================================
+// 创建地图（修正版）
+// ============================================
+function createMap() {
+    // 创建地图实例
+    amap = new AMap.Map('mapContainer', {
+        zoom: 8,
+        center: [116.407526, 39.904030],
+        mapStyle: 'amap://styles/light',
+        viewMode: '2D',
+        resizeEnable: true,
+        zoomEnable: true,
+        dragEnable: true
+    });
+    
+    // ===== 修改这部分：使用更安全的控件添加方式 =====
+    try {
+        // 添加比例尺（使用插件方式）
+        AMap.plugin(['AMap.Scale', 'AMap.ToolBar', 'AMap.HawkEye', 'AMap.MapType'], function() {
+            // 添加比例尺
+            if (AMap.Scale) {
+                amap.addControl(new AMap.Scale());
+                console.log('比例尺添加成功');
+            }
+            
+            // 添加工具条
+            if (AMap.ToolBar) {
+                amap.addControl(new AMap.ToolBar({
+                    position: 'RT'  // 右上角
+                }));
+                console.log('工具条添加成功');
+            }
+            
+            // 添加鹰眼（可选）
+            if (AMap.HawkEye) {
+                amap.addControl(new AMap.HawkEye({
+                    opened: false  // 默认关闭
+                }));
+            }
+            
+            // 添加地图类型切换（可选）
+            if (AMap.MapType) {
+                amap.addControl(new AMap.MapType({
+                    defaultType: 0  // 默认普通地图
+                }));
+            }
+        });
+    } catch (e) {
+        console.log('部分地图控件加载失败，但不影响主要功能', e);
+    }
+    // ============================================
+    
+    // 添加京津冀轮廓
+    addRegionBoundary();
+    
+    // 添加所有遗址标记
+    addBeautifulMarkers();
+    
+    // 更新统计
+    updateMapStats();
+    updateLocationList();
+    // 添加预览框容器
+    const previewContainer = document.createElement('div');
+    previewContainer.id = 'locationPreview';
+    document.getElementById('mapContainer').appendChild(previewContainer);
+    
+    // 初始化信息窗口
+    infoWindow = new AMap.InfoWindow({
+        offset: new AMap.Pixel(0, -30),
+        closeWhenClickMap: true
+    });
+    
+    // 添加地图控件
+    amap.addControl(new AMap.Scale());
+    amap.addControl(new AMap.ToolBar());
+    amap.addControl(new AMap.HawkEye());
+    amap.addControl(new AMap.MapType());
+    
+    // 更新统计信息
+    updateMapStats();
+    updateLocationList();
+}
+// 添加美观标记点
+function addBeautifulMarkers() {
+    // 过滤掉无效的地点（坐标错误）
+    const validLocations = redLocationsData.filter(location => {
+        if (!location.coordinates || !Array.isArray(location.coordinates)) {
+            console.warn('跳过无效地点（无坐标）:', location.name);
+            return false;
+        }
+        const lng = parseFloat(location.coordinates[0]);
+        const lat = parseFloat(location.coordinates[1]);
+        return !isNaN(lng) && !isNaN(lat);
+    });
+    
+    console.log('有效地点数量:', validLocations.length);
+    
+    markers = validLocations.map(location => createBeautifulMarker(location))
+                             .filter(marker => marker !== null);
+    
+    // 添加到地图
+    markers.forEach(marker => {
+        amap.add(marker);
+    });
+    
+    console.log('成功添加', markers.length, '个标记点');
+
+    
+    // 为国家级遗址添加特殊效果
+    const nationalSites = markers.filter(marker => 
+        marker.getExtData().importance === "国家级"
+    );
+    
+    // 国家级遗址添加呼吸灯效果
+    setInterval(() => {
+        nationalSites.forEach(marker => {
+            const content = marker.getContent();
+            marker.setContent(content);
+        });
+    }, 2000);
+}
+// 5. 添加京津冀行政区划轮廓
+function addRegionBoundary() {
+    // 京津冀边界坐标（简化版）
+    const boundaryCoords = [
+        [113.5, 42.0], // 西北点
+        [119.5, 42.0], // 东北点
+        [119.5, 36.5], // 东南点
+        [113.5, 36.5], // 西南点
+        [113.5, 42.0]  // 闭合到起点
+    ];
+    
+    // 创建边界多边形
+    const boundary = new AMap.Polygon({
+        path: boundaryCoords,
+        strokeColor: "#b71c1c", // 红色边框
+        strokeWeight: 3,
+        strokeOpacity: 0.8,
+        fillColor: "rgba(183, 28, 28, 0.1)", // 浅红色填充
+        fillOpacity: 0.2,
+        zIndex: 10
+    });
+    
+    // 添加北京、天津、河北文字标注
+    const beijingText = new AMap.Text({
+        text: '北京',
+        position: [116.407526, 40.2],
+        style: {
+            'padding': '5px 10px',
+            'background-color': 'rgba(183, 28, 28, 0.8)',
+            'border': '2px solid #8b0000',
+            'border-radius': '5px',
+            'color': 'white',
+            'font-size': '16px',
+            'font-weight': 'bold'
+        }
+    });
+    
+    const tianjinText = new AMap.Text({
+        text: '天津',
+        position: [117.20, 39.13],
+        style: {
+            'padding': '5px 10px',
+            'background-color': 'rgba(183, 28, 28, 0.8)',
+            'border': '2px solid #8b0000',
+            'border-radius': '5px',
+            'color': 'white',
+            'font-size': '16px',
+            'font-weight': 'bold'
+        }
+    });
+    
+    const hebeiText = new AMap.Text({
+        text: '河北',
+        position: [115.0, 38.5],
+        style: {
+            'padding': '5px 10px',
+            'background-color': 'rgba(183, 28, 28, 0.8)',
+            'border': '2px solid #8b0000',
+            'border-radius': '5px',
+            'color': 'white',
+            'font-size': '16px',
+            'font-weight': 'bold'
+        }
+    });
+    
+    amap.add(boundary);
+    amap.add(beijingText);
+    amap.add(tianjinText);
+    amap.add(hebeiText);
+}
+
+// 6. 添加红色遗址标记
+function addRedLocationMarkers() {
+    console.log('添加红色遗址标记，共', redLocationsData.length, '个地点');
+    
+    // 清空现有标记
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+    
+    // 创建标记点
+    const markerList = redLocationsData.map(location => {
+        // 确保坐标是数字
+        const lng = parseFloat(location.coordinates[0]);
+        const lat = parseFloat(location.coordinates[1]);
+        
+        if (isNaN(lng) || isNaN(lat)) {
+            console.error('地点坐标无效:', location.name, location.coordinates);
+            return null;
+        }
+        
+        const marker = new AMap.Marker({
+            position: [lng, lat],  // 直接传数组，不用 new AMap.LngLat
+            title: location.name,
+            extData: location,
+            offset: new AMap.Pixel(-15, -15),
+            content: createMarkerContent(location)
+        });
+        
+        // 添加点击事件
+        marker.on('click', function(e) {
+            showLocationInfo(location, e.lnglat);  // 使用事件中的坐标
+            markAsVisited(location.id);
+        });
+        
+        return marker;
+    }).filter(marker => marker !== null);  // 过滤掉无效的标记
+    
+    // 添加到地图
+    markerList.forEach(marker => {
+        amap.add(marker);
+    });
+    
+    markers = markerList;
+    console.log('成功添加', markers.length, '个标记点');
+}
+
+
+// 7. 创建自定义标记内容
+function createMarkerContent(location) {
+    const isVisited = userProgress.mapLocations.visited.includes(location.id);
+    const color = isVisited ? '#27ae60' : '#e74c3c';
+    
+    return `
+        <div style="
+            position: relative;
+            width: 30px; 
+            height: 30px;
+            cursor: pointer;
+        ">
+            <div style="
+                width: 30px;
+                height: 30px;
+                background: ${color};
+                border-radius: 50%;
+                border: 2px solid white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 16px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                transition: all 0.3s;
+            ">
+                ${location.icon}
+            </div>
+            ${isVisited ? `
+                <div style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    width: 15px;
+                    height: 15px;
+                    background: #27ae60;
+                    border-radius: 50%;
+                    border: 2px solid white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 10px;
+                    color: white;
+                ">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+// 8. 显示地点详细信息
+function showLocationInfo(location, position) {
+    const isVisited = userProgress.mapLocations.visited.includes(location.id);
+    
+    const content = `
+        <div style="padding: 10px; max-width: 300px;">
+            <h3 style="margin: 0 0 10px 0; color: #b71c1c;">
+                ${location.icon} ${location.name}
+            </h3>
+            <div style="margin-bottom: 8px;">
+                <strong><i class="fa-solid fa-location-dot"></i> 地址：</strong>${location.address}
+            </div>
+            <div style="margin-bottom: 8px;">
+                <strong><i class="fa-solid fa-calendar-days"></i> 年代：</strong>${location.year}
+            </div>
+            <div style="margin-bottom: 8px;">
+                <strong><i class="fa-solid fa-book"></i> 简介：</strong>${location.description}
+            </div>
+            <div style="margin-bottom: 10px; color: ${isVisited ? '#27ae60' : '#e74c3c'};">
+                ${isVisited ? '<i class="fa-solid fa-circle-check"></i> 已探索' : '<i class="fa-solid fa-location-dot"></i> 待探索'}
+            </div>
+            <button onclick="markAsVisited(${location.id})" 
+                    style="
+                        background: ${isVisited ? '#27ae60' : '#b71c1c'};
+                        color: white;
+                        border: none;
+                        padding: 5px 15px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">
+                ${isVisited ? '<i class="fa-solid fa-check"></i> 已学习' : '标记为已探索'}
+            </button>
+        </div>
+    `;
+    
+    infoWindow.setContent(content);
+    infoWindow.open(amap, position);
+}
+
+// 9. 标记为已探索
+function markAsVisited(locationId) {
+    if (!userProgress.mapLocations.visited.includes(locationId)) {
+        userProgress.mapLocations.visited.push(locationId);
+        saveUserProgress();
+        
+        // 更新标记样式
+        const location = redLocationsData.find(l => l.id === locationId);
+        if (location) {
+            const marker = markers.find(m => m.getExtData().id === locationId);
+            if (marker) {
+                marker.setContent(createMarkerContent(location));
+            }
+        }
+        
+        updateMapStats();
+        updateLocationList();
+        showNotification(`已探索：${redLocationsData.find(l => l.id === locationId)?.name}`, 'success');
+    }
+}
+
+// 10. 更新地图统计信息
+function updateMapStats() {
+    document.getElementById('totalLocations').textContent = redLocationsData.length;
+    document.getElementById('visitedLocations').textContent = userProgress.mapLocations.visited.length;
+    
+    // 计算红色路线总长度（示例）
+    if (currentRoute) {
+        const distance = Math.round(currentRoute.getDistance() / 1000);
+        document.getElementById('routeDistance').textContent = distance;
+    }
+}
+
+// 11. 更新地点列表
+function updateLocationList() {
+    const list = document.getElementById('locationList');
+    let html = '';
+    
+    redLocationsData.forEach(location => {
+        const isVisited = userProgress.mapLocations.visited.includes(location.id);
+        const status = isVisited ? '<i class="fa-solid fa-circle-check"></i> 已探索' : '<i class="fa-solid fa-location-dot"></i> 待探索';
+        const color = isVisited ? '#27ae60' : '#e74c3c';
+        
+        html += `
+            <div class="location-item" onclick="focusOnLocation(${location.id})" 
+                 style="border-left-color: ${color}; cursor: pointer;">
+                <strong>${location.icon} ${location.name}</strong><br>
+                <small>${location.city} • ${location.type}</small><br>
+                <span style="color: ${color}; font-size: 12px;">${status}</span>
+            </div>
+        `;
+    });
+    
+    list.innerHTML = html;
+}
+
+// 12. 地图控制函数
+function focusOnLocation(locationId) {
+    const location = redLocationsData.find(l => l.id === locationId);
+    if (location && amap) {
+        amap.setZoomAndCenter(14, location.coordinates);
+        showLocationInfo(location, location.coordinates);
+    }
+}
+
+function showAllLocations() {
+    if (amap) {
+        amap.setZoomAndCenter(8, [116.407526, 39.904030]);
+    }
+}
+
+function focusOnBeijing() {
+    if (amap) {
+        amap.setZoomAndCenter(10, [116.407526, 39.904030]);
+    }
+}
+
+function focusOnTianjin() {
+    if (amap) {
+        amap.setZoomAndCenter(11, [117.20, 39.13]);
+    }
+}
+
+function focusOnHebei() {
+    if (amap) {
+        amap.setZoomAndCenter(8, [115.0, 38.5]);
+    }
+}
+
+// 13. 显示红色旅游路线
+function showRedRoute() {
+    // 清除现有路线
+    if (currentRoute) {
+        currentRoute.setMap(null);
+    }
+    
+    // 选择几个重要地点绘制路线
+    const routePoints = [
+        redLocationsData[1].coordinates, // 北京抗日战争纪念馆
+        redLocationsData[4].coordinates, // 李大钊故居
+        redLocationsData[2].coordinates, // 平津战役纪念馆
+        redLocationsData[0].coordinates, // 西柏坡纪念馆
+        redLocationsData[3].coordinates  // 狼牙山五勇士陈列馆
+    ];
+    
+    // 创建路线
+    currentRoute = new AMap.Polyline({
+        path: routePoints,
+        strokeColor: "#b71c1c", // 红色路线
+        strokeWeight: 5,
+        strokeOpacity: 0.8,
+        strokeStyle: "solid",
+        lineJoin: "round",
+        lineCap: "round",
+        zIndex: 50
+    });
+    
+    // 添加路线距离标注
+    const distance = Math.round(currentRoute.getDistance() / 1000);
+    const middlePoint = routePoints[Math.floor(routePoints.length / 2)];
+    
+    const routeText = new AMap.Text({
+        text: `红色经典路线 ${distance}公里`,
+        position: middlePoint,
+        style: {
+            'padding': '8px 15px',
+            'background-color': 'rgba(183, 28, 28, 0.9)',
+            'border': '2px solid #8b0000',
+            'border-radius': '20px',
+            'color': 'white',
+            'font-size': '14px',
+            'font-weight': 'bold',
+            'text-align': 'center'
+        }
+    });
+    
+    amap.add(currentRoute);
+    amap.add(routeText);
+    
+    // 更新统计信息
+    document.getElementById('routeDistance').textContent = distance;
+    
+    // 显示通知
+    showNotification(`已显示红色经典路线，总长${distance}公里`, 'info');
+}
+
+// 14. 显示通知
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        animation: slideInRight 0.3s ease;
+        font-weight: 500;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// 15. 页面加载时初始化地图
+document.addEventListener('DOMContentLoaded', function() {
+    // 等待页面完全加载后初始化地图
+    setTimeout(() => {
+        if (document.getElementById('red-map')) {
+            console.log("初始化京津冀红色地图...");
+            initAMap();
+        }
+    }, 1000);
+});
+// ============================================
+// 虚拟展厅 - 全景展示功能（0基础版）
+// ============================================
+
+// 1. 展厅数据
+const exhibitionsData = {
+    xibaipo: {
+        title: "西柏坡纪念馆",
+        description: "中国革命最后一个农村指挥所，中共中央在此指挥了三大战役，召开了七届二中全会。",
+        image: "images/panorama/xibaipo.jpg", // 你的图片路径
+        hotspots: [
+            {
+                id: 1,
+                title: "七届二中全会会场",
+                description: "1949年3月5日至13日，中共七届二中全会在此召开，毛泽东提出'两个务必'重要论述。",
+                position: { yaw: 120, pitch: -5 }
+            },
+            {
+                id: 2,
+                title: "毛泽东旧居",
+                description: "毛泽东同志在西柏坡期间的住所，条件简陋但战略部署影响深远。",
+                position: { yaw: 45, pitch: 10 }
+            },
+            {
+                id: 3,
+                title: "中央军委作战室",
+                description: "三大战役的指挥中枢，被誉为'世界上最小的指挥所'。",
+                position: { yaw: 200, pitch: 0 }
+            }
+        ],
+        audio: "西柏坡是新中国诞生的摇篮..."
+    },
+    yanan: {
+        title: "延安革命纪念馆",
+        description: "中共中央在延安十三年的历史见证，中国革命从胜利走向胜利的圣地。",
+        image: "images/panorama/yanan.jpg",
+        hotspots: [
+            {
+                id: 4,
+                title: "宝塔山",
+                description: "延安的标志性建筑，革命圣地的象征。",
+                position: { yaw: 90, pitch: 0 }
+            }
+        ]
+    },
+    lugouqiao: {
+        title: "卢沟桥事变遗址",
+        description: "全民族抗战的爆发地，中国人民抗日战争纪念馆所在地。",
+        image: "images/panorama/lugouqiao.jpg",
+        hotspots: [
+            {
+                id: 5,
+                title: "卢沟桥石狮",
+                description: "'卢沟桥的狮子数不清'，见证了七七事变的爆发。",
+                position: { yaw: 180, pitch: -5 }
+            }
+        ]
+    }
+};
+
+// 2. 加载全景展厅
+function loadPanorama(exhibitionId) {
+    console.log("加载展厅:", exhibitionId);
+    
+    const exhibition = exhibitionsData[exhibitionId];
+    if (!exhibition) {
+        alert("展厅数据加载失败，请稍后重试");
+        return;
+    }
+    
+    // 更新按钮状态
+    document.querySelectorAll('.exhibition-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // 更新展厅信息
+    document.getElementById('exhibitionTitle').textContent = exhibition.title;
+    document.getElementById('exhibitionDesc').textContent = exhibition.description;
+    
+    // 显示加载状态
+    const container = document.getElementById('panoramaContainer');
+    container.innerHTML = `
+        <div class="loading-panorama">
+            <div class="loading-spinner"></div>
+            <p>正在加载 ${exhibition.title}...</p>
+        </div>
+    `;
+    
+    // 延迟加载全景图（模拟网络请求）
+    setTimeout(() => {
+        initPanoramaViewer(exhibition);
+    }, 800);
+}
+
+// 3. 初始化全景查看器（最简单版本）
+function initPanoramaViewer(exhibition) {
+    const container = document.getElementById('panoramaContainer');
+    
+    // 如果没有全景图片，显示替代内容
+    if (!exhibition.image || exhibition.image.includes('panorama/')) {
+        container.innerHTML = `
+            <div style="
+                width: 100%;
+                height: 500px;
+                background: linear-gradient(135deg, #2c3e50, #34495e);
+                border-radius: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                text-align: center;
+                padding: 40px;
+            ">
+                <div style="font-size: 60px; margin-bottom: 20px;"><i class="fa-solid fa-landmark"></i></div>
+                <h3 style="margin-bottom: 15px;">${exhibition.title}</h3>
+                <p style="margin-bottom: 25px; color: #ccc; max-width: 500px;">
+                    ${exhibition.description}
+                </p>
+                <p style="color: #999; font-size: 14px;">
+                    提示：请将全景图片放入 images/panorama/ 文件夹<br>
+                    命名为 ${exhibition.title.substring(0, 2)}.jpg
+                </p>
+                
+                <!-- 模拟热点 -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 30%;
+                    width: 30px;
+                    height: 30px;
+                    background: rgba(183, 28, 28, 0.8);
+                    border: 2px solid white;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    animation: pulse 2s infinite;
+                " onclick="showHotspotInfo(1)" title="点击查看详情"></div>
+                
+                <div style="
+                    position: absolute;
+                    top: 40%;
+                    right: 40%;
+                    width: 30px;
+                    height: 30px;
+                    background: rgba(183, 28, 28, 0.8);
+                    border: 2px solid white;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    animation: pulse 2s infinite;
+                    animation-delay: 0.5s;
+                " onclick="showHotspotInfo(2)" title="点击查看详情"></div>
+            </div>
+        `;
+        return;
+    }
+    
+    // 如果有全景图，使用Pannellum（需要引入库）
+    // 这里先使用模拟效果
+    container.innerHTML = `
+        <div class="panorama-viewer">
+            <img src="${exhibition.image}" 
+                 alt="${exhibition.title}" 
+                 style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
+            
+            <!-- 热点标记 -->
+            ${exhibition.hotspots.map(hotspot => `
+                <div class="hotspot-marker" 
+                     style="position:absolute; 
+                            top: ${50 + hotspot.position.pitch}%; 
+                            left: ${50 + hotspot.position.yaw/3.6}%;
+                            transform:translate(-50%,-50%);"
+                     onclick="showHotspotInfo(${hotspot.id})">
+                    <div class="hotspot-dot"></div>
+                    <div class="hotspot-label">${hotspot.title}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    // 添加热点样式
+    const style = document.createElement('style');
+    style.textContent = `
+        .panorama-viewer {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .hotspot-marker {
+            cursor: pointer;
+            z-index: 100;
+        }
+        .hotspot-dot {
+            width: 25px;
+            height: 25px;
+            background: rgba(183, 28, 28, 0.9);
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+        .hotspot-label {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .hotspot-marker:hover .hotspot-label {
+            opacity: 1;
+        }
+    `;
+    container.appendChild(style);
+}
+
+// 4. 显示热点信息
+function showHotspotInfo(hotspotId) {
+    // 找到对应的热点数据
+    let hotspotData = null;
+    let exhibitionName = '';
+    
+    for (const [key, exhibition] of Object.entries(exhibitionsData)) {
+        const found = exhibition.hotspots.find(h => h.id === hotspotId);
+        if (found) {
+            hotspotData = found;
+            exhibitionName = exhibition.title;
+            break;
+        }
+    }
+    
+    if (!hotspotData) return;
+    
+    // 显示信息卡片
+    const cardHTML = `
+        <div class="hotspot-card">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-location-dot"></i> ${hotspotData.title}</h4>
+                <button onclick="closeHotspotCard()" class="close-card">×</button>
+            </div>
+            <div class="card-body">
+                <p>${hotspotData.description}</p>
+                <p style="font-size:12px; color:#999; margin-top:10px;">
+                    所属展厅：${exhibitionName}
+                </p>
+            </div>
+            <div class="card-footer">
+                <button onclick="markHotspotVisited(${hotspotId})" class="mark-btn">
+                    <i class="fa-solid fa-check"></i> 标记为已学习
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // 移除现有的卡片
+    const existingCard = document.querySelector('.hotspot-card');
+    if (existingCard) existingCard.remove();
+    
+    // 添加新卡片
+    document.body.insertAdjacentHTML('beforeend', cardHTML);
+    
+    // 添加卡片样式
+    const cardStyle = document.createElement('style');
+    cardStyle.textContent = `
+        .hotspot-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            animation: fadeIn 0.3s ease;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .card-header h4 {
+            margin: 0;
+            color: #b71c1c;
+        }
+        .close-card {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .close-card:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .card-body p {
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .card-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .mark-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+    `;
+    document.head.appendChild(cardStyle);
+}
+
+// 5. 其他控制函数
+function closeHotspotCard() {
+    const card = document.querySelector('.hotspot-card');
+    if (card) card.remove();
+}
+
+function markHotspotVisited(hotspotId) {
+    alert(`已标记点位 ${hotspotId} 为已学习！\n\n学习进度已更新。`);
+    closeHotspotCard();
+}
+
+function enterFullscreen() {
+    const panorama = document.querySelector('.panorama-container');
+    if (panorama.requestFullscreen) {
+        panorama.requestFullscreen();
+    }
+    alert("已进入全屏模式，按ESC键退出");
+}
+
+function toggleAudioGuide() {
+    alert("语音导览功能开发中...\n\n设计内容：讲述展厅历史背景和革命故事");
+}
+
+function showHotspotList() {
+    const currentExhibition = document.querySelector('.exhibition-btn.active');
+    if (!currentExhibition) return;
+    
+    const exhibitionId = currentExhibition.textContent.includes('西柏坡') ? 'xibaipo' : 
+                       currentExhibition.textContent.includes('延安') ? 'yanan' : 'lugouqiao';
+    
+    const exhibition = exhibitionsData[exhibitionId];
+    
+    let listHTML = `<h3>${exhibition.title} - 所有历史点位</h3><ul>`;
+    exhibition.hotspots.forEach(hotspot => {
+        listHTML += `<li><strong>${hotspot.title}</strong><br>${hotspot.description}</li>`;
+    });
+    listHTML += '</ul>';
+    
+    alert(listHTML);
+}
+
+function takeScreenshot() {
+    alert("[截图] 展厅截图已保存！\n\n可以分享给同学或用于学习报告。");
+}
+
+function startExhibitionTask() {
+    alert("[目标] 学习任务开始！\n\n请在展厅中找到以下3个重要点位：\n1. 七届二中全会会场\n2. 毛泽东旧居\n3. 中央军委作战室\n\n每找到一个点位，点击标记了解详情。");
+}
+
+// 6. 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 如果没有全景图片文件夹，创建提示
+    setTimeout(() => {
+        if (!document.querySelector('.panorama-container img')) {
+            loadPanorama('xibaipo');
+        }
+    }, 1000);
+});
+// ============================================
+// 虚拟展厅 - 嵌入720云功能（简化版）
+// ============================================
+
+// 展厅数据配置 - 只保留两个展厅
+const exhibitionsConfig = {
+    xibaipo: {
+        title: "西柏坡纪念馆",
+        url: "https://www.720yun.com/vr/1eaj5Oyarn9",
+        description: "中国革命最后一个农村指挥所，七届二中全会会址",
+        address: "河北省石家庄市平山县",
+        year: "1948-1949年",
+        tips: [
+            "观察七届二中全会会场布置",
+            "了解三大战役指挥过程", 
+            "感受'两个务必'精神内涵"
+        ]
+    },
+    yanan: {
+        title: "延安革命纪念馆",
+        url: "https://www.720yun.com/t/c7vkteqmrim?scene_id=70013971",
+        description: "中共中央在延安十三年的历史见证，中国革命从胜利走向胜利的圣地",
+        address: "陕西省延安市",
+        year: "1937-1948年",
+        tips: [
+            "了解延安整风运动历史",
+            "观察毛泽东旧居陈设",
+            "学习延安精神核心内涵"
+        ]
+    }
+};
+
+// 当前展厅ID
+let currentExhibitionId = 'xibaipo';
+
+// ============================================
+// 加载展厅（修正版）
+// ============================================
+function loadExhibition(exhibitionId, event) {
+    console.log('切换展厅:', exhibitionId);
+    
+    // 安全处理：如果有event参数才更新按钮样式
+    if (event && event.target && event.target.classList) {
+        document.querySelectorAll('.exhibition-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    } else {
+        // 如果没有event，根据exhibitionId设置active
+        document.querySelectorAll('.exhibition-btn').forEach(btn => {
+            const isActive = (exhibitionId === 'xibaipo' && btn.textContent.includes('西柏坡')) ||
+                            (exhibitionId === 'yanan' && btn.textContent.includes('延安'));
+            btn.classList.toggle('active', isActive);
+        });
+    }
+    
+    const exhibition = exhibitionsConfig[exhibitionId];
+    if (!exhibition) return;
+    
+    // 清空容器
+    const container = document.getElementById('exhibitionContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    container.style.background = 'black';
+    
+    // 加载iframe
+    setTimeout(() => {
+        const iframe = document.createElement('iframe');
+        iframe.id = '720yunIframe';
+        iframe.src = exhibition.url;
+        iframe.title = exhibition.title + ' - 360度虚拟展厅';
+        iframe.allow = 'fullscreen; vr; xr-spatial-tracking';
+        iframe.allowFullscreen = true;
+        iframe.frameBorder = '0';
+        iframe.scrolling = 'no';
+        iframe.style.cssText = `
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        `;
+        
+        container.appendChild(iframe);
+        updateSidebarInfo(exhibition);
+        
+        // 安全调用记录函数
+        if (typeof recordExhibitionVisit === 'function') {
+            recordExhibitionVisit(exhibitionId);
+        }
+    }, 300);
+}
+
+// 更新侧边栏信息
+function updateSidebarInfo(exhibition) {
+    const sidebar = document.querySelector('.exhibition-sidebar');
+    if (!sidebar) return;
+    
+    // 更新标题
+    sidebar.querySelector('h3').textContent = exhibition.title;
+    
+    // 更新信息内容
+    let infoHTML = `
+        <p><strong><i class="fa-solid fa-location-dot"></i> 地址：</strong>${exhibition.address}</p>
+        <p><strong><i class="fa-solid fa-calendar-days"></i> 年代：</strong>${exhibition.year}</p>
+        <p><strong><i class="fa-solid fa-book"></i> 简介：</strong>${exhibition.description}</p>
+    `;
+    
+    sidebar.querySelector('.exhibition-info').innerHTML = infoHTML;
+    
+    // 更新学习要点
+    let tipsHTML = '<h4><i class="fa-solid fa-bullseye"></i> 参观学习要点</h4><ul>';
+    exhibition.tips.forEach(tip => {
+        tipsHTML += `<li>${tip}</li>`;
+    });
+    tipsHTML += '</ul>';
+    
+    const tipsElement = sidebar.querySelector('.learning-tips');
+    if (tipsElement) {
+        tipsElement.innerHTML = tipsHTML;
+    }
+}
+
+// 辅助功能函数
+function enterFullscreen() {
+    const iframe = document.getElementById('720yunIframe');
+    if (iframe && iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+    } else if (iframe && iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+    } else {
+        alert("点击展厅内部的全屏按钮效果更好");
+    }
+}
+
+function openInNewWindow() {
+    const exhibition = exhibitionsConfig[currentExhibitionId];
+    if (exhibition && exhibition.url) {
+        window.open(exhibition.url, '_blank', 'width=1200,height=800');
+    }
+}
+
+function recordVisit() {
+    alert("[完成] 参观记录已保存！\n\n学习进度已更新，继续加油！");
+    // 这里可以集成到你的学习进度系统
+}
+
+function toggleGuide() {
+    const exhibition = exhibitionsConfig[currentExhibitionId];
+    const guideText = `
+        ${exhibition.title}参观指南：
+        
+        1. 鼠标操作：
+           • 左键拖动 - 旋转视角
+           • 滚轮滚动 - 缩放画面
+           • 点击地面箭头 - 移动位置
+        
+        2. 移动端操作：
+           • 单指拖动 - 旋转视角
+           • 双指缩放 - 调整远近
+        
+        3. 学习建议：
+           • 每个展厅建议参观5-10分钟
+           • 关注历史文物和场景布置
+           • 结合侧边栏信息理解历史背景
+    `;
+    alert(guideText);
+}
+
+// 页面初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 默认加载西柏坡展厅
+    setTimeout(() => {
+        // 直接加载，不显示加载提示
+        const container = document.getElementById('exhibitionContainer');
+        const exhibition = exhibitionsConfig['xibaipo'];
+        
+        if (exhibition) {
+            const iframe = document.createElement('iframe');
+            iframe.id = '720yunIframe';
+            iframe.src = exhibition.url;
+            iframe.title = exhibition.title + ' - 360度虚拟展厅';
+            iframe.allow = 'fullscreen; vr';
+            iframe.allowFullscreen = true;
+            iframe.frameBorder = '0';
+            iframe.scrolling = 'no';
+            iframe.style.cssText = `
+                width: 100%;
+                height: 100%;
+                border: none;
+                display: block;
+            `;
+            
+            container.appendChild(iframe);
+            updateSidebarInfo(exhibition);
+        }
+    }, 500);
+});
+// ============================================
+// 显示遗址详情 - 弹窗
+// ============================================
+function showSiteDetail(location) {
+    // 关闭已存在的弹窗
+    const existingModal = document.querySelector('.site-detail-modal');
+    if (existingModal) existingModal.remove();
+    
+    // 创建弹窗HTML
+    const modalHTML = `
+        <div class="site-detail-modal">
+            <div class="modal-overlay" onclick="closeSiteModal()"></div>
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeSiteModal()">×</button>
+                
+                <div class="modal-header">
+                    <div class="modal-icon">${location.icon}</div>
+                    <div>
+                        <h2>${location.name}</h2>
+                        <div class="modal-subtitle">
+                            <span>${location.city}</span> · 
+                            <span>${location.type}</span> · 
+                            <span class="importance ${location.importance === '国家级' ? 'national' : 'provincial'}">
+                                ${location.importance}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="info-block">
+                        <h3><i class="fa-solid fa-book"></i> 简介</h3>
+                        <p>${location.description}</p>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label"><i class="fa-solid fa-location-dot"></i> 地址</span>
+                            <span class="info-value">${location.address}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fa-solid fa-calendar-days"></i> 年代</span>
+                            <span class="info-value">${location.year}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <h3><i class="fa-solid fa-scroll"></i> 历史详情</h3>
+                        <p><strong>历史背景：</strong>${location.details.history}</p>
+                        <p><strong>重要事件：</strong>${location.details.event || location.details.exhibition || '无记录'}</p>
+                        <p><strong>建筑特色：</strong>${location.details.architecture || '无记录'}</p>
+                    </div>
+                    
+                    ${location.tips ? `
+                    <div class="info-block tips">
+                        <h3><i class="fa-solid fa-lightbulb"></i> 参观小贴士</h3>
+                        <p>${location.tips}</p>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="modal-footer">
+                    <div class="visit-status">
+                        ${userProgress.mapLocations.visited.includes(location.id) 
+                            ? '<i class="fa-solid fa-circle-check"></i> 已参观' 
+                            : '<i class="fa-solid fa-location-dot"></i> 待探索'}
+                    </div>
+                    <div class="modal-actions">
+                        <button class="action-btn primary" onclick="markSiteVisited(${location.id})">
+                            ${userProgress.mapLocations.visited.includes(location.id) 
+                                ? '<i class="fa-solid fa-check"></i> 已标记' 
+                                : '标记为已参观'}
+                        </button>
+                        <button class="action-btn secondary" onclick="navigateToSite('${location.name}', ${location.coordinates[0]}, ${location.coordinates[1]})">
+                            <i class="fa-solid fa-car"></i> 导航
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// 关闭弹窗
+function closeSiteModal() {
+    const modal = document.querySelector('.site-detail-modal');
+    if (modal) modal.remove();
+}
+
+// 标记为已参观
+function markSiteVisited(locationId) {
+    if (!userProgress.mapLocations.visited.includes(locationId)) {
+        userProgress.mapLocations.visited.push(locationId);
+        saveUserProgress();
+        
+        // 更新地图标记
+        const location = redLocationsData.find(l => l.id === locationId);
+        const marker = markers.find(m => m.getExtData().id === locationId);
+        if (marker) {
+            marker.setContent(createMarkerContent(location));
+        }
+        
+        // 更新统计
+        updateMapStats();
+        updateLocationList();
+        
+        // 刷新弹窗显示状态
+        closeSiteModal();
+        showSiteDetail(location);
+        
+        alert('[完成] 已记录您的参观！');
+    }
+}
+
+// 导航
+function navigateToSite(name, lng, lat) {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        // 手机端
+        window.location.href = `androidamap://viewMap?sourceApplication=京津冀红色博物馆&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}`;
+    } else {
+        // 电脑端
+        window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}`, '_blank');
+    }
+}
+// ============================================
+// DeepSeek AI助手
+// ============================================
+const DEEPSEEK_API_KEY = 'sk-9a4891b1ca1749bbad994465b44d52dc'; 
+
+// 在页面上添加AI助手浮窗
+function addAIAssistant() {
+    // 先看看有没有已经加过了
+    if (document.getElementById('ai-assistant')) return;
+    
+    // 创建浮窗HTML
+    const aiHTML = `
+        <div id="ai-assistant" style="
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+        ">
+            <!-- 聊天按钮 -->
+            <button onclick="toggleAIChat()" style="
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: #b71c1c;
+                border: none;
+                box-shadow: 0 4px 12px rgba(183,28,28,0.3);
+                cursor: pointer;
+                font-size: 30px;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s;
+            ">
+                <i class="fa-solid fa-robot"></i>
+            </button>
+            
+            <!-- 聊天窗口（默认隐藏） -->
+            <div id="ai-chat-window" style="
+                display: none;
+                position: absolute;
+                bottom: 80px;
+                right: 0;
+                width: 350px;
+                height: 500px;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                overflow: hidden;
+                border: 1px solid #eee;
+            ">
+            <!-- 窗口头部 - 加了缩放按钮 -->
+<div style="
+    background: #b71c1c;
+    color: white;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+">
+    <div>
+        <span style="font-weight: bold; font-size: 16px;"><i class="fa-solid fa-robot"></i> 京津冀红色文化助手</span>
+        <div style="font-size: 11px; opacity: 0.9;">只回答红色文化相关问题</div>
+    </div>
+    <div style="display: flex; gap: 8px;">
+        <!-- 缩小按钮 -->
+        <button onclick="changeWindowSize('small'); event.stopPropagation();" style="
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        " title="小窗口">−</button>
+        
+        <!-- 中等按钮 -->
+        <button onclick="changeWindowSize('medium'); event.stopPropagation();" style="
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        " title="中窗口"><i class="fa-solid fa-record-vinyl"></i></button>
+        
+        <!-- 放大按钮 -->
+        <button onclick="changeWindowSize('large'); event.stopPropagation();" style="
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        " title="大窗口">+</button>
+        
+        <!-- 关闭按钮 -->
+        <button onclick="toggleAIChat()" style="
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">×</button>
+    </div>
+</div>
+                
+                <!-- 聊天记录区 -->
+                <div id="ai-chat-messages" style="
+                    height: 360px;
+                    overflow-y: auto;
+                    padding: 15px;
+                    background: #f5f5f5;
+                ">
+                    <div style="
+                        background: white;
+                        padding: 10px;
+                        border-radius: 10px;
+                        margin-bottom: 10px;
+                        max-width: 80%;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    ">
+                        <i class="fa-solid fa-hand"></i> 你好！我是你的红色文化学习助手。有什么关于京津冀红色历史、革命故事的问题都可以问我！
+                    </div>
+                </div>
+                
+                <!-- 输入区 -->
+                <div style="
+                    padding: 15px;
+                    background: white;
+                    border-top: 1px solid #eee;
+                    display: flex;
+                    gap: 10px;
+                ">
+                    <input id="ai-user-input" type="text" placeholder="输入你的问题..." style="
+                        flex: 1;
+                        padding: 10px;
+                        border: 2px solid #ddd;
+                        border-radius: 8px;
+                        outline: none;
+                    ">
+                    <button onclick="sendToDeepSeek()" style="
+                        background: #b71c1c;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    ">发送</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 添加到页面
+    document.body.insertAdjacentHTML('beforeend', aiHTML);
+}
+
+// 切换聊天窗口显示/隐藏
+function toggleAIChat() {
+    const window = document.getElementById('ai-chat-window');
+    if (window) {
+        window.style.display = window.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+// 发送消息给DeepSeek
+async function sendToDeepSeek() {
+    const input = document.getElementById('ai-user-input');
+    const question = input.value.trim();
+    
+    if (!question) {
+        alert('请输入问题');
+        return;
+    }
+    
+    // 清空输入框
+    input.value = '';
+    
+    // 显示用户消息
+    addMessage(question, 'user');
+    
+    // 显示"正在输入"提示
+    const loadingId = showLoading();
+    
+    try {
+        // 调用DeepSeek API
+        const response = await callDeepSeekAPI(question);
+        
+        // 移除"正在输入"
+        removeLoading(loadingId);
+        
+        // 显示AI回复
+        addMessage(response, 'ai');
+        
+    } catch (error) {
+        // 移除"正在输入"
+        removeLoading(loadingId);
+        
+        // 显示错误消息
+        addMessage('抱歉，我现在有点忙，请稍后再试。', 'ai');
+        console.error('AI出错：', error);
+    }
+}
+
+// 调用DeepSeek API
+async function callDeepSeekAPI(question) {
+    // deepseek API密钥
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+        },
+        body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一个专业的红色文化学习助手，专门回答关于京津冀中国革命历史、红色文化、革命遗址、革命人物等方面的问题。回答要准确、生动、有教育意义。'
+                },
+                {
+                    role: 'user',
+                    content: question
+                }
+            ],
+            temperature: 0.7,
+            max_tokens: 1000
+        })
+    });
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+// 在聊天窗口添加一条消息
+function addMessage(text, sender) {
+    const messagesDiv = document.getElementById('ai-chat-messages');
+    if (!messagesDiv) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = `
+        margin-bottom: 15px;
+        display: flex;
+        ${sender === 'user' ? 'justify-content: flex-end;' : 'justify-content: flex-start;'}
+    `;
+    
+    messageDiv.innerHTML = `
+        <div style="
+            max-width: 80%;
+            padding: 12px;
+            border-radius: 15px;
+            background: ${sender === 'user' ? '#b71c1c' : 'white'};
+            color: ${sender === 'user' ? 'white' : '#333'};
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        ">
+            ${text}
+        </div>
+    `;
+    
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// 显示"正在输入"提示
+function showLoading() {
+    const messagesDiv = document.getElementById('ai-chat-messages');
+    const id = 'loading-' + Date.now();
+    
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = id;
+    loadingDiv.style.cssText = `
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: flex-start;
+    `;
+    
+    loadingDiv.innerHTML = `
+        <div style="
+            background: white;
+            padding: 12px 20px;
+            border-radius: 15px;
+            color: #999;
+        ">
+            <span style="display: inline-block; animation: dots 1.5s infinite;">.</span>
+            <span style="display: inline-block; animation: dots 1.5s infinite 0.5s;">.</span>
+            <span style="display: inline-block; animation: dots 1.5s infinite 1s;">.</span>
+        </div>
+    `;
+    
+    messagesDiv.appendChild(loadingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+    return id;
+}
+
+// 移除"正在输入"
+function removeLoading(id) {
+    const loading = document.getElementById(id);
+    if (loading) loading.remove();
+}
+
+// 添加上面的动画样式
+const aiStyle = document.createElement('style');
+aiStyle.textContent = `
+    @keyframes dots {
+        0%, 100% { opacity: 0; transform: translateY(0); }
+        50% { opacity: 1; transform: translateY(-5px); }
+    }
+`;
+document.head.appendChild(aiStyle);
+// 改变窗口大小
+function changeWindowSize(size) {
+    const window = document.getElementById('ai-chat-window');
+    if (!window) return;
+    
+    switch(size) {
+        case 'small':
+            window.style.width = '300px';
+            window.style.height = '450px';
+            break;
+        case 'medium':
+            window.style.width = '400px';
+            window.style.height = '550px';
+            break;
+        case 'large':
+            window.style.width = '600px';
+            window.style.height = '700px';
+            break;
+    }
+}
+
+// 页面加载
+setTimeout(addAIAssistant, 2000);
+// ===== 新增：登录系统代码（添加在这里）=====
+
+// ============================================
+// 用户认证系统
+// ============================================
+
+// 用户数据库（存在localStorage中）
+let users = [];
+
+// 当前登录用户
+let currentUser = null;
+
+// 初始化用户系统
+function initAuthSystem() {
+    // 从本地存储加载用户数据
+    const savedUsers = localStorage.getItem('redMuseumUsers');
+    if (savedUsers) {
+        users = JSON.parse(savedUsers);
+    } else {
+        // 添加默认管理员账号（方便测试）
+        users = [
+            {
+                id: 1,
+                username: 'admin',
+                password: 'admin123',
+                createdAt: new Date().toISOString(),
+                lastLogin: null,
+                progress: {
+                    completedTasks: [],
+                    visitedArtifacts: [],
+                    collectedAchievements: [],
+                    learningHistory: [],
+                    mapLocations: { visited: [] }
+                }
+            },
+            {
+                id: 2,
+                username: 'test',
+                password: 'test123',
+                createdAt: new Date().toISOString(),
+                lastLogin: null,
+                progress: {
+                    completedTasks: [],
+                    visitedArtifacts: [],
+                    collectedAchievements: [],
+                    learningHistory: [],
+                    mapLocations: { visited: [] }
+                }
+            }
+        ];
+        saveUsers();
+    }
+    
+    // 检查是否有记住登录
+    const savedSession = localStorage.getItem('redMuseumSession');
+    if (savedSession) {
+        const session = JSON.parse(savedSession);
+        const user = users.find(u => u.id === session.userId);
+        if (user) {
+            currentUser = user;
+            updateUIForLoggedInUser();
+        }
+    }
+}
+
+// 保存用户数据
+function saveUsers() {
+    localStorage.setItem('redMuseumUsers', JSON.stringify(users));
+}
+
+// 显示登录模态框
+function showAuthModal() {
+    document.getElementById('authModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// 关闭登录模态框
+function closeAuthModal() {
+    document.getElementById('authModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// 切换登录/注册模式
+function switchAuthMode(mode) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const authTitle = document.getElementById('authTitle');
+    const switchBtn = document.getElementById('authSwitchBtn');
+    const switchText = document.getElementById('authSwitchText');
+    
+    if (mode === 'register' || loginForm.style.display !== 'none') {
+        // 切换到注册
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        authTitle.textContent = '注册';
+        switchText.textContent = '已有账号？';
+        switchBtn.textContent = '立即登录';
+    } else {
+        // 切换到登录
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        authTitle.textContent = '登录';
+        switchText.textContent = '还没有账号？';
+        switchBtn.textContent = '立即注册';
+    }
+}
+
+// 处理登录
+function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    
+    // 查找用户
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if (user) {
+        // 登录成功
+        currentUser = user;
+        user.lastLogin = new Date().toISOString();
+        saveUsers();
+        
+        // 保存会话
+        localStorage.setItem('redMuseumSession', JSON.stringify({
+            userId: user.id,
+            loginTime: new Date().toISOString()
+        }));
+        
+        // 更新界面
+        updateUIForLoggedInUser();
+        closeAuthModal();
+        
+        // 显示欢迎消息
+        showAuthMessage(`欢迎回来，${user.username}！`, 'success');
+    } else {
+        // 登录失败
+        showAuthMessage('用户名或密码错误', 'error');
+    }
+}
+
+// 处理注册
+function handleRegister(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('regUsername').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    
+    // 验证用户名
+    if (username.length < 4 || username.length > 20) {
+        showAuthMessage('用户名必须在4-20个字符之间', 'error');
+        return;
+    }
+    
+    // 验证密码
+    if (password.length < 6 || password.length > 20) {
+        showAuthMessage('密码必须在6-20个字符之间', 'error');
+        return;
+    }
+    
+    // 验证密码一致性
+    if (password !== confirmPassword) {
+        showAuthMessage('两次输入的密码不一致', 'error');
+        return;
+    }
+    
+    // 检查用户名是否已存在
+    if (users.some(u => u.username === username)) {
+        showAuthMessage('用户名已存在', 'error');
+        return;
+    }
+    
+    // 创建新用户
+    const newUser = {
+        id: users.length + 1,
+        username: username,
+        password: password,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        progress: {
+            completedTasks: [],
+            visitedArtifacts: [],
+            collectedAchievements: [],
+            learningHistory: [],
+            mapLocations: { visited: [] }
+        }
+    };
+    
+    users.push(newUser);
+    saveUsers();
+    
+    // 自动登录
+    currentUser = newUser;
+    localStorage.setItem('redMuseumSession', JSON.stringify({
+        userId: newUser.id,
+        loginTime: new Date().toISOString()
+    }));
+    
+    // 更新界面
+    updateUIForLoggedInUser();
+    closeAuthModal();
+    
+    showAuthMessage('注册成功！欢迎加入红色文化学习社区', 'success');
+}
+
+// 退出登录
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('redMuseumSession');
+    
+    // 重置为用户进度
+    location.reload();
+}
+
+// 更新登录后的UI
+function updateUIForLoggedInUser() {
+    const loginBtn = document.getElementById('loginBtn');
+    const userWelcome = document.getElementById('userWelcome');
+    const usernameSpan = document.getElementById('username');
+    
+    if (currentUser && loginBtn && userWelcome && usernameSpan) {
+        loginBtn.style.display = 'none';
+        userWelcome.style.display = 'inline';
+        usernameSpan.textContent = currentUser.username;
+    }
+}
+
+// 显示认证消息
+function showAuthMessage(message, type = 'info') {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `auth-message ${type}`;
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <span>${type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : type === 'error' ? '<i class="fa-solid fa-circle-xmark"></i>' : '<i class="fa-solid fa-circle-info"></i>'}</span>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+        messageDiv.style.opacity = '0';
+        setTimeout(() => messageDiv.remove(), 300);
+    }, 3000);
+}
+
+// 添加认证消息样式
+const authMessageStyle = document.createElement('style');
+authMessageStyle.textContent = `
+    .auth-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        z-index: 10001;
+        animation: slideInRight 0.3s ease;
+        border-left: 4px solid #b71c1c;
+    }
+    
+    .auth-message.success {
+        border-left-color: #27ae60;
+    }
+    
+    .auth-message.error {
+        border-left-color: #e74c3c;
+    }
+    
+    .message-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+`;
+document.head.appendChild(authMessageStyle);
+
+// 在页面加载时初始化认证系统
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟执行，确保其他元素已加载
+    setTimeout(() => {
+        initAuthSystem();
+        initArtifactsLibrary(); // 初始化文物资源库
+    }, 500);
+});
+// ============================================
+// 美化登录选项的额外功能
+// ============================================
+
+// 切换用户菜单显示/隐藏
+function toggleUserMenu() {
+    const menu = document.getElementById('userMenu');
+    if (menu) {
+        if (menu.style.display === 'none' || menu.style.display === '') {
+            menu.style.display = 'block';
+            // 点击其他地方关闭菜单
+            setTimeout(() => {
+                document.addEventListener('click', closeUserMenuOnClickOutside);
+            }, 100);
+        } else {
+            menu.style.display = 'none';
+        }
+    }
+}
+
+// 点击外部关闭菜单
+function closeUserMenuOnClickOutside(event) {
+    const menu = document.getElementById('userMenu');
+    const profile = document.querySelector('.user-profile');
+    
+    if (menu && profile && !profile.contains(event.target) && !menu.contains(event.target)) {
+        menu.style.display = 'none';
+        document.removeEventListener('click', closeUserMenuOnClickOutside);
+    }
+}
+
+// 显示个人中心
+function showUserProfile() {
+    closeUserMenu();
+    
+    if (!currentUser) return;
+    
+    // 获取用户学习进度统计
+    const visitedCount = userProgress.visitedArtifacts.length;
+    const taskCount = userProgress.completedTasks.length;
+    const achievementCount = userProgress.collectedAchievements.length;
+    
+    const modalHTML = `
+        <div class="profile-modal" id="profileModal">
+            <div class="profile-content">
+                <div class="profile-header">
+                    <h2>个人中心</h2>
+                    <button onclick="closeProfileModal()" class="profile-close">&times;</button>
+                </div>
+                <div class="profile-body">
+                    <div class="profile-avatar-large">
+                        ${currentUser.username.charAt(0).toUpperCase()}
+                    </div>
+                    
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">用户名</span>
+                        <span class="profile-info-value">${currentUser.username}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">注册时间</span>
+                        <span class="profile-info-value">${new Date(currentUser.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">上次登录</span>
+                        <span class="profile-info-value">${new Date(currentUser.lastLogin).toLocaleDateString()}</span>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-number">${visitedCount}</div>
+                            <div class="profile-stat-label">参观文物</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-number">${taskCount}</div>
+                            <div class="profile-stat-label">完成任务</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-number">${achievementCount}</div>
+                            <div class="profile-stat-label">获得成就</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.style.overflow = 'hidden';
+}
+
+// 关闭个人中心
+function closeProfileModal() {
+    const modal = document.getElementById('profileModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// 关闭用户菜单
+function closeUserMenu() {
+    const menu = document.getElementById('userMenu');
+    if (menu) {
+        menu.style.display = 'none';
+    }
+}
+
+// 显示设置
+function showSettings() {
+    closeUserMenu();
+    alert('设置功能开发中...\n\n后续将支持：\n• 修改密码\n• 头像上传\n• 通知设置');
+}
+
+// 修改原来的 updateUIForLoggedInUser 函数
+function updateUIForLoggedInUser() {
+    const notLoggedIn = document.getElementById('notLoggedIn');
+    const loggedIn = document.getElementById('loggedIn');
+    const displayUsername = document.getElementById('displayUsername');
+    const dropdownUsername = document.getElementById('dropdownUsername');
+    const userInitial = document.getElementById('userInitial');
+    const userPoints = document.getElementById('userPoints');
+    
+    if (currentUser) {
+        if (notLoggedIn) notLoggedIn.style.display = 'none';
+        if (loggedIn) loggedIn.style.display = 'block';
+        
+        // 更新用户名显示
+        if (displayUsername) displayUsername.textContent = currentUser.username;
+        if (dropdownUsername) dropdownUsername.textContent = currentUser.username;
+        if (userInitial) userInitial.textContent = currentUser.username.charAt(0).toUpperCase();
+        
+        // 计算并显示积分（示例：每个文物10分，每个任务20分，每个成就30分）
+        const points = (userProgress.visitedArtifacts.length * 10) + 
+                       (userProgress.completedTasks.length * 20) + 
+                       (userProgress.collectedAchievements.length * 30);
+        if (userPoints) userPoints.textContent = points;
+    } else {
+        if (notLoggedIn) notLoggedIn.style.display = 'flex';
+        if (loggedIn) loggedIn.style.display = 'none';
+    }
+}
+
+// ============================================
+// 文物资源库功能
+// ============================================
+
+// 获取所有分类
+function getArtifactCategories() {
+    return [...new Set(artifactsData.map(item => item.category))];
+}
+
+// 获取所有年代
+function getArtifactEras() {
+    return [...new Set(artifactsData.map(item => item.era))];
+}
+
+// 按条件筛选文物
+function filterArtifacts({ category = '全部', era = '全部', keyword = '' } = {}) {
+    return artifactsData.filter(artifact => {
+        const matchCategory = category === '全部' || artifact.category === category;
+        const matchEra = era === '全部' || artifact.era === era;
+        const matchKeyword = keyword === '' || 
+            artifact.title.includes(keyword) || 
+            artifact.description.includes(keyword);
+        return matchCategory && matchEra && matchKeyword;
+    });
+}
+
+// 创建文物卡片 HTML
+function createArtifactCard(artifact) {
+    return `
+        <div class="artifact-card" onclick="showArtifactDetailFromLibrary(${artifact.id})">
+            <div class="artifact-image">${artifact.image}</div>
+            <div class="artifact-content">
+                <span class="artifact-category">${artifact.category}</span>
+                <h3 class="artifact-title">${artifact.title}</h3>
+                <p class="artifact-meta">
+                    <span><i class="fa-solid fa-calendar-days"></i> ${artifact.year}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${artifact.location}</span>
+                </p>
+                <p class="artifact-desc">${artifact.description.substring(0, 60)}...</p>
+                <button class="artifact-btn">查看详情 <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+    `;
+}
+
+// 渲染文物列表
+function renderArtifactsList() {
+    const container = document.getElementById('artifactsGrid');
+    if (!container) return;
+
+    const category = document.getElementById('categoryFilter')?.value || '全部';
+    const era = document.getElementById('eraFilter')?.value || '全部';
+    const keyword = document.getElementById('artifactSearch')?.value.trim() || '';
+
+    const filtered = filterArtifacts({ category, era, keyword });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-landmark"></i></div>
+                <p>未找到符合条件的文物</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filtered.map(artifact => createArtifactCard(artifact)).join('');
+}
+
+// 初始化文物筛选器
+function initArtifactFilters() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    const eraFilter = document.getElementById('eraFilter');
+    const searchInput = document.getElementById('artifactSearch');
+
+    if (!categoryFilter || !eraFilter) return;
+
+    // 填充分类选项
+    const categories = ['全部', ...getArtifactCategories()];
+    categoryFilter.innerHTML = categories.map(cat => 
+        `<option value="${cat}">${cat}</option>`
+    ).join('');
+
+    // 填充年代选项
+    const eras = ['全部', ...getArtifactEras()];
+    eraFilter.innerHTML = eras.map(e => 
+        `<option value="${e}">${e}</option>`
+    ).join('');
+
+    // 绑定筛选事件
+    categoryFilter.addEventListener('change', renderArtifactsList);
+    eraFilter.addEventListener('change', renderArtifactsList);
+    searchInput.addEventListener('input', debounce(renderArtifactsList, 300));
+}
+
+// 显示文物详情（从资源库点击）
+window.showArtifactDetailFromLibrary = function(artifactId) {
+    const artifact = artifactsData.find(item => item.id === artifactId);
+    if (!artifact) return;
+
+    // 记录访问
+    if (!userProgress.visitedArtifacts.includes(artifactId)) {
+        userProgress.visitedArtifacts.push(artifactId);
+        saveUserProgress();
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'artifact-modal-overlay';
+    modal.id = 'artifactModal';
+    modal.innerHTML = `
+        <div class="artifact-modal">
+            <div class="modal-header">
+                <h2>${artifact.image} ${artifact.title}</h2>
+                <button onclick="closeArtifactModalFromLibrary()" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="artifact-basic-info">
+                    <div class="info-row"><span class="info-label"><i class="fa-solid fa-calendar-days"></i> 年代：</span><span>${artifact.year}</span></div>
+                    <div class="info-row"><span class="info-label"><i class="fa-solid fa-landmark"></i> 馆藏：</span><span>${artifact.location}</span></div>
+                    <div class="info-row"><span class="info-label"><i class="fa-solid fa-folder-open"></i> 类别：</span><span>${artifact.category}</span></div>
+                    <div class="info-row"><span class="info-label"><i class="fa-solid fa-hourglass-half"></i> 时期：</span><span>${artifact.era}</span></div>
+                </div>
+                <div class="artifact-description">
+                    <h3><i class="fa-solid fa-book"></i> 文物简介</h3>
+                    <p>${artifact.description}</p>
+                    <div class="detailed-content">${artifact.detailedDesc}</div>
+                </div>
+                <div class="artifact-fun-fact">
+                    <h3><i class="fa-solid fa-lightbulb"></i> 你知道吗？</h3>
+                    <p>${artifact.funFact}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="progress-info">
+                    这是你参观的第 <strong>${userProgress.visitedArtifacts.length}</strong> 件文物
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+};
+
+// 关闭文物详情弹窗
+window.closeArtifactModalFromLibrary = function() {
+    const modal = document.getElementById('artifactModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+};
+
+// 防抖函数
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 更新文物统计
+function updateArtifactsCount() {
+    const statElement = document.getElementById('artifactsCount');
+    if (statElement) {
+        statElement.textContent = artifactsData.length;
+    }
+}
+
+// 初始化文物资源库
+function initArtifactsLibrary() {
+    const container = document.getElementById('artifactsGrid');
+    if (!container) return;
+
+    initArtifactFilters();
+    renderArtifactsList();
+    updateArtifactsCount();
+}

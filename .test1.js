@@ -1,0 +1,11 @@
+const { convertLine } = require('./.migrate-emojis.js');
+const MAP = require('./.emoji-map.js');
+const show = (s) => s.replace(/[^\x20-\x7e]/g, (c) => '<U+' + c.codePointAt(0).toString(16).toUpperCase() + '>');
+console.log('has U+1F389:', Object.keys(MAP).some((k) => k.codePointAt(0) === 0x1f389));
+const s = 'alert("x \u{1F389} y \u2705 z");';
+console.log('IN :', show(s));
+const r = convertLine(s);
+console.log('OUT:', show(r.text), 'count=', r.count);
+const html = '<h2 class="section-title">\u{1F3E0} 首页</h2>';
+console.log('IN :', show(html));
+console.log('OUT:', convertLine(html).text);

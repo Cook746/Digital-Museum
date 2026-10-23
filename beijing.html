@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京 · 红色纪行</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./icons-shim.css">
+    <link rel="stylesheet" href="./theme-dark.css">
+    <style>
+        body { min-height: 100vh; }
+        .province-top {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 8vw; border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(5,7,13,0.7); backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 50;
+        }
+        .province-top a { color: #9fb6cc; text-decoration: none; font-size: .9rem; letter-spacing: .08em; }
+        .province-top a:hover { color: #ff5c5c; }
+        .province-tag { font-size: .75rem; letter-spacing: .3em; color: #ff5c5c; }
+        .province-hero { padding: 90px 8vw 40px; max-width: 1080px; }
+        .province-kicker { color: #5fd0ff; letter-spacing: .32em; font-size: .8rem; margin-bottom: 14px; }
+        .province-hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: #fff; margin: 0 0 18px; letter-spacing: .06em; }
+        .province-hero h1 i { color: #ff4d6d; text-shadow: 0 0 18px rgba(255,77,109,.8); margin-right: 12px; }
+        .province-hero p.lead { color: #a8bdcd; line-height: 1.9; max-width: 720px; margin: 0 0 36px; }
+        .province-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; padding: 0 8vw 80px; max-width: 1080px; }
+        .province-card {
+            border-radius: 16px; padding: 22px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(14px);
+        }
+        .province-card h3 { color: #e8f2fb; margin: 0 0 10px; font-size: 1.05rem; letter-spacing: .05em; }
+        .province-card h3 i { color: #ff8a3c; margin-right: 8px; }
+        .province-card p { color: #8fa3bf; line-height: 1.8; font-size: .9rem; margin: 0; }
+        .province-note { padding: 0 8vw 90px; color: #62788f; letter-spacing: .12em; font-size: .8rem; }
+        .province-note i { color: #5fd0ff; margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <header class="province-top">
+        <a href="index.html#red-map"><i class="fa-solid fa-arrow-left"></i> 返回红色星图</a>
+        <span class="province-tag">RED ARCHIVE · 北京</span>
+    </header>
+    <main class="province-hero">
+        <div class="province-kicker">北京 · 红色纪行</div>
+        <h1><i class="fa-solid fa-landmark"></i>北京红色文化专区</h1>
+        <p class="lead">从卢沟桥的月光，到香山双清别墅的晨曦，北京见证了中国革命走向胜利的多个关键瞬间。这里是新中国的首都，也是红色基因的起点之一。本页面为北京专属档案的入口，内容将持续补充。</p>
+    </main>
+    <section class="province-cards">
+        <div class="province-card">
+            <h3><i class="fa-solid fa-location-dot"></i>红色地标</h3>
+            <p>卢沟桥、宛平城、香山革命纪念地、天安门广场……后续将在此展示景点介绍与参观信息。</p>
+        </div>
+        <div class="province-card">
+            <h3><i class="fa-solid fa-hourglass-half"></i>历史坐标</h3>
+            <p>从五四运动到开国大典，梳理发生在北京的红色历史时间线。</p>
+        </div>
+        <div class="province-card">
+            <h3><i class="fa-solid fa-flag"></i>精神传承</h3>
+            <p>红色故事、人物事迹与当代传承活动，敬请期待。</p>
+        </div>
+    </section>
+    <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京津冀红色数字博物馆</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+       
+    <!-- 网站头部 -->
+    <header class="site-header">
+        <div class="header-content">
+            <h1 class="site-title">京津冀红色数字博物馆</h1>
+            <p class="site-subtitle">数字技术赋能红色文化传承，沉浸式体验革命历史</p>
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav class="main-nav">
+    <div class="nav-container">
+        <a href="#home" class="nav-link"><i class="fa-solid fa-house"></i> 首页</a>
+        <a href="#museum" class="nav-link"><i class="fa-solid fa-landmark"></i> 虚拟展厅</a>
+        <a href="#artifacts" class="nav-link"><i class="fa-solid fa-masks-theater"></i> 文物展示</a>
+        <a href="#red-map" class="nav-link"><i class="fa-solid fa-map-location-dot"></i> 红色地图</a>
+        <a href="#resources" class="nav-link nav-resources"><i class="fa-solid fa-book-open"></i> 资源库</a>
+        <a href="#tasks" class="nav-link"><i class="fa-solid fa-book-open"></i> 学习任务</a>
+        <a href="#about" class="nav-link"><i class="fa-solid fa-users"></i> 关于我们</a>
+        
+        <!-- 美化后的登录选项 -->
+        <div class="user-status" id="userStatus">
+            <!-- 未登录状态 -->
+            <div id="notLoggedIn" class="not-logged-in">
+                <button onclick="showAuthModal()" class="login-btn-enhanced">
+                    <span class="login-icon"><i class="fa-solid fa-user"></i></span>
+                    <span class="login-text">登录</span>
+                    <span class="login-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+                <button onclick="showAuthModal(); setTimeout(() => switchAuthMode('register'), 100);" class="register-btn-enhanced">
+                    注册
+                </button>
+            </div>
+            
+            <!-- 已登录状态 -->
+            <div id="loggedIn" class="logged-in" style="display: none;">
+                <div class="user-profile" onclick="toggleUserMenu()">
+                    <div class="user-avatar">
+                        <span id="userInitial">用</span>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="displayUsername">用户名</span>
+                        <span class="user-badge">学员</span>
+                    </div>
+                    <div class="user-dropdown-icon"><i class="fa-solid fa-caret-down"></i></div>
+                </div>
+                
+                <!-- 下拉菜单 -->
+                <div class="user-dropdown-menu" id="userMenu" style="display: none;">
+                    <div class="dropdown-header">
+                        <div class="dropdown-user-name" id="dropdownUsername"></div>
+                        <div class="dropdown-user-level">学习积分: <span id="userPoints">0</span></div>
+                    </div>
+                    <div class="dropdown-items">
+                        <a href="#profile" onclick="showUserProfile(); return false;" class="dropdown-item">
+                            <span class="item-icon"><i class="fa-solid fa-user"></i></span>
+                            <span>个人中心</span>
+                        </a>
+                        <a href="#progress" onclick="showProgressDashboard(); return false;" class="dropdown-item">
+                            <span class="item-icon"><i class="fa-solid fa-chart-simple"></i></span>
+                            <span>学习进度</span>
+                        </a>
+                        <a href="#achievements" onclick="showAchievementsDashboard(); return false;" class="dropdown-item">
+                            <span class="item-icon"><i class="fa-solid fa-trophy"></i></span>
+                            <span>我的成就</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#settings" onclick="showSettings(); return false;" class="dropdown-item">
+                            <span class="item-icon"><i class="fa-solid fa-gear"></i></span>
+                            <span>设置</span>
+                        </a>
+                        <button onclick="logout()" class="dropdown-item logout-item">
+                            <span class="item-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                            <span>退出登录</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <!-- 首页介绍 -->
+        <section id="home" class="section">
+            <h2 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 项目简介</h2>
+            <p>本项目旨在通过数字技术，让京津冀地区的红色文化资源"活"起来，打造一个集教育、体验、互动于一体的数字博物馆平台。</p>
+            
+            <h3 style="margin-top: 1.5rem; color: #2c3e50;"><i class="fa-solid fa-bullseye"></i> 核心功能</h3>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <span class="feature-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <strong>3D虚拟展厅</strong>
+                    <p>360度全景浏览革命遗址</p>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-icon"><i class="fa-solid fa-gamepad"></i></span>
+                    <strong>交互式体验</strong>
+                    <p>角色扮演、任务驱动的学习模式</p>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-icon"><i class="fa-solid fa-chart-simple"></i></span>
+                    <strong>数据可视化</strong>
+                    <p>革命历史的时间轴与地理信息</p>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-icon"><i class="fa-solid fa-users"></i></span>
+                    <strong>社群互动</strong>
+                    <p>学习成果分享与讨论社区</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 虚拟展厅 -->
+<!-- 虚拟展厅部分 -->
+<section id="museum" class="section virtual-museum">
+    <h2 class="section-title"><i class="fa-solid fa-landmark"></i> 虚拟展厅</h2>
+    <p>360度全景参观红色革命遗址，鼠标拖动可旋转视角</p>
+    
+    <!-- 展厅选择 - 只保留两个按钮 -->
+    <div class="exhibition-buttons">
+        <button class="exhibition-btn active" onclick="loadExhibition('xibaipo')">
+            <i class="fa-solid fa-mountain-sun"></i> 西柏坡纪念馆
+        </button>
+        <button class="exhibition-btn" onclick="loadExhibition('yanan')">
+            <i class="fa-solid fa-mountain"></i> 延安革命纪念馆
+        </button>
+    </div>
+    
+    <!-- 全景展示区 - 初始黑屏效果 -->
+    <div class="panorama-wrapper">
+        <div id="exhibitionContainer" class="exhibition-container" style="background: black;">
+            <!-- 初始为黑屏，不显示任何加载提示 -->
+        </div>
+        
+        <!-- 展厅信息侧边栏 -->
+        <div class="exhibition-sidebar">
+            <h3>西柏坡纪念馆</h3>
+            <div class="exhibition-info">
+                <p><strong><i class="fa-solid fa-location-dot"></i> 地址：</strong>河北省石家庄市平山县</p>
+                <p><strong><i class="fa-solid fa-calendar-days"></i> 年代：</strong>1948-1949年</p>
+                <p><strong><i class="fa-solid fa-bullseye"></i> 历史意义：</strong>中国革命最后一个农村指挥所，七届二中全会会址，新中国从这里走来。</p>
+            </div>
+            
+            <div class="learning-tips">
+                <h4><i class="fa-solid fa-bullseye"></i> 参观学习要点</h4>
+                <ul>
+                    <li>观察七届二中全会会场布置</li>
+                    <li>了解三大战役指挥过程</li>
+                    <li>感受"两个务必"精神内涵</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 展厅控制 -->
+    <div class="exhibition-controls">
+        <button class="control-btn" onclick="enterFullscreen()">
+            <span><i class="fa-solid fa-desktop"></i></span>全屏参观
+        </button>
+        <button class="control-btn" onclick="toggleGuide()">
+            <span><i class="fa-solid fa-book"></i></span>显示导览
+        </button>
+        <button class="control-btn" onclick="openInNewWindow()">
+            <span><i class="fa-solid fa-arrow-up-right-from-square"></i></span>独立窗口
+        </button>
+        <button class="control-btn" onclick="recordVisit()">
+            <span><i class="fa-solid fa-circle-check"></i></span>记录参观
+        </button>
+    </div>
+</section>
+    
+    <!-- 学习任务提示 -->
+    <div class="learning-task">
+        <h4><i class="fa-solid fa-bullseye"></i> 展厅学习任务</h4>
+        <p>在展厅中找到以下3个重要历史点位：</p>
+        <ul>
+            <li>七届二中全会会场</li>
+            <li>毛泽东旧居</li>
+            <li>中央军委作战室</li>
+        </ul>
+        <button onclick="startExhibitionTask()" class="task-btn">
+            开始学习任务
+        </button>
+    </div>
+</section>
+
+        <!-- 文物资源库 -->
+<section id="artifacts" class="section">
+    <h2 class="section-title"><i class="fa-solid fa-landmark"></i> 文物资源库</h2>
+    <p>探索京津冀地区珍贵革命文物，了解背后的历史故事</p>
+    
+    <div class="artifacts-library">
+        <!-- 筛选栏 -->
+        <div class="artifacts-filter">
+            <div class="filter-item">
+                <label>类别筛选：</label>
+                <select id="categoryFilter">
+                    <option value="全部">全部类别</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>年代筛选：</label>
+                <select id="eraFilter">
+                    <option value="全部">全部年代</option>
+                </select>
+            </div>
+            <div class="filter-item search-item">
+                <input type="text" id="artifactSearch" placeholder="搜索文物名称或描述...">
+            </div>
+            <div class="artifacts-stats">
+                共 <span id="artifactsCount">0</span> 件文物
+            </div>
+        </div>
+        
+        <!-- 文物网格 -->
+        <div class="artifacts-grid" id="artifactsGrid">
+            <!-- 文物卡片将通过 JS 动态生成 -->
+        </div>
+    </div>
+</section>
+
+        <!-- 学习进度仪表盘 -->
+<section id="progress" class="section" style="display: none;">
+    <h2 class="section-title"><i class="fa-solid fa-chart-simple"></i> 我的学习进度</h2>
+    
+    <div class="progress-container">
+        <!-- 总体进度 -->
+        <div class="overall-progress">
+            <div class="progress-header">
+                <h3>总体学习进度</h3>
+                <span class="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span class="stat-icon"><i class="fa-solid fa-book-open"></i></span>
+                    <div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">已学习文物</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon"><i class="fa-solid fa-circle-check"></i></span>
+                    <div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">完成任务</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon"><i class="fa-solid fa-stopwatch"></i></span>
+                    <div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">学习时长(分)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 成就系统 -->
+<section id="achievements" class="section" style="display: none;">
+    <h2 class="section-title"><i class="fa-solid fa-trophy"></i> 我的成就</h2>
+    
+    <div class="achievements-container">
+        <div class="achievements-stats">
+            <div class="achievement-stat">
+                <div class="stat-number" id="totalAchievements">0</div>
+                <div class="stat-label">总成就数</div>
+            </div>
+            <div class="achievement-stat">
+                <div class="stat-number" id="achievementProgress">0%</div>
+                <div class="stat-label">完成进度</div>
+            </div>
+            <div class="achievement-stat">
+                <div class="stat-number" id="currentStreak">0</div>
+                <div class="stat-label">连续学习(天)</div>
+            </div>
+        </div>
+        
+        <div class="achievements-grid" id="achievementsGrid">
+            <!-- 成就将动态生成 -->
+        </div>
+        
+        <div class="achievements-tips">
+            <h3><i class="fa-solid fa-bullseye"></i> 如何获得更多成就？</h3>
+            <ul>
+                <li>每天登录学习</li>
+                <li>完成所有文物参观</li>
+                <li>提交高质量的学习任务</li>
+                <li>连续学习获得坚持奖励</li>
+            </ul>
+        </div>
+    </div>
+</section>
+        
+        <!-- 详细进度 -->
+        <div class="detailed-progress">
+            <h3>详细学习记录</h3>
+            <div class="progress-list" id="progressList">
+                <!-- 动态生成学习记录 -->
+                <div class="empty-state">
+                    <p>还没有学习记录，快去探索文物吧！</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 学习建议 -->
+        <div class="learning-suggestions">
+            <h3><i class="fa-solid fa-bullseye"></i> 学习建议</h3>
+            <ul id="suggestionsList">
+                <li>开始参观第一件文物</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- 京津冀红色地图 -->
+<section id="red-map" class="section">
+    <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> 京津冀红色地图</h2>
+    <p>探索京津冀地区的重要红色革命遗址</p>
+    
+    <div class="map-container">
+        <!-- 地图主容器 -->
+        <div class="map-visualization" id="mapContainer" 
+             style="width:100%; height:500px; border-radius:8px;">
+        </div>
+        
+        <!-- 侧边栏保持不变 -->
+        <div class="map-sidebar">
+            <h3><i class="fa-solid fa-location-dot"></i> 红色遗址列表</h3>
+            <div class="location-list" id="locationList">
+                <!-- 地点列表将动态生成 -->
+            </div>
+            
+            <div class="map-controls">
+                <h4><i class="fa-solid fa-map-location-dot"></i> 地图控制</h4>
+                <div class="control-buttons">
+                    <button onclick="showAllLocations()" class="control-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i> 查看全部
+                    </button>
+                    <button onclick="focusOnBeijing()" class="control-btn">
+                        聚焦北京
+                    </button>
+                    <button onclick="focusOnTianjin()" class="control-btn">
+                        聚焦天津
+                    </button>
+                    <button onclick="focusOnHebei()" class="control-btn">
+                        聚焦河北
+                    </button>
+                    <button onclick="showRedRoute()" class="control-btn">
+                        <i class="fa-solid fa-flag"></i> 红色路线
+                    </button>
+                </div>
+                
+                <div class="map-stats">
+                    <h4><i class="fa-solid fa-chart-simple"></i> 统计信息</h4>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number" id="totalLocations">0</span>
+                            <span class="stat-label">总遗址数</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="visitedLocations">0</span>
+                            <span class="stat-label">已探索</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="routeDistance">0</span>
+                            <span class="stat-label">路线(km)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 学习资源库 -->
+<section id="resources" class="section">
+    <h2 class="section-title"><i class="fa-solid fa-book-open"></i> 学习资源库</h2>
+    <p>拓展学习资料，深入了解红色文化</p>
+    
+    <div class="resources-container">
+        <!-- 资源筛选 -->
+        <div class="resources-filter">
+            <div class="filter-group">
+                <span class="filter-label"><i class="fa-solid fa-folder-open"></i> 资源类型：</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-type="all">全部</button>
+                    <button class="filter-btn" data-type="document">文献资料</button>
+                    <button class="filter-btn" data-type="video">视频课程</button>
+                    <button class="filter-btn" data-type="book">书籍推荐</button>
+                    <button class="filter-btn" data-type="website">网站链接</button>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <span class="filter-label"><i class="fa-solid fa-bullseye"></i> 学习阶段：</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-level="all">全部</button>
+                    <button class="filter-btn" data-level="beginner">入门</button>
+                    <button class="filter-btn" data-level="intermediate">进阶</button>
+                    <button class="filter-btn" data-level="advanced">深入</button>
+                </div>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="resourceSearch" placeholder="搜索资源..." class="search-input">
+                <button onclick="searchResources()" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+        
+        <!-- 资源统计 -->
+        <div class="resources-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalResources">0</div>
+                    <div class="stat-label">总资源数</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-film"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="videoCount">0</div>
+                    <div class="stat-label">视频课程</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-book"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="bookCount">0</div>
+                    <div class="stat-label">书籍推荐</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="collectedCount">0</div>
+                    <div class="stat-label">已收藏</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 资源列表 -->
+        <div class="resources-grid" id="resourcesGrid">
+            <!-- 资源卡片将动态生成 -->
+        </div>
+        
+        <!-- 学习建议 -->
+        <div class="learning-suggestions">
+            <h3><i class="fa-solid fa-lightbulb"></i> 学习建议</h3>
+            <div class="suggestions-content">
+                <div class="suggestion">
+                    <span class="suggestion-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <div>
+                        <h4>制定学习计划</h4>
+                        <p>建议每周安排2-3小时学习红色文化，从入门资料开始</p>
+                    </div>
+                </div>
+                <div class="suggestion">
+                    <span class="suggestion-icon"><i class="fa-solid fa-bullseye"></i></span>
+                    <div>
+                        <h4>循序渐进</h4>
+                        <p>先了解基本历史脉络，再深入研究专题内容</p>
+                    </div>
+                </div>
+                <div class="suggestion">
+                    <span class="suggestion-icon"><i class="fa-solid fa-handshake"></i></span>
+                    <div>
+                        <h4>交流分享</h4>
+                        <p>与同学讨论学习心得，分享优质资源</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 用户反馈 -->
+<section id="feedback" class="section">
+    <h2 class="section-title"><i class="fa-solid fa-comments"></i> 用户反馈</h2>
+    <p>您的意见对我们非常重要，帮助我们改进平台</p>
+    
+    <div class="feedback-container">
+        <!-- 反馈统计 -->
+        <div class="feedback-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalFeedbacks">0</div>
+                    <div class="stat-label">总反馈数</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="averageRating">0.0</div>
+                    <div class="stat-label">平均评分</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="solvedCount">0</div>
+                    <div class="stat-label">已处理</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <div class="stat-content">
+                    <div class="stat-number" id="suggestionCount">0</div>
+                    <div class="stat-label">建议数</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 提交反馈表单 -->
+        <div class="feedback-form-container">
+            <h3><i class="fa-solid fa-file-pen"></i> 提交反馈</h3>
+            <form id="feedbackForm" class="feedback-form">
+                <div class="form-group">
+                    <label for="feedbackType">反馈类型</label>
+                    <select id="feedbackType" class="form-select" required>
+                        <option value="">请选择反馈类型</option>
+                        <option value="bug">问题反馈</option>
+                        <option value="suggestion">功能建议</option>
+                        <option value="improvement">改进意见</option>
+                        <option value="praise">好评表扬</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedbackTitle">标题</label>
+                    <input type="text" id="feedbackTitle" class="form-input" 
+                           placeholder="简要描述您的反馈" maxlength="50" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedbackContent">详细内容</label>
+                    <textarea id="feedbackContent" class="form-textarea" 
+                              rows="5" placeholder="请详细描述您的反馈内容..." 
+                              maxlength="1000" required></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span>/1000
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>评分（可选）</label>
+                    <div class="rating-stars">
+                        <span class="star" data-value="1"><i class="fa-solid fa-star"></i></span>
+                        <span class="star" data-value="2"><i class="fa-solid fa-star"></i></span>
+                        <span class="star" data-value="3"><i class="fa-solid fa-star"></i></span>
+                        <span class="star" data-value="4"><i class="fa-solid fa-star"></i></span>
+                        <span class="star" data-value="5"><i class="fa-solid fa-star"></i></span>
+                    </div>
+                    <input type="hidden" id="feedbackRating" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactInfo">联系方式（可选）</label>
+                    <input type="text" id="contactInfo" class="form-input" 
+                           placeholder="邮箱或微信号，方便我们回复您">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="resetFeedbackForm()" class="secondary-btn">
+                        重置
+                    </button>
+                    <button type="submit" class="primary-btn">
+                        <span class="submit-icon"><i class="fa-solid fa-paper-plane"></i></span>
+                        提交反馈
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- 反馈列表 -->
+        <div class="feedback-list-container">
+            <h3><i class="fa-solid fa-clipboard-list"></i> 最新反馈</h3>
+            <div class="feedback-filters">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="bug">问题反馈</button>
+                <button class="filter-btn" data-filter="suggestion">功能建议</button>
+                <button class="filter-btn" data-filter="praise">好评表扬</button>
+            </div>
+            
+            <div class="feedback-list" id="feedbackList">
+                <!-- 反馈将动态生成 -->
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-comments"></i></div>
+                    <p>暂无反馈，快来第一个发言吧！</p>
+                </div>
+            </div>
+            
+            <div class="feedback-pagination" id="feedbackPagination">
+                <!-- 分页将动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 常见问题 -->
+        <div class="faq-section">
+            <h3><i class="fa-solid fa-circle-question"></i> 常见问题</h3>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Q：反馈会被回复吗？</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>A：我们的团队会定期查看所有反馈，对于重要问题和建议，我们会尽快回复。</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Q：可以匿名提交反馈吗？</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>A：可以，联系方式是可选的。但留下联系方式有助于我们更好地与您沟通。</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Q：一般多久会处理反馈？</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>A：我们会在1-3个工作日内查看反馈，并根据优先级进行处理。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="section">
+            <h2 class="section-title"><i class="fa-solid fa-users"></i> 项目团队</h2>
+            <p>中国民航大学 思想政治教育专业创新项目</p>
+            <div style="margin-top: 1rem;">
+                <p><strong>指导老师：</strong>李坎帅 教授</p>
+                <p><strong>项目成员：</strong>屈宗怡、杨悦霖、况安兴、薛裕毓、任晓熠、邓振博</p>
+                <p><strong>项目周期：</strong>2025年12月 - 2026年11月</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- 网站页脚 -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <h3>京津冀红色数字博物馆</h3>
+            <p>数字技术赋能红色文化传承与创新</p>
+            
+            <div class="footer-links">
+                <a href="#home" class="footer-link">首页</a>
+                <a href="#museum" class="footer-link">展厅</a>
+                <a href="#artifacts" class="footer-link">文物</a>
+                <a href="#tasks" class="footer-link">任务</a>
+                <a href="#about" class="footer-link">关于</a>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2026 中国民航大学 红色数字博物馆项目组 | 传承红色基因，我们在行动</p>
+                <p>联系方式：XXX</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // 页面加载完成后的提示
+    window.onload = function() {
+        console.log("红色数字博物馆平台已准备就绪！");
+        console.log("项目团队：中国民航大学 大学生创新创业大赛小组");
+        // 检查用户学习进度
+        checkUserProgress();
+    }
+</script>
+          <!-- ===== 新增：登录/注册模态框 ===== -->
+    <div id="authModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <div class="auth-header">
+                <h2 id="authTitle">登录</h2>
+                <button onclick="closeAuthModal()" class="auth-close">&times;</button>
+            </div>
+            
+            <!-- 登录表单 -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="auth-form-group">
+                    <label>用户名</label>
+                    <input type="text" id="loginUsername" placeholder="请输入用户名" required>
+                </div>
+                <div class="auth-form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">登录</button>
+            </form>
+            
+            <!-- 注册表单（默认隐藏） -->
+            <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="auth-form-group">
+                    <label>用户名</label>
+                    <input type="text" id="regUsername" placeholder="4-20位字符" required>
+                </div>
+                <div class="auth-form-group">
+                    <label>密码</label>
+                    <input type="password" id="regPassword" placeholder="6-20位字符" required>
+                </div>
+                <div class="auth-form-group">
+                    <label>确认密码</label>
+                    <input type="password" id="regConfirmPassword" placeholder="请再次输入密码" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">注册</button>
+            </form>
+            
+            <div class="auth-footer">
+                <span id="authSwitchText">还没有账号？</span>
+                <button onclick="switchAuthMode()" class="auth-switch-btn" id="authSwitchBtn">立即注册</button>
+            </div>
+        </div>
+    </div
+    
+  <!-- 连接外部JavaScript文件 -->
+    <script src="./script.js"></script>
+</body>
+</html>
+</html>
