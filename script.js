@@ -3386,7 +3386,7 @@ async function fetchCurrentUser() {
         console.warn('[CloudBase] getCurrentUser 刷新失败，尝试本地登录态', err);
     }
     try {
-        return (typeof auth.currentUser !== 'undefined' && auth.currentUser) || null;
+        return auth.currentUser || null;
     } catch (err) {
         return null;
     }
@@ -3395,15 +3395,6 @@ async function fetchCurrentUser() {
 // 初始化用户系统：恢复 CloudBase 登录态并刷新界面
 async function initAuthSystem() {
     if (!initCloudbase()) return;
-
-    // file:// 直接打开时云开发请求必被拦截，先给出明确提示，避免误报
-    if (location.protocol === 'file:') {
-        console.warn('[CloudBase] 检测到 file:// 直接打开页面，云开发接口请求会被安全来源拦截。请用 http://localhost 方式访问（如 python -m http.server 5000）。');
-        currentUser = (auth && auth.currentUser) || null;
-        updateUIForLoggedInUser();
-        updateQASection();
-        return;
-    }
 
     try {
         currentUser = await fetchCurrentUser();
@@ -3433,36 +3424,9 @@ function setButtonLoading(btn, loading, loadingText) {
     }
 }
 
-// 是否为网络层错误（CORS 拦截 / 断网 / DNS 失败等，浏览器里通常表现为 "Failed to fetch"）
-function isNetworkError(err) {
-    if (!err) return false;
-    const msg = String(err.message || err.errMsg || '');
-    return err instanceof TypeError ||
-        /failed to fetch|networkerror|load failed|network request failed|net::err/i.test(msg);
-}
-
-// 直接双击打开 HTML（file://）时，云开发跨域请求会被安全来源拦截，给出可操作提示
-function checkLocalFileProtocol(actionName) {
-    if (location.protocol === 'file:') {
-        showAuthMessage(
-            (actionName || '操作') + '失败：当前是直接双击打开的 HTML 文件（file://），浏览器会拦截云开发的跨域请求。' +
-            '请改用本地 http 方式访问，例如在项目目录执行 “python -m http.server 5000”，然后打开 http://localhost:5000 ；部署后再把网站域名加入云端「安全来源/安全域名」。',
-            'error'
-        );
-        return true;
-    }
-    return false;
-}
-
 // 把 CloudBase 抛出的错误翻译成友好的中文提示
 function getAuthErrorMessage(err, fallback) {
     if (!err) return fallback;
-    if (isNetworkError(err)) {
-        return '网络请求被拦截：CloudBase 只允许「安全来源」白名单内的域名访问。' +
-            (location.protocol === 'file:'
-                ? '你现在是直接双击打开的 HTML（file://），请改用 http://localhost 访问（如 python -m http.server 5000）。'
-                : '请把当前访问域名（' + location.origin + '）加入 CloudBase 控制台的安全来源/安全域名后重试。');
-    }
     const code = String(err.code || err.error_code || '');
     const msg = String(err.message || err.error_description || err.detail || '');
 
@@ -3526,7 +3490,6 @@ function switchAuthMode(mode) {
 async function handleLogin(event) {
     event.preventDefault();
 
-    if (checkLocalFileProtocol('登录')) return;
     if (!initCloudbase()) {
         showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
         return;
@@ -3588,8 +3551,6 @@ function startSendCodeCountdown(seconds) {
 
 // 获取邮箱验证码
 async function sendRegisterCode() {
-    if (checkLocalFileProtocol('发送验证码')) return;
-
     if (!initCloudbase()) {
         showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
         return;
@@ -3625,7 +3586,6 @@ async function sendRegisterCode() {
 async function handleRegister(event) {
     event.preventDefault();
 
-    if (checkLocalFileProtocol('注册')) return;
     if (!initCloudbase()) {
         showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
         return;
