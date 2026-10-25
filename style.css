@@ -5166,3 +5166,240 @@ html body div#ai-assistant::after {
         padding: 18px 16px 14px;
     }
 }
+
+/* ============================================
+   学习问答 + CloudBase 认证表单样式
+   ============================================ */
+
+/* 登录/注册：验证码输入行 */
+.auth-code-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.auth-code-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.auth-code-btn {
+    flex-shrink: 0;
+    padding: 0 14px;
+    background: linear-gradient(135deg, #b71c1c, #8b0000);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s;
+}
+
+.auth-code-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+}
+
+.auth-code-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---------- 问答区 ---------- */
+.qa-login-tip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    border: 1px dashed rgba(183, 28, 28, 0.5);
+    border-radius: 10px;
+    background: rgba(183, 28, 28, 0.06);
+    color: #eee;
+}
+
+.qa-login-tip a {
+    color: #ff6b6b;
+    font-weight: 600;
+}
+
+.qa-ask-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #f2f2f2;
+}
+
+.qa-ask-box {
+    margin: 20px 0 30px;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.qa-ask-box textarea,
+.qa-answer-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.35);
+    color: #f2f2f2;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.qa-ask-box textarea:focus,
+.qa-answer-input:focus {
+    outline: none;
+    border-color: #b71c1c;
+    box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.18);
+}
+
+.qa-ask-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.qa-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #b71c1c, #8b0000);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.qa-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(183, 28, 28, 0.35);
+}
+
+.qa-submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.qa-panel {
+    margin-top: 26px;
+}
+
+.qa-panel h3 {
+    margin-bottom: 14px;
+    color: #ffb4b4;
+    font-size: 18px;
+}
+
+.qa-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.qa-empty {
+    color: #9aa;
+    font-size: 14px;
+}
+
+.qa-item {
+    padding: 16px 18px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.qa-item-question {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #f2f2f2;
+    font-size: 15px;
+    line-height: 1.6;
+    flex-wrap: wrap;
+}
+
+.qa-item-answer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.14);
+    color: #cfd8e3;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.qa-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.qa-badge-ask {
+    background: #b71c1c;
+}
+
+.qa-badge-answer {
+    background: #2e7d32;
+}
+
+.qa-item-time {
+    margin-left: auto;
+    color: #8899aa;
+    font-size: 12px;
+}
+
+.qa-pending {
+    color: #e0b13d;
+    font-size: 13px;
+}
+
+.qa-item-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: #8899aa;
+    font-size: 12px;
+}
+
+.qa-admin-item {
+    border-left: 3px solid #b71c1c;
+}
+
+.qa-admin-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+    .qa-item-question {
+        flex-wrap: wrap;
+    }
+
+    .auth-code-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .auth-code-btn {
+        padding: 10px 14px;
+    }
+}
