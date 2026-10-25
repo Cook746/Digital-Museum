@@ -35,6 +35,20 @@
         .province-card p { color: #8fa3bf; line-height: 1.8; font-size: .9rem; margin: 0; }
         .province-note { padding: 0 8vw 90px; color: #62788f; letter-spacing: .12em; font-size: .8rem; }
         .province-note i { color: #5fd0ff; margin-right: 8px; }
+        .province-map-section { padding: 0 8vw 40px; max-width: 1080px; }
+        .province-map-title {
+            color: #e8f2fb; font-size: 1.2rem; letter-spacing: .08em;
+            margin: 0 0 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .province-map-canvas {
+            width: 100%; height: 480px;
+            border-radius: 16px; overflow: hidden;
+            background: rgba(13, 44, 74, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @media (max-width: 768px) {
+            .province-map-canvas { height: 360px; }
+        }
     </style>
 </head>
 <body>
@@ -47,6 +61,10 @@
         <h1><i class="fa-solid fa-landmark"></i>河北红色文化专区</h1>
         <p class="lead">太行山下的西柏坡，是“新中国从这里走来”的地方；大钊故里、狼牙山、白洋淀……燕赵大地上处处镌刻着红色记忆。本页面为河北专属档案的入口，内容将持续补充。</p>
     </main>
+    <div class="province-map-section">
+        <h2 class="province-map-title"><i class="fa-solid fa-map-location-dot"></i> 红色地标分布</h2>
+        <div id="provinceMap" class="province-map-canvas"></div>
+    </div>
     <section class="province-cards">
         <div class="province-card">
             <h3><i class="fa-solid fa-location-dot"></i>红色地标</h3>
@@ -62,5 +80,101 @@
         </div>
     </section>
     <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        // ===== 每页只改这 3 个值 =====
+        var MAP_KEY    = 'hebei';
+        var GEO_URL    = 'https://geo.datav.aliyun.com/areas_v3/bound/130000_full.json';
+        var BORDER_CLR = '#ff4d94';
+        var GLOW_CLR   = 'rgba(255,77,148,0.35)';
+        var AREA_HOT   = 'rgba(255,77,148,0.18)';
+
+        // ===== 每页只改这个数组（该省博物馆点位）=====
+        var POINTS = [
+            { name: '西柏坡纪念馆',       value: [113.95, 38.35] },
+            { name: '冉庄地道战遗址',     value: [115.45, 38.68] },
+            { name: '狼牙山五壮士陈列馆', value: [115.25, 39.15] },
+            { name: '李大钊纪念馆',       value: [118.90, 39.42] },
+            { name: '晋察冀边区革命纪念馆', value: [114.20, 38.85] }
+        ];
+
+        var host = document.getElementById('provinceMap');
+        if (!host || typeof echarts === 'undefined') {
+            if (host) host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;">地图组件加载失败，请检查网络后刷新</p>';
+            return;
+        }
+
+        fetch(GEO_URL, { cache: 'force-cache' })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (geoJson) {
+                if (!geoJson || !geoJson.features || !geoJson.features.length) throw new Error('GeoJSON 为空');
+                echarts.registerMap(MAP_KEY, geoJson);
+
+                var chart = echarts.init(host, null, { renderer: 'canvas' });
+                chart.setOption({
+                    backgroundColor: 'transparent',
+                    tooltip: {
+                        trigger: 'item',
+                        backgroundColor: 'rgba(6,12,22,0.92)',
+                        borderColor: BORDER_CLR,
+                        borderWidth: 1,
+                        textStyle: { color: '#dbe9f6', fontSize: 12 },
+                        formatter: function (p) { return p.name || ''; }
+                    },
+                    geo: {
+                        map: MAP_KEY,
+                        roam: false,
+                        label: { show: false },
+                        itemStyle: {
+                            areaColor: 'rgba(13,44,74,0.55)',
+                            borderColor: BORDER_CLR,
+                            borderWidth: 1.5,
+                            shadowColor: GLOW_CLR,
+                            shadowBlur: 14
+                        },
+                        emphasis: {
+                            itemStyle: { areaColor: AREA_HOT },
+                            label: { show: true, color: '#ffffff', fontSize: 12 }
+                        }
+                    },
+                    series: [{
+                        type: 'scatter',
+                        coordinateSystem: 'geo',
+                        data: POINTS,
+                        symbolSize: 12,
+                        itemStyle: {
+                            color: '#ff3b3b',
+                            borderColor: '#ffffff',
+                            borderWidth: 1.5,
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(255,59,59,0.9)'
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{b}',
+                            position: 'right',
+                            color: '#e8f2fb',
+                            fontSize: 11,
+                            textBorderColor: 'rgba(0,0,0,0.65)',
+                            textBorderWidth: 2
+                        },
+                        emphasis: {
+                            label: { show: true, fontSize: 13, fontWeight: 'bold' },
+                            itemStyle: { color: '#ff6b6b' }
+                        }
+                    }]
+                });
+
+                window.addEventListener('resize', function () { chart.resize(); });
+            })
+            .catch(function (err) {
+                console.warn('[province-map]', err);
+                host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;">地图数据加载失败，请检查网络后刷新</p>';
+            });
+    })();
+    </script>
 </body>
 </html>
