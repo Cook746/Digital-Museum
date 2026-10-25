@@ -1174,3 +1174,287 @@ code, pre, kbd {
 @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
+/* ============ 16. 登录 / 注册弹窗（深色美化 + 可读性修复） ============ */
+/* 说明：页面里 .auth-modal 是“全屏遮罩”，.auth-modal-content 才是里面那张卡片。
+   修复点：
+   1) 遮罩恢复为半透明暗色模糊背景（此前被通用面板规则染成不透明深色）；
+   2) 卡片改为深色玻璃风格，与整体科技风主题一致；
+   3) 输入框 / 验证码倒计时按钮显式设置浅色文字，修复“数字与背景同色不显示”。
+   本文件最后加载，因此这些规则优先级高于 style.css 与上方通用规则。 */
+
+.auth-modal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(900px 520px at 50% -10%, rgba(255, 59, 59, 0.14), transparent 62%),
+        rgba(3, 6, 12, 0.78);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+}
+
+.auth-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    max-height: 92vh;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: linear-gradient(165deg, rgba(20, 29, 46, 0.97), rgba(8, 11, 19, 0.99));
+    border: 1px solid rgba(255, 59, 59, 0.22);
+    border-radius: 20px;
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.65),
+        0 0 60px rgba(255, 59, 59, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    animation: authSlideUp 0.42s cubic-bezier(0.22, 0.9, 0.35, 1);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 59, 59, 0.4) transparent;
+}
+
+.auth-modal-content::-webkit-scrollbar { width: 6px; }
+.auth-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 59, 59, 0.4);
+    border-radius: 3px;
+}
+
+.auth-modal-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255, 59, 59, 0.55), transparent);
+}
+
+@keyframes authSlideUp {
+    from { opacity: 0; transform: translateY(26px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.auth-header {
+    padding: 22px 26px 18px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 59, 59, 0.30) 0%,
+        rgba(122, 16, 16, 0.40) 52%,
+        rgba(10, 14, 22, 0.15) 100%
+    );
+    border-bottom: 1px solid rgba(255, 59, 59, 0.20);
+    border-radius: 20px 20px 0 0;
+}
+
+.auth-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+    color: #ffffff;
+    text-shadow: 0 0 24px rgba(255, 59, 59, 0.45);
+}
+
+.auth-close {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 22px;
+    line-height: 1;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.auth-close:hover {
+    background: var(--red);
+    border-color: var(--red);
+    color: #ffffff;
+    transform: rotate(90deg);
+    box-shadow: 0 0 22px rgba(255, 59, 59, 0.45);
+}
+
+.auth-form-group {
+    padding: 14px 26px 0;
+}
+
+.auth-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+}
+
+/* 输入框：显式浅色文字，确保输入的字母 / 数字清晰可见 */
+.auth-form-group input {
+    display: block;
+    width: 100%;
+    padding: 12px 14px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.13) !important;
+    border-radius: 10px !important;
+    color: #f2f6ff !important;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    caret-color: var(--red);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.auth-form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.30) !important;
+    letter-spacing: 0.02em;
+}
+
+.auth-form-group input:hover {
+    border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.auth-form-group input:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 59, 59, 0.70) !important;
+    box-shadow:
+        0 0 0 3px rgba(255, 59, 59, 0.16),
+        0 0 24px rgba(255, 59, 59, 0.12) !important;
+}
+
+/* 邮箱验证码行 */
+.auth-code-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.auth-code-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* “获取验证码 / 58s 后重发”按钮：倒计时数字必须清晰可见 */
+.auth-code-btn {
+    flex-shrink: 0;
+    padding: 0 14px !important;
+    background: rgba(255, 59, 59, 0.14) !important;
+    border: 1px solid rgba(255, 59, 59, 0.45) !important;
+    border-radius: 10px !important;
+    color: #ffd0d0 !important;
+    font-size: 13.5px !important;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.auth-code-btn:hover:not(:disabled) {
+    background: rgba(255, 59, 59, 0.26) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 18px rgba(255, 59, 59, 0.30);
+}
+
+.auth-code-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* 提交按钮 */
+.auth-submit-btn {
+    display: block;
+    width: calc(100% - 52px);
+    margin: 18px 26px 4px;
+    padding: 13px 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff4747 0%, #c81e1e 60%, #8b0000 100%);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;
+    box-shadow:
+        0 10px 26px rgba(255, 59, 59, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow:
+        0 14px 32px rgba(255, 59, 59, 0.40),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+}
+
+/* 底部切换登录 / 注册 */
+.auth-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 18px;
+    padding: 14px 26px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    color: var(--text-dim);
+    font-size: 13.5px;
+}
+
+.auth-switch-btn {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-bottom: 1px dashed rgba(255, 107, 107, 0.45);
+    color: #ff6b6b;
+    font-weight: 600;
+    font-size: 13.5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease, text-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-switch-btn:hover {
+    color: #ff9a9a;
+    border-color: rgba(255, 154, 154, 0.80);
+    text-shadow: 0 0 14px rgba(255, 59, 59, 0.50);
+}
+
+/* 登录 / 注册结果提示（Toast）：深色底 + 浅色字，避免白底浅字看不清。
+   script.js 会在 <head> 末尾注入同名的白底样式，故这里用 body 前缀提高优先级。 */
+body .auth-message {
+    background: #121a2a !important;
+    color: var(--text-soft);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 4px solid var(--red);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+@media (max-width: 480px) {
+    .auth-modal { padding: 14px; }
+    .auth-modal-content { max-height: 94vh; }
+    .auth-header { padding: 18px 20px 14px; }
+    .auth-header h2 { font-size: 20px; }
+    .auth-form-group { padding: 12px 20px 0; }
+    .auth-submit-btn { width: calc(100% - 40px); margin: 16px 20px 4px; }
+    .auth-footer { padding: 12px 20px 16px; flex-wrap: wrap; }
+}
