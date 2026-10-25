@@ -156,19 +156,9 @@ function saveUserProgress() {
     console.log('学习进度已保存');
 }
 
-// 检查并显示用户进度
+// 检查并加载用户进度（不再弹出“欢迎回来”弹窗）
 function checkUserProgress() {
     loadUserProgress();
-    
-    // 如果有进度，显示欢迎回来的消息
-    if (userProgress.visitedArtifacts.length > 0 || userProgress.completedTasks.length > 0) {
-        const totalVisits = userProgress.visitedArtifacts.length;
-        const totalTasks = userProgress.completedTasks.length;
-        
-        setTimeout(() => {
-            alert(`欢迎回来！\n\n[数据] 你的学习进度：\n• 已参观文物：${totalVisits}件\n• 已完成任务：${totalTasks}个\n\n继续加油！`);
-        }, 1000);
-    }
 }
 
 // ============================================
@@ -3350,77 +3340,154 @@ setTimeout(addAIAssistant, 2000);
 // 用户认证系统
 // ============================================
 
-// 用户数据库（存在localStorage中）
-let users = [];
-
-// 当前登录用户
+// 当前登录用户（CloudBase UserInfo，未登录时为 null）
 let currentUser = null;
 
-// 初始化用户系统
-function initAuthSystem() {
-    // 从本地存储加载用户数据
-    const savedUsers = localStorage.getItem('redMuseumUsers');
-    if (savedUsers) {
-        users = JSON.parse(savedUsers);
+// ============================================
+// CloudBase 初始化
+// ============================================
+
+// CloudBase 环境 ID（在云开发控制台 -> 环境设置 中查看）
+const CLOUDBASE_ENV_ID = 'dry-aardvark-d7gimp6kg13904822';
+
+// CloudBase 应用 / 认证 / 数据库实例（懒初始化）
+let cloudbaseApp = null;
+let auth = null;
+let db = null;
+
+// 注册时"获取验证码"接口返回的 verification_id
+let registerVerificationId = null;
+
+// 验证码倒计时定时器
+let sendCodeCountdownTimer = null;
+
+// 初始化 CloudBase SDK（优先用 CDN 全量包，失败时用本地 cloudbase.full.js）
+function initCloudbase() {
+    if (cloudbaseApp) return cloudbaseApp;
+
+    if (typeof cloudbase === 'undefined' || typeof cloudbase.init !== 'function') {
+        console.error('[CloudBase] SDK 未加载：请检查网络，或确认 cloudbase.full.js 已正确引入');
+        return null;
+    }
+
+    cloudbaseApp = cloudbase.init({ env: CLOUDBASE_ENV_ID });
+    auth = cloudbaseApp.auth();
+    db = cloudbaseApp.database();
+    return cloudbaseApp;
+}
+
+// 读取当前登录用户（优先走网络刷新，失败时回退本地登录态）
+async function fetchCurrentUser() {
+    if (!auth) return null;
+    try {
+        const user = await auth.getCurrentUser();
+        if (user) return user;
+    } catch (err) {
+        console.warn('[CloudBase] getCurrentUser 刷新失败，尝试本地登录态', err);
+    }
+    try {
+        return (typeof auth.currentUser !== 'undefined' && auth.currentUser) || null;
+    } catch (err) {
+        return null;
+    }
+}
+
+// 初始化用户系统：恢复 CloudBase 登录态并刷新界面
+async function initAuthSystem() {
+    if (!initCloudbase()) return;
+
+    // file:// 直接打开时云开发请求必被拦截，先给出明确提示，避免误报
+    if (location.protocol === 'file:') {
+        console.warn('[CloudBase] 检测到 file:// 直接打开页面，云开发接口请求会被安全来源拦截。请用 http://localhost 方式访问（如 python -m http.server 5000）。');
+        currentUser = (auth && auth.currentUser) || null;
+        updateUIForLoggedInUser();
+        updateQASection();
+        return;
+    }
+
+    try {
+        currentUser = await fetchCurrentUser();
+    } catch (err) {
+        console.warn('[CloudBase] 获取登录状态失败', err);
+        currentUser = null;
+    }
+    updateUIForLoggedInUser();
+    updateQASection();
+}
+
+// ============================================
+// 认证通用工具
+// ============================================
+
+// 按钮加载态
+function setButtonLoading(btn, loading, loadingText) {
+    if (!btn) return;
+    if (loading) {
+        if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = loadingText || '处理中...';
     } else {
-        // 添加默认管理员账号（方便测试）
-        users = [
-            {
-                id: 1,
-                username: 'admin',
-                password: 'admin123',
-                createdAt: new Date().toISOString(),
-                lastLogin: null,
-                progress: {
-                    completedTasks: [],
-                    visitedArtifacts: [],
-                    collectedAchievements: [],
-                    learningHistory: [],
-                    mapLocations: { visited: [] }
-                }
-            },
-            {
-                id: 2,
-                username: 'test',
-                password: 'test123',
-                createdAt: new Date().toISOString(),
-                lastLogin: null,
-                progress: {
-                    completedTasks: [],
-                    visitedArtifacts: [],
-                    collectedAchievements: [],
-                    learningHistory: [],
-                    mapLocations: { visited: [] }
-                }
-            }
-        ];
-        saveUsers();
-    }
-    
-    // 检查是否有记住登录
-    const savedSession = localStorage.getItem('redMuseumSession');
-    if (savedSession) {
-        const session = JSON.parse(savedSession);
-        const user = users.find(u => u.id === session.userId);
-        if (user) {
-            currentUser = user;
-            updateUIForLoggedInUser();
-        }
+        btn.disabled = false;
+        if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+        delete btn.dataset.originalHtml;
     }
 }
 
-// 保存用户数据
-function saveUsers() {
-    localStorage.setItem('redMuseumUsers', JSON.stringify(users));
+// 是否为网络层错误（CORS 拦截 / 断网 / DNS 失败等，浏览器里通常表现为 "Failed to fetch"）
+function isNetworkError(err) {
+    if (!err) return false;
+    const msg = String(err.message || err.errMsg || '');
+    return err instanceof TypeError ||
+        /failed to fetch|networkerror|load failed|network request failed|net::err/i.test(msg);
 }
 
-// 显示登录模态框
+// 直接双击打开 HTML（file://）时，云开发跨域请求会被安全来源拦截，给出可操作提示
+function checkLocalFileProtocol(actionName) {
+    if (location.protocol === 'file:') {
+        showAuthMessage(
+            (actionName || '操作') + '失败：当前是直接双击打开的 HTML 文件（file://），浏览器会拦截云开发的跨域请求。' +
+            '请改用本地 http 方式访问，例如在项目目录执行 “python -m http.server 5000”，然后打开 http://localhost:5000 ；部署后再把网站域名加入云端「安全来源/安全域名」。',
+            'error'
+        );
+        return true;
+    }
+    return false;
+}
+
+// 把 CloudBase 抛出的错误翻译成友好的中文提示
+function getAuthErrorMessage(err, fallback) {
+    if (!err) return fallback;
+    if (isNetworkError(err)) {
+        return '网络请求被拦截：CloudBase 只允许「安全来源」白名单内的域名访问。' +
+            (location.protocol === 'file:'
+                ? '你现在是直接双击打开的 HTML（file://），请改用 http://localhost 访问（如 python -m http.server 5000）。'
+                : '请把当前访问域名（' + location.origin + '）加入 CloudBase 控制台的安全来源/安全域名后重试。');
+    }
+    const code = String(err.code || err.error_code || '');
+    const msg = String(err.message || err.error_description || err.detail || '');
+
+    if (/verification/i.test(code + msg)) {
+        return msg || '验证码错误或已过期，请重新获取';
+    }
+    if (/NOT_EXIST|USER_NOT_FOUND|not found/i.test(code + msg)) {
+        return msg || '用户不存在，请先注册';
+    }
+    if (/ALREADY|EXIST|already|exist/i.test(code + msg) && /account|user|email/i.test(code + msg)) {
+        return msg || '该邮箱已注册，请直接登录';
+    }
+    if (/password|密码/i.test(code + msg)) {
+        return msg || '用户名或密码错误';
+    }
+    return msg || fallback;
+}
+
+// 显示登录/注册模态框
 function showAuthModal() {
     document.getElementById('authModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
-// 关闭登录模态框
+// 关闭登录/注册模态框
 function closeAuthModal() {
     document.getElementById('authModal').style.display = 'none';
     document.body.style.overflow = 'auto';
@@ -3433,7 +3500,7 @@ function switchAuthMode(mode) {
     const authTitle = document.getElementById('authTitle');
     const switchBtn = document.getElementById('authSwitchBtn');
     const switchText = document.getElementById('authSwitchText');
-    
+
     if (mode === 'register' || loginForm.style.display !== 'none') {
         // 切换到注册
         loginForm.style.display = 'none';
@@ -3451,128 +3518,193 @@ function switchAuthMode(mode) {
     }
 }
 
+// ============================================
+// 登录（账号密码）
+// ============================================
+
 // 处理登录
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
-    
+
+    if (checkLocalFileProtocol('登录')) return;
+    if (!initCloudbase()) {
+        showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
+        return;
+    }
+
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
-    
-    // 查找用户
-    const user = users.find(u => u.username === username && u.password === password);
-    
-    if (user) {
-        // 登录成功
-        currentUser = user;
-        user.lastLogin = new Date().toISOString();
-        saveUsers();
-        
-        // 保存会话
-        localStorage.setItem('redMuseumSession', JSON.stringify({
-            userId: user.id,
-            loginTime: new Date().toISOString()
-        }));
-        
-        // 更新界面
+
+    if (!username || !password) {
+        showAuthMessage('请输入用户名和密码', 'error');
+        return;
+    }
+
+    const submitBtn = document.querySelector('#loginForm .auth-submit-btn');
+    setButtonLoading(submitBtn, true, '登录中...');
+
+    try {
+        // 账号密码登录（username 支持用户名 / 邮箱 / 手机号）
+        await auth.signIn({ username, password });
+
+        currentUser = await fetchCurrentUser();
         updateUIForLoggedInUser();
+        updateQASection();
         closeAuthModal();
-        
-        // 显示欢迎消息
-        showAuthMessage(`欢迎回来，${user.username}！`, 'success');
-    } else {
-        // 登录失败
-        showAuthMessage('用户名或密码错误', 'error');
+
+        const name = (currentUser && currentUser.username) || username;
+        showAuthMessage(`欢迎回来，${name}！`, 'success');
+    } catch (err) {
+        console.error('[CloudBase] 登录失败', err);
+        showAuthMessage(getAuthErrorMessage(err, '登录失败，请检查用户名和密码'), 'error');
+    } finally {
+        setButtonLoading(submitBtn, false);
+    }
+}
+
+// ============================================
+// 注册（邮箱验证码 + 用户名 + 密码）
+// ============================================
+
+// 验证码发送倒计时
+function startSendCodeCountdown(seconds) {
+    const btn = document.getElementById('sendCodeBtn');
+    if (!btn) return;
+    clearInterval(sendCodeCountdownTimer);
+    let remain = seconds;
+    btn.disabled = true;
+    btn.textContent = `${remain}s 后重发`;
+    sendCodeCountdownTimer = setInterval(() => {
+        remain -= 1;
+        if (remain <= 0) {
+            clearInterval(sendCodeCountdownTimer);
+            btn.disabled = false;
+            btn.textContent = '获取验证码';
+        } else {
+            btn.textContent = `${remain}s 后重发`;
+        }
+    }, 1000);
+}
+
+// 获取邮箱验证码
+async function sendRegisterCode() {
+    if (checkLocalFileProtocol('发送验证码')) return;
+
+    if (!initCloudbase()) {
+        showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
+        return;
+    }
+
+    const email = document.getElementById('regEmail').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showAuthMessage('请输入正确的邮箱地址', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('sendCodeBtn');
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = '发送中...';
+
+    try {
+        const res = await auth.getVerification({ email, usage: 'email' });
+        registerVerificationId = res && res.verification_id;
+        if (!registerVerificationId) throw new Error('未获取到 verification_id，请重试');
+
+        showAuthMessage('验证码已发送至邮箱，请查收（10 分钟内有效）', 'success');
+        startSendCodeCountdown(60);
+    } catch (err) {
+        console.error('[CloudBase] 获取验证码失败', err);
+        btn.disabled = false;
+        btn.textContent = '获取验证码';
+        showAuthMessage(getAuthErrorMessage(err, '验证码发送失败，请确认邮箱正确且环境已开通邮箱登录'), 'error');
     }
 }
 
 // 处理注册
-function handleRegister(event) {
+async function handleRegister(event) {
     event.preventDefault();
-    
+
+    if (checkLocalFileProtocol('注册')) return;
+    if (!initCloudbase()) {
+        showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
+        return;
+    }
+
+    const email = document.getElementById('regEmail').value.trim();
+    const code = document.getElementById('regCode').value.trim();
     const username = document.getElementById('regUsername').value.trim();
     const password = document.getElementById('regPassword').value;
-    const confirmPassword = document.getElementById('regConfirmPassword').value;
-    
-    // 验证用户名
-    if (username.length < 4 || username.length > 20) {
-        showAuthMessage('用户名必须在4-20个字符之间', 'error');
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showAuthMessage('请输入正确的邮箱地址', 'error');
         return;
     }
-    
-    // 验证密码
+    if (!/^\d{4,8}$/.test(code)) {
+        showAuthMessage('请输入正确的邮箱验证码', 'error');
+        return;
+    }
+    if (!/^[A-Za-z0-9_]{5,24}$/.test(username)) {
+        showAuthMessage('用户名需为 5-24 位字母、数字或下划线', 'error');
+        return;
+    }
     if (password.length < 6 || password.length > 20) {
-        showAuthMessage('密码必须在6-20个字符之间', 'error');
+        showAuthMessage('密码需为 6-20 位字符', 'error');
         return;
     }
-    
-    // 验证密码一致性
-    if (password !== confirmPassword) {
-        showAuthMessage('两次输入的密码不一致', 'error');
+    if (!registerVerificationId) {
+        showAuthMessage('请先点击「获取验证码」获取邮箱验证码', 'error');
         return;
     }
-    
-    // 检查用户名是否已存在
-    if (users.some(u => u.username === username)) {
-        showAuthMessage('用户名已存在', 'error');
-        return;
+
+    const btn = document.getElementById('regSubmitBtn');
+    setButtonLoading(btn, true, '注册中...');
+
+    try {
+        // 1) 校验验证码，换取 verification_token
+        const verifyRes = await auth.verify({
+            verification_id: registerVerificationId,
+            verification_code: code
+        });
+        const verificationToken = verifyRes && verifyRes.verification_token;
+        if (!verificationToken) throw new Error('验证码校验失败，请重新获取');
+
+        // 2) 邮箱注册：传入 username 和 password（required verification_token 属于邮箱验证码）
+        await auth.signUp({
+            email,
+            verification_token: verificationToken,
+            username,
+            password
+        });
+
+        // 3) 注册成功后 CloudBase 会自动登录
+        currentUser = await fetchCurrentUser();
+        updateUIForLoggedInUser();
+        updateQASection();
+        closeAuthModal();
+        showAuthMessage(`注册成功，欢迎 ${username}！`, 'success');
+    } catch (err) {
+        console.error('[CloudBase] 注册失败', err);
+        showAuthMessage(getAuthErrorMessage(err, '注册失败，请稍后重试'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
     }
-    
-    // 创建新用户
-    const newUser = {
-        id: users.length + 1,
-        username: username,
-        password: password,
-        createdAt: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        progress: {
-            completedTasks: [],
-            visitedArtifacts: [],
-            collectedAchievements: [],
-            learningHistory: [],
-            mapLocations: { visited: [] }
-        }
-    };
-    
-    users.push(newUser);
-    saveUsers();
-    
-    // 自动登录
-    currentUser = newUser;
-    localStorage.setItem('redMuseumSession', JSON.stringify({
-        userId: newUser.id,
-        loginTime: new Date().toISOString()
-    }));
-    
-    // 更新界面
-    updateUIForLoggedInUser();
-    closeAuthModal();
-    
-    showAuthMessage('注册成功！欢迎加入红色文化学习社区', 'success');
 }
 
 // 退出登录
-function logout() {
+async function logout() {
+    if (auth) {
+        try {
+            await auth.signOut();
+        } catch (err) {
+            console.warn('[CloudBase] 退出登录失败', err);
+        }
+    }
     currentUser = null;
-    localStorage.removeItem('redMuseumSession');
-    
-    // 重置为用户进度
     location.reload();
 }
 
-// 更新登录后的UI
-function updateUIForLoggedInUser() {
-    const loginBtn = document.getElementById('loginBtn');
-    const userWelcome = document.getElementById('userWelcome');
-    const usernameSpan = document.getElementById('username');
-    
-    if (currentUser && loginBtn && userWelcome && usernameSpan) {
-        loginBtn.style.display = 'none';
-        userWelcome.style.display = 'inline';
-        usernameSpan.textContent = currentUser.username;
-    }
-}
-
-// 显示认证消息
+// 显示认证消息（Toast）
 function showAuthMessage(message, type = 'info') {
     const messageDiv = document.createElement('div');
     messageDiv.className = `auth-message ${type}`;
@@ -3582,9 +3714,9 @@ function showAuthMessage(message, type = 'info') {
             <span>${message}</span>
         </div>
     `;
-    
+
     document.body.appendChild(messageDiv);
-    
+
     setTimeout(() => {
         messageDiv.style.opacity = '0';
         setTimeout(() => messageDiv.remove(), 300);
@@ -3634,6 +3766,248 @@ authMessageStyle.textContent = `
 `;
 document.head.appendChild(authMessageStyle);
 
+// ============================================
+// 学习问答（questions 集合）
+// ============================================
+
+// HTML 转义，防止 XSS
+function escapeHtml(str) {
+    return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// 格式化云数据库时间
+function formatQaTime(value) {
+    if (!value) return '';
+    try {
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return String(value);
+        return d.toLocaleString('zh-CN', { hour12: false });
+    } catch (e) {
+        return String(value);
+    }
+}
+
+// 当前登录用户是否为管理员（用户名为 admin）
+function isAdmin() {
+    return !!currentUser && String(currentUser.username || '').toLowerCase() === 'admin';
+}
+
+// 根据登录状态更新问答区
+function updateQASection() {
+    const tip = document.getElementById('qaLoginTip');
+    const askBox = document.getElementById('qaAskBox');
+    const myPanel = document.getElementById('qaMyQuestions');
+    const adminPanel = document.getElementById('qaAdminPanel');
+    if (!tip || !askBox || !myPanel || !adminPanel) return;
+
+    const loggedIn = !!currentUser;
+    tip.style.display = loggedIn ? 'none' : 'flex';
+    askBox.style.display = loggedIn ? 'block' : 'none';
+    myPanel.style.display = loggedIn ? 'block' : 'none';
+
+    if (loggedIn) {
+        loadMyQuestions();
+        if (isAdmin()) {
+            adminPanel.style.display = 'block';
+            loadPendingQuestions();
+        } else {
+            adminPanel.style.display = 'none';
+        }
+    } else {
+        adminPanel.style.display = 'none';
+    }
+}
+
+// 提交问题（写入 questions 集合）
+async function submitQuestion() {
+    if (!initCloudbase()) {
+        showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
+        return;
+    }
+    if (!currentUser) {
+        showAuthMessage('请先登录后再提问', 'error');
+        return;
+    }
+
+    const input = document.getElementById('qaQuestionInput');
+    const question = (input && input.value ? input.value : '').trim();
+    if (!question) {
+        showAuthMessage('问题内容不能为空', 'error');
+        return;
+    }
+    if (question.length > 500) {
+        showAuthMessage('问题内容不能超过 500 字', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('qaSubmitBtn');
+    setButtonLoading(btn, true, '提交中...');
+
+    try {
+        await db.collection('questions').add({
+            question,
+            userId: currentUser.uid || '',
+            answer: '',
+            status: 'pending',
+            createdAt: db.serverDate()
+        });
+
+        input.value = '';
+        showAuthMessage('提问成功，请等待管理员回答', 'success');
+        await loadMyQuestions();
+        if (isAdmin()) await loadPendingQuestions();
+    } catch (err) {
+        console.error('[CloudBase] 提问失败', err);
+        showAuthMessage('提问失败：' + (err.message || '请稍后重试'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+}
+
+// 加载当前用户的问题列表
+async function loadMyQuestions() {
+    const list = document.getElementById('qaMyList');
+    if (!list) return;
+    if (!currentUser) {
+        list.innerHTML = '';
+        return;
+    }
+
+    list.innerHTML = '<p class="qa-empty">加载中…</p>';
+    try {
+        const res = await db.collection('questions')
+            .where({ userId: currentUser.uid || '' })
+            .get();
+        const items = (res.data || []).sort((a, b) => {
+            const ta = new Date(a.createdAt).getTime() || 0;
+            const tb = new Date(b.createdAt).getTime() || 0;
+            return tb - ta;
+        });
+
+        if (items.length === 0) {
+            list.innerHTML = '<p class="qa-empty">暂无提问，快去提问吧</p>';
+            return;
+        }
+
+        list.innerHTML = items.map(item => `
+            <div class="qa-item">
+                <div class="qa-item-question">
+                    <span class="qa-badge qa-badge-ask">问</span>
+                    <span>${escapeHtml(item.question)}</span>
+                    <span class="qa-item-time">${escapeHtml(formatQaTime(item.createdAt))}</span>
+                </div>
+                <div class="qa-item-answer">
+                    ${item.answer
+                        ? `<span class="qa-badge qa-badge-answer">答</span> ${escapeHtml(item.answer)}`
+                        : '<span class="qa-pending">等待管理员回答…</span>'}
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error('[CloudBase] 加载我的提问失败', err);
+        list.innerHTML = '<p class="qa-empty">加载失败，请刷新页面重试</p>';
+    }
+}
+
+// 管理员：加载所有 status 为 pending 的问题
+async function loadPendingQuestions() {
+    const list = document.getElementById('qaAdminList');
+    if (!list) return;
+    if (!isAdmin()) {
+        list.innerHTML = '';
+        return;
+    }
+
+    list.innerHTML = '<p class="qa-empty">加载中…</p>';
+    try {
+        const res = await db.collection('questions')
+            .where({ status: 'pending' })
+            .get();
+        const items = (res.data || []).sort((a, b) => {
+            const ta = new Date(a.createdAt).getTime() || 0;
+            const tb = new Date(b.createdAt).getTime() || 0;
+            return ta - tb;
+        });
+
+        if (items.length === 0) {
+            list.innerHTML = '<p class="qa-empty">暂无待回答的问题</p>';
+            return;
+        }
+
+        list.innerHTML = items.map(item => {
+            const qid = escapeHtml(item._id || item.id || '');
+            return `
+            <div class="qa-item qa-admin-item">
+                <div class="qa-item-question">
+                    <span class="qa-badge qa-badge-ask">问</span>
+                    <span>${escapeHtml(item.question)}</span>
+                </div>
+                <div class="qa-item-meta">
+                    <span>提问用户：${escapeHtml(String(item.userId || '').slice(-8) || '未知')}</span>
+                    <span>${escapeHtml(formatQaTime(item.createdAt))}</span>
+                </div>
+                <textarea id="qaAnswer_${qid}" class="qa-answer-input" rows="2"
+                    placeholder="请输入回答内容"></textarea>
+                <div class="qa-admin-actions">
+                    <button type="button" class="qa-submit-btn" data-question-id="${qid}">
+                        <i class="fa-solid fa-check"></i> 提交回答
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+
+        // 绑定回答按钮
+        list.querySelectorAll('button[data-question-id]').forEach(btn => {
+            btn.onclick = () => submitAnswer(btn, btn.dataset.questionId);
+        });
+    } catch (err) {
+        console.error('[CloudBase] 加载待回答的问题失败', err);
+        list.innerHTML = '<p class="qa-empty">加载失败，请刷新页面重试</p>';
+    }
+}
+
+// 管理员：提交回答并更新 questions 记录
+async function submitAnswer(btn, questionId) {
+    if (!initCloudbase()) {
+        showAuthMessage('CloudBase SDK 未加载，请检查网络后刷新页面', 'error');
+        return;
+    }
+    if (!isAdmin()) {
+        showAuthMessage('只有管理员可以回答问题', 'error');
+        return;
+    }
+    if (!questionId) return;
+
+    const textarea = document.getElementById('qaAnswer_' + questionId);
+    const answer = (textarea && textarea.value ? textarea.value : '').trim();
+    if (!answer) {
+        showAuthMessage('回答内容不能为空', 'error');
+        return;
+    }
+
+    setButtonLoading(btn, true, '提交中...');
+
+    try {
+        await db.collection('questions').doc(questionId).update({
+            answer,
+            status: 'answered'
+        });
+        showAuthMessage('回答已提交', 'success');
+        await loadPendingQuestions();
+        await loadMyQuestions();
+    } catch (err) {
+        console.error('[CloudBase] 提交回答失败', err);
+        showAuthMessage('提交回答失败：' + (err.message || '请稍后重试'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+}
+
 // 在页面加载时初始化认证系统
 document.addEventListener('DOMContentLoaded', function() {
     // 延迟执行，确保其他元素已加载
@@ -3641,6 +4015,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initAuthSystem();
     }, 500);
 });
+
 // ============================================
 // 美化登录选项的额外功能
 // ============================================
@@ -3697,15 +4072,15 @@ function showUserProfile() {
                     
                     <div class="profile-info-item">
                         <span class="profile-info-label">用户名</span>
-                        <span class="profile-info-value">${currentUser.username}</span>
+                        <span class="profile-info-value">${currentUser.username || '未设置'}</span>
                     </div>
                     <div class="profile-info-item">
-                        <span class="profile-info-label">注册时间</span>
-                        <span class="profile-info-value">${new Date(currentUser.createdAt).toLocaleDateString()}</span>
+                        <span class="profile-info-label">邮箱</span>
+                        <span class="profile-info-value">${currentUser.email || '未绑定'}</span>
                     </div>
                     <div class="profile-info-item">
-                        <span class="profile-info-label">上次登录</span>
-                        <span class="profile-info-value">${new Date(currentUser.lastLogin).toLocaleDateString()}</span>
+                        <span class="profile-info-label">用户ID</span>
+                        <span class="profile-info-value">${currentUser.uid || '—'}</span>
                     </div>
                     
                     <div class="profile-stats">
