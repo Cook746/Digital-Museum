@@ -40,11 +40,84 @@
             color: #e8f2fb; font-size: 1.2rem; letter-spacing: .08em;
             margin: 0 0 16px; display: flex; align-items: center; gap: 8px;
         }
+        .province-map-layout {
+            display: grid;
+            grid-template-columns: 62% minmax(0, 1fr);
+            gap: 16px;
+            align-items: start;
+        }
         .province-map-canvas {
             width: 100%; height: 480px;
             border-radius: 16px; overflow: hidden;
             background: rgba(13, 44, 74, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* ---------- 鍙充晶鍦版爣璇︽儏闈㈡澘 ---------- */
+        .province-detail {
+            position: sticky; top: 96px;
+            height: 480px; min-height: 480px;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 22px 22px 26px;
+            background:
+                radial-gradient(600px 300px at 88% 6%, rgba(255,51,85,0.10), transparent 65%),
+                rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(14px);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.18) transparent;
+        }
+        .province-detail::-webkit-scrollbar { width: 6px; }
+        .province-detail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
+        .pd-placeholder {
+            height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 14px;
+            color: #62788f; text-align: center; letter-spacing: .1em;
+            font-size: .88rem; line-height: 1.9; padding-top: 70px;
+        }
+        .pd-placeholder i { font-size: 2rem; color: #ff5c5c; opacity: .75; }
+        .pd-placeholder p { margin: 0; }
+        .pd-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: .72rem; letter-spacing: .18em; color: #ff9a9a;
+            padding: 3px 10px; border-radius: 999px;
+            background: rgba(255, 51, 85, 0.12);
+            border: 1px solid rgba(255, 51, 85, 0.35);
+        }
+        .pd-tag i { font-size: .7rem; color: #ff5c5c; }
+        .pd-title { color: #f2f7fc; font-size: 1.25rem; margin: 14px 0 6px; letter-spacing: .06em; line-height: 1.4; }
+        .pd-type { color: #5fd0ff; font-size: .76rem; letter-spacing: .04em; }
+        .pd-divider { height: 1px; margin: 16px 0; background: linear-gradient(90deg, rgba(255,51,85,.55), rgba(95,208,255,.15), transparent); }
+        .pd-intro { color: #c3d3e2; font-size: .9rem; line-height: 1.95; margin: 0 0 16px; text-indent: 2em; }
+        .pd-sub {
+            color: #e8f2fb; font-size: .92rem; margin: 20px 0 10px;
+            display: flex; align-items: center; gap: 8px; letter-spacing: .08em;
+        }
+        .pd-sub i { color: #ff8a3c; font-size: .88rem; }
+        .pd-history { color: #a8bdcd; font-size: .86rem; line-height: 1.95; margin: 0; text-indent: 2em; }
+        .pd-notes { margin: 0; padding: 0 0 0 4px; list-style: none; }
+        .pd-notes li {
+            position: relative; padding-left: 18px; margin-bottom: 8px;
+            color: #8fa3bf; font-size: .84rem; line-height: 1.85;
+        }
+        .pd-notes li::before {
+            content: ""; position: absolute; left: 2px; top: .62em;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #ff5c5c; box-shadow: 0 0 8px rgba(255,92,92,.8);
+        }
+        .pd-meta {
+            margin-top: 22px; padding-top: 16px;
+            border-top: 1px dashed rgba(255,255,255,0.12);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .pd-meta-item { display: flex; align-items: baseline; gap: 8px; font-size: .8rem; line-height: 1.6; }
+        .pd-meta-item i { color: #5fd0ff; width: 14px; flex-shrink: 0; font-size: .78rem; }
+        .pd-meta-item span { color: #62788f; flex-shrink: 0; letter-spacing: .1em; }
+        .pd-meta-item em { color: #a8bdcd; font-style: normal; }
+        @media (max-width: 900px) {
+            .province-map-layout { grid-template-columns: 1fr; }
+            .province-detail { position: static; height: auto; min-height: 0; }
+            .pd-placeholder { padding: 40px 0; }
         }
         @media (max-width: 768px) {
             .province-map-canvas { height: 360px; }
@@ -63,7 +136,10 @@
     </main>
     <div class="province-map-section">
         <h2 class="province-map-title"><i class="fa-solid fa-map-location-dot"></i> 红色地标分布</h2>
-        <div id="provinceMap" class="province-map-canvas"></div>
+        <div class="province-map-layout">
+            <div id="provinceMap" class="province-map-canvas"></div>
+            <aside id="provinceDetail" class="province-detail" aria-live="polite"></aside>
+        </div>
     </div>
     <section class="province-cards">
         <div class="province-card">
@@ -81,6 +157,7 @@
     </section>
     <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="./province-detail.js"></script>
     <script>
     (function () {
         'use strict';
@@ -169,6 +246,9 @@
                 });
 
                 window.addEventListener('resize', function () { chart.resize(); });
+
+                // 鐐瑰嚮鍦版爣 鈫?鍙充晶鏂囧瓧妗ｆ
+                if (window.ProvinceDetail) window.ProvinceDetail.bind(chart);
             })
             .catch(function (err) {
                 console.warn('[province-map]', err);
