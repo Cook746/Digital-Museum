@@ -40,11 +40,84 @@
             color: #e8f2fb; font-size: 1.2rem; letter-spacing: .08em;
             margin: 0 0 16px; display: flex; align-items: center; gap: 8px;
         }
+        .province-map-layout {
+            display: grid;
+            grid-template-columns: 62% minmax(0, 1fr);
+            gap: 16px;
+            align-items: start;
+        }
         .province-map-canvas {
             width: 100%; height: 480px;
             border-radius: 16px; overflow: hidden;
             background: rgba(13, 44, 74, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* ---------- 右侧地标详情面板 ---------- */
+        .province-detail {
+            position: sticky; top: 96px;
+            height: 480px; min-height: 480px;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 22px 22px 26px;
+            background:
+                radial-gradient(600px 300px at 88% 6%, rgba(255,51,85,0.10), transparent 65%),
+                rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(14px);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.18) transparent;
+        }
+        .province-detail::-webkit-scrollbar { width: 6px; }
+        .province-detail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
+        .pd-placeholder {
+            height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 14px;
+            color: #62788f; text-align: center; letter-spacing: .1em;
+            font-size: .88rem; line-height: 1.9; padding-top: 70px;
+        }
+        .pd-placeholder i { font-size: 2rem; color: #ff5c5c; opacity: .75; }
+        .pd-placeholder p { margin: 0; }
+        .pd-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: .72rem; letter-spacing: .18em; color: #ff9a9a;
+            padding: 3px 10px; border-radius: 999px;
+            background: rgba(255, 51, 85, 0.12);
+            border: 1px solid rgba(255, 51, 85, 0.35);
+        }
+        .pd-tag i { font-size: .7rem; color: #ff5c5c; }
+        .pd-title { color: #f2f7fc; font-size: 1.25rem; margin: 14px 0 6px; letter-spacing: .06em; line-height: 1.4; }
+        .pd-type { color: #5fd0ff; font-size: .76rem; letter-spacing: .04em; }
+        .pd-divider { height: 1px; margin: 16px 0; background: linear-gradient(90deg, rgba(255,51,85,.55), rgba(95,208,255,.15), transparent); }
+        .pd-intro { color: #c3d3e2; font-size: .9rem; line-height: 1.95; margin: 0 0 16px; text-indent: 2em; }
+        .pd-sub {
+            color: #e8f2fb; font-size: .92rem; margin: 20px 0 10px;
+            display: flex; align-items: center; gap: 8px; letter-spacing: .08em;
+        }
+        .pd-sub i { color: #ff8a3c; font-size: .88rem; }
+        .pd-history { color: #a8bdcd; font-size: .86rem; line-height: 1.95; margin: 0; text-indent: 2em; }
+        .pd-notes { margin: 0; padding: 0 0 0 4px; list-style: none; }
+        .pd-notes li {
+            position: relative; padding-left: 18px; margin-bottom: 8px;
+            color: #8fa3bf; font-size: .84rem; line-height: 1.85;
+        }
+        .pd-notes li::before {
+            content: ""; position: absolute; left: 2px; top: .62em;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #ff5c5c; box-shadow: 0 0 8px rgba(255,92,92,.8);
+        }
+        .pd-meta {
+            margin-top: 22px; padding-top: 16px;
+            border-top: 1px dashed rgba(255,255,255,0.12);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .pd-meta-item { display: flex; align-items: baseline; gap: 8px; font-size: .8rem; line-height: 1.6; }
+        .pd-meta-item i { color: #5fd0ff; width: 14px; flex-shrink: 0; font-size: .78rem; }
+        .pd-meta-item span { color: #62788f; flex-shrink: 0; letter-spacing: .1em; }
+        .pd-meta-item em { color: #a8bdcd; font-style: normal; }
+        @media (max-width: 900px) {
+            .province-map-layout { grid-template-columns: 1fr; }
+            .province-detail { position: static; height: auto; min-height: 0; }
+            .pd-placeholder { padding: 40px 0; }
         }
         @media (max-width: 768px) {
             .province-map-canvas { height: 360px; }
@@ -63,7 +136,10 @@
     </main>
     <div class="province-map-section">
         <h2 class="province-map-title"><i class="fa-solid fa-map-location-dot"></i> 红色地标分布</h2>
-        <div id="provinceMap" class="province-map-canvas"></div>
+        <div class="province-map-layout">
+            <div id="provinceMap" class="province-map-canvas"></div>
+            <aside id="provinceDetail" class="province-detail" aria-live="polite"></aside>
+        </div>
     </div>
     <section class="province-cards">
         <div class="province-card">
@@ -81,6 +157,7 @@
     </section>
     <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="./province-detail.js"></script>
     <script>
     (function () {
         'use strict';
@@ -169,6 +246,269 @@
                 });
 
                 window.addEventListener('resize', function () { chart.resize(); });
+
+                // 点击地标 → 右侧文字档案
+                if (window.ProvinceDetail) window.ProvinceDetail.bind(chart);
+            })
+            .catch(function (err) {
+                console.warn('[province-map]', err);
+                host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;">地图数据加载失败，请检查网络后刷新</p>';
+            });
+    })();
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京 · 红色纪行</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./icons-shim.css">
+    <link rel="stylesheet" href="./theme-dark.css">
+    <style>
+        body { min-height: 100vh; }
+        .province-top {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 8vw; border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(5,7,13,0.7); backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 50;
+        }
+        .province-top a { color: #9fb6cc; text-decoration: none; font-size: .9rem; letter-spacing: .08em; }
+        .province-top a:hover { color: #ff5c5c; }
+        .province-tag { font-size: .75rem; letter-spacing: .3em; color: #ff5c5c; }
+        .province-hero { padding: 90px 8vw 40px; max-width: 1080px; }
+        .province-kicker { color: #5fd0ff; letter-spacing: .32em; font-size: .8rem; margin-bottom: 14px; }
+        .province-hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: #fff; margin: 0 0 18px; letter-spacing: .06em; }
+        .province-hero h1 i { color: #ff4d6d; text-shadow: 0 0 18px rgba(255,77,109,.8); margin-right: 12px; }
+        .province-hero p.lead { color: #a8bdcd; line-height: 1.9; max-width: 720px; margin: 0 0 36px; }
+        .province-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; padding: 0 8vw 80px; max-width: 1080px; }
+        .province-card {
+            border-radius: 16px; padding: 22px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(14px);
+        }
+        .province-card h3 { color: #e8f2fb; margin: 0 0 10px; font-size: 1.05rem; letter-spacing: .05em; }
+        .province-card h3 i { color: #ff8a3c; margin-right: 8px; }
+        .province-card p { color: #8fa3bf; line-height: 1.8; font-size: .9rem; margin: 0; }
+        .province-note { padding: 0 8vw 90px; color: #62788f; letter-spacing: .12em; font-size: .8rem; }
+        .province-note i { color: #5fd0ff; margin-right: 8px; }
+        .province-map-section { padding: 0 8vw 40px; max-width: 1080px; }
+        .province-map-title {
+            color: #e8f2fb; font-size: 1.2rem; letter-spacing: .08em;
+            margin: 0 0 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .province-map-layout {
+            display: grid;
+            grid-template-columns: 62% minmax(0, 1fr);
+            gap: 16px;
+            align-items: start;
+        }
+        .province-map-canvas {
+            width: 100%; height: 480px;
+            border-radius: 16px; overflow: hidden;
+            background: rgba(13, 44, 74, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* ---------- 右侧地标详情面板 ---------- */
+        .province-detail {
+            position: sticky; top: 96px;
+            height: 480px; min-height: 480px;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 22px 22px 26px;
+            background:
+                radial-gradient(600px 300px at 88% 6%, rgba(255,51,85,0.10), transparent 65%),
+                rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(14px);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.18) transparent;
+        }
+        .province-detail::-webkit-scrollbar { width: 6px; }
+        .province-detail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
+        .pd-placeholder {
+            height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 14px;
+            color: #62788f; text-align: center; letter-spacing: .1em;
+            font-size: .88rem; line-height: 1.9; padding-top: 70px;
+        }
+        .pd-placeholder i { font-size: 2rem; color: #ff5c5c; opacity: .75; }
+        .pd-placeholder p { margin: 0; }
+        .pd-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: .72rem; letter-spacing: .18em; color: #ff9a9a;
+            padding: 3px 10px; border-radius: 999px;
+            background: rgba(255, 51, 85, 0.12);
+            border: 1px solid rgba(255, 51, 85, 0.35);
+        }
+        .pd-tag i { font-size: .7rem; color: #ff5c5c; }
+        .pd-title { color: #f2f7fc; font-size: 1.25rem; margin: 14px 0 6px; letter-spacing: .06em; line-height: 1.4; }
+        .pd-type { color: #5fd0ff; font-size: .76rem; letter-spacing: .04em; }
+        .pd-divider { height: 1px; margin: 16px 0; background: linear-gradient(90deg, rgba(255,51,85,.55), rgba(95,208,255,.15), transparent); }
+        .pd-intro { color: #c3d3e2; font-size: .9rem; line-height: 1.95; margin: 0 0 16px; text-indent: 2em; }
+        .pd-sub {
+            color: #e8f2fb; font-size: .92rem; margin: 20px 0 10px;
+            display: flex; align-items: center; gap: 8px; letter-spacing: .08em;
+        }
+        .pd-sub i { color: #ff8a3c; font-size: .88rem; }
+        .pd-history { color: #a8bdcd; font-size: .86rem; line-height: 1.95; margin: 0; text-indent: 2em; }
+        .pd-notes { margin: 0; padding: 0 0 0 4px; list-style: none; }
+        .pd-notes li {
+            position: relative; padding-left: 18px; margin-bottom: 8px;
+            color: #8fa3bf; font-size: .84rem; line-height: 1.85;
+        }
+        .pd-notes li::before {
+            content: ""; position: absolute; left: 2px; top: .62em;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #ff5c5c; box-shadow: 0 0 8px rgba(255,92,92,.8);
+        }
+        .pd-meta {
+            margin-top: 22px; padding-top: 16px;
+            border-top: 1px dashed rgba(255,255,255,0.12);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .pd-meta-item { display: flex; align-items: baseline; gap: 8px; font-size: .8rem; line-height: 1.6; }
+        .pd-meta-item i { color: #5fd0ff; width: 14px; flex-shrink: 0; font-size: .78rem; }
+        .pd-meta-item span { color: #62788f; flex-shrink: 0; letter-spacing: .1em; }
+        .pd-meta-item em { color: #a8bdcd; font-style: normal; }
+        @media (max-width: 900px) {
+            .province-map-layout { grid-template-columns: 1fr; }
+            .province-detail { position: static; height: auto; min-height: 0; }
+            .pd-placeholder { padding: 40px 0; }
+        }
+        @media (max-width: 768px) {
+            .province-map-canvas { height: 360px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="province-top">
+        <a href="index.html#red-map"><i class="fa-solid fa-arrow-left"></i> 返回红色星图</a>
+        <span class="province-tag">RED ARCHIVE · 北京</span>
+    </header>
+    <main class="province-hero">
+        <div class="province-kicker">北京 · 红色纪行</div>
+        <h1><i class="fa-solid fa-landmark"></i>北京红色文化专区</h1>
+        <p class="lead">从卢沟桥的月光，到香山双清别墅的晨曦，北京见证了中国革命走向胜利的多个关键瞬间。这里是新中国的首都，也是红色基因的起点之一。本页面为北京专属档案的入口，内容将持续补充。</p>
+    </main>
+    <div class="province-map-section">
+        <h2 class="province-map-title"><i class="fa-solid fa-map-location-dot"></i> 红色地标分布</h2>
+        <div class="province-map-layout">
+            <div id="provinceMap" class="province-map-canvas"></div>
+            <aside id="provinceDetail" class="province-detail" aria-live="polite"></aside>
+        </div>
+    </div>
+    <section class="province-cards">
+        <div class="province-card">
+            <h3><i class="fa-solid fa-location-dot"></i>红色地标</h3>
+            <p>卢沟桥、宛平城、香山革命纪念地、天安门广场……后续将在此展示景点介绍与参观信息。</p>
+        </div>
+        <div class="province-card">
+            <h3><i class="fa-solid fa-hourglass-half"></i>历史坐标</h3>
+            <p>从五四运动到开国大典，梳理发生在北京的红色历史时间线。</p>
+        </div>
+        <div class="province-card">
+            <h3><i class="fa-solid fa-flag"></i>精神传承</h3>
+            <p>红色故事、人物事迹与当代传承活动，敬请期待。</p>
+        </div>
+    </section>
+    <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="./province-detail.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        // ===== 每页只改这 3 个值 =====
+        var MAP_KEY    = 'beijing';
+        var GEO_URL    = 'https://geo.datav.aliyun.com/areas_v3/bound/110000_full.json';
+        var BORDER_CLR = '#ff3355';
+        var GLOW_CLR   = 'rgba(255,51,85,0.35)';
+        var AREA_HOT   = 'rgba(255,51,85,0.18)';
+
+        // ===== 每页只改这个数组（该省博物馆点位）=====
+        var POINTS = [
+            { name: '天安门广场',       value: [116.397, 39.909] },
+            { name: '北大红楼',         value: [116.406, 39.925] },
+            { name: '抗战纪念馆',       value: [116.220, 39.849] },
+            { name: '香山革命纪念地',   value: [116.187, 39.992] },
+            { name: '长辛店二七纪念馆', value: [116.200, 39.830] }
+        ];
+
+        var host = document.getElementById('provinceMap');
+        if (!host || typeof echarts === 'undefined') {
+            if (host) host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;">地图组件加载失败，请检查网络后刷新</p>';
+            return;
+        }
+
+        fetch(GEO_URL, { cache: 'force-cache' })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (geoJson) {
+                if (!geoJson || !geoJson.features || !geoJson.features.length) throw new Error('GeoJSON 为空');
+                echarts.registerMap(MAP_KEY, geoJson);
+
+                var chart = echarts.init(host, null, { renderer: 'canvas' });
+                chart.setOption({
+                    backgroundColor: 'transparent',
+                    tooltip: {
+                        trigger: 'item',
+                        backgroundColor: 'rgba(6,12,22,0.92)',
+                        borderColor: BORDER_CLR,
+                        borderWidth: 1,
+                        textStyle: { color: '#dbe9f6', fontSize: 12 },
+                        formatter: function (p) { return p.name || ''; }
+                    },
+                    geo: {
+                        map: MAP_KEY,
+                        roam: false,
+                        label: { show: false },
+                        itemStyle: {
+                            areaColor: 'rgba(13,44,74,0.55)',
+                            borderColor: BORDER_CLR,
+                            borderWidth: 1.5,
+                            shadowColor: GLOW_CLR,
+                            shadowBlur: 14
+                        },
+                        emphasis: {
+                            itemStyle: { areaColor: AREA_HOT },
+                            label: { show: true, color: '#ffffff', fontSize: 12 }
+                        }
+                    },
+                    series: [{
+                        type: 'scatter',
+                        coordinateSystem: 'geo',
+                        data: POINTS,
+                        symbolSize: 12,
+                        itemStyle: {
+                            color: '#ff3b3b',
+                            borderColor: '#ffffff',
+                            borderWidth: 1.5,
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(255,59,59,0.9)'
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{b}',
+                            position: 'right',
+                            color: '#e8f2fb',
+                            fontSize: 11,
+                            textBorderColor: 'rgba(0,0,0,0.65)',
+                            textBorderWidth: 2
+                        },
+                        emphasis: {
+                            label: { show: true, fontSize: 13, fontWeight: 'bold' },
+                            itemStyle: { color: '#ff6b6b' }
+                        }
+                    }]
+                });
+
+                window.addEventListener('resize', function () { chart.resize(); });
+
+                // 点击地标 → 右侧文字档案
+                if (window.ProvinceDetail) window.ProvinceDetail.bind(chart);
             })
             .catch(function (err) {
                 console.warn('[province-map]', err);
