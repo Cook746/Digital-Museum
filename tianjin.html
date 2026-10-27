@@ -52,7 +52,7 @@
             background: rgba(13, 44, 74, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        /* ---------- 鍙充晶鍦版爣璇︽儏闈㈡澘 ---------- */
+        /* ---------- 右侧地标详情面板 ---------- */
         .province-detail {
             position: sticky; top: 96px;
             height: 480px; min-height: 480px;
@@ -156,20 +156,24 @@
         </div>
     </section>
     <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <script src="./province-detail.js"></script>
     <script>
     (function () {
         'use strict';
 
-        // ===== 每页只改这 3 个值 =====
-        var MAP_KEY    = 'tianjin';
-        var GEO_URL    = 'https://geo.datav.aliyun.com/areas_v3/bound/120000_full.json';
-        var BORDER_CLR = '#ff8a3c';
-        var GLOW_CLR   = 'rgba(255,138,60,0.35)';
-        var AREA_HOT   = 'rgba(255,138,60,0.18)';
+        // ===================== 每页只改这几项 =====================
+        var MAP_KEY       = 'tianjin';                 // ECharts 注册的地图名
+        var ADCODE        = '120000';                  // 阿里云 DataV 行政区划代码
+        var PROVINCE_NAME = '天津';                     // echarts china.json 中的省份名（兜底数据用）
+        var BORDER_CLR    = '#ff8a3c';                 // 省界描边色
+        var BORDER_TYPE   = 'dashed';                  // 省界线型
+        var GLOW_CLR      = 'rgba(255,138,60,0.35)';   // 省界外发光
+        var AREA_BASE     = 'rgba(13,44,74,0.55)';     // 常态填充
+        var AREA_HOT      = 'rgba(255,138,60,0.18)';   // 悬浮填充
+        var LABEL_CLR     = 'rgba(150,221,255,0.55)';  // 区域名称颜色
+        var LABEL_HOT_CLR = '#ffcc99';                 // 悬浮时区域名称颜色
 
-        // ===== 每页只改这个数组（该省博物馆点位）=====
+        // ===================== 每页只改这个数组（该省博物馆点位）=====================
         var POINTS = [
             { name: '周恩来邓颖超纪念馆',   value: [117.176, 39.084] },
             { name: '平津战役纪念馆',       value: [117.150, 39.170] },
@@ -178,80 +182,220 @@
         ];
 
         var host = document.getElementById('provinceMap');
-        if (!host || typeof echarts === 'undefined') {
-            if (host) host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;">地图组件加载失败，请检查网络后刷新</p>';
-            return;
+        if (!host) return;
+
+        // ------------------------------------------------------------
+        // 资源加载（沿用 index.html 的方式：多源 CDN + 备用源）
+        // ------------------------------------------------------------
+        var ECHARTS_CDN = [
+            'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js',
+            'https://unpkg.com/echarts@5.5.0/dist/echarts.min.js'
+        ];
+        // 本省地图数据：阿里云 DataV（完整版 → 边界版）
+        var PROVINCE_GEO_CDN = [
+            'https://geo.datav.aliyun.com/areas_v3/bound/' + ADCODE + '_full.json',
+            'https://geo.datav.aliyun.com/areas_v3/bound/' + ADCODE + '.json'
+        ];
+        // 兜底：从 echarts 官方 china.json 中抽出本省
+        var CHINA_GEO_CDN = [
+            'https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/china.json',
+            'https://unpkg.com/echarts@4.9.0/map/json/china.json'
+        ];
+
+        function showTip(html) {
+            host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;' +
+                'letter-spacing:.1em;font-size:.85rem;line-height:1.9;">' + html + '</p>';
         }
 
-        fetch(GEO_URL, { cache: 'force-cache' })
-            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-            .then(function (geoJson) {
-                if (!geoJson || !geoJson.features || !geoJson.features.length) throw new Error('GeoJSON 为空');
-                echarts.registerMap(MAP_KEY, geoJson);
+        function loadScript(src) {
+            return new Promise(function (resolve, reject) {
+                var s = document.createElement('script');
+                s.src = src;
+                s.async = true;
+                s.onload = function () { resolve(); };
+                s.onerror = function () { reject(new Error('script load failed: ' + src)); };
+                document.head.appendChild(s);
+            });
+        }
 
-                var chart = echarts.init(host, null, { renderer: 'canvas' });
-                chart.setOption({
-                    backgroundColor: 'transparent',
-                    tooltip: {
-                        trigger: 'item',
-                        backgroundColor: 'rgba(6,12,22,0.92)',
-                        borderColor: BORDER_CLR,
-                        borderWidth: 1,
-                        textStyle: { color: '#dbe9f6', fontSize: 12 },
-                        formatter: function (p) { return p.name || ''; }
-                    },
-                    geo: {
-                        map: MAP_KEY,
-                        roam: false,
-                        label: { show: false },
-                        itemStyle: {
-                            areaColor: 'rgba(13,44,74,0.55)',
-                            borderColor: BORDER_CLR,
-                            borderWidth: 1.5,
-                            shadowColor: GLOW_CLR,
-                            shadowBlur: 14
-                        },
-                        emphasis: {
-                            itemStyle: { areaColor: AREA_HOT },
-                            label: { show: true, color: '#ffffff', fontSize: 12 }
-                        }
-                    },
-                    series: [{
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        data: POINTS,
-                        symbolSize: 12,
-                        itemStyle: {
-                            color: '#ff3b3b',
-                            borderColor: '#ffffff',
-                            borderWidth: 1.5,
-                            shadowBlur: 10,
-                            shadowColor: 'rgba(255,59,59,0.9)'
-                        },
-                        label: {
-                            show: true,
-                            formatter: '{b}',
-                            position: 'right',
-                            color: '#e8f2fb',
-                            fontSize: 11,
-                            textBorderColor: 'rgba(0,0,0,0.65)',
-                            textBorderWidth: 2
-                        },
-                        emphasis: {
-                            label: { show: true, fontSize: 13, fontWeight: 'bold' },
-                            itemStyle: { color: '#ff6b6b' }
-                        }
-                    }]
+        function loadEChartsLib() {
+            if (window.echarts) return Promise.resolve(window.echarts);
+            var i = 0;
+            function next() {
+                if (i >= ECHARTS_CDN.length) return Promise.reject(new Error('ECharts 加载失败（网络不可用）'));
+                var src = ECHARTS_CDN[i++];
+                return loadScript(src).then(function () {
+                    if (window.echarts) return window.echarts;
+                    return next();
+                }, function () {
+                    return next();
                 });
+            }
+            return next();
+        }
 
-                window.addEventListener('resize', function () { chart.resize(); });
+        function fetchJson(url) {
+            return fetch(url, { cache: 'force-cache' }).then(function (r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status + ' · ' + url);
+                return r.json();
+            });
+        }
 
-                // 鐐瑰嚮鍦版爣 鈫?鍙充晶鏂囧瓧妗ｆ
-                if (window.ProvinceDetail) window.ProvinceDetail.bind(chart);
+        // 依次尝试多个数据源，返回第一个通过校验的结果
+        function tryEach(urls, check) {
+            var i = 0;
+            function next() {
+                if (i >= urls.length) return Promise.reject(new Error('全部数据源均不可用'));
+                var url = urls[i++];
+                return fetchJson(url).then(function (data) {
+                    var ok = check ? check(data) : data;
+                    if (!ok) throw new Error('数据为空 · ' + url);
+                    return ok;
+                }).catch(function () {
+                    return next();
+                });
+            }
+            return next();
+        }
+
+        function checkProvinceGeo(data) {
+            if (!data || !data.features || !data.features.length) return null;
+            return data;
+        }
+
+        // 从全国 china.json 中抽出本省要素，拼成只含本省的 GeoJSON
+        function provinceFromChina(china) {
+            if (!china || !china.features || !china.features.length) return null;
+            for (var i = 0; i < china.features.length; i++) {
+                var f = china.features[i];
+                if (f && f.properties && f.properties.name === PROVINCE_NAME) {
+                    return { type: 'FeatureCollection', features: [f] };
+                }
+            }
+            return null;
+        }
+
+        function loadProvinceGeo() {
+            return tryEach(PROVINCE_GEO_CDN, checkProvinceGeo).catch(function () {
+                return tryEach(CHINA_GEO_CDN, provinceFromChina).catch(function () {
+                    throw new Error('省级地图数据加载失败（网络不可用）');
+                });
+            });
+        }
+
+        // ------------------------------------------------------------
+        // ECharts 配置（沿用首页“科技风 + 红色系”写法）
+        // ------------------------------------------------------------
+        function buildOption() {
+            return {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(6, 12, 22, 0.92)',
+                    borderColor: BORDER_CLR,
+                    borderWidth: 1,
+                    padding: [10, 14],
+                    textStyle: { color: '#dbe9f6', fontSize: 12, lineHeight: 20 },
+                    extraCssText: 'backdrop-filter: blur(8px); box-shadow: 0 0 24px ' + GLOW_CLR + ';',
+                    formatter: function (p) {
+                        if (!p || !p.name) return '';
+                        var title = '<div style="font-weight:700;letter-spacing:.08em;color:#fff;font-size:13px;' +
+                            'text-shadow:0 0 12px ' + GLOW_CLR + ';">' + p.name + '</div>';
+                        if (p.seriesType === 'scatter') {
+                            return title + '<div style="margin-top:4px;color:#9fb6cc;">点击查看该地标的红色档案</div>';
+                        }
+                        return title;
+                    }
+                },
+                geo: {
+                    map: MAP_KEY,
+                    roam: false,
+                    zoom: 1.02,
+                    layoutCenter: ['50%', '50%'],
+                    layoutSize: '98%',
+                    label: {
+                        show: true,
+                        color: LABEL_CLR,
+                        fontSize: 10,
+                        letterSpacing: 2
+                    },
+                    itemStyle: {
+                        areaColor: AREA_BASE,
+                        borderColor: BORDER_CLR,
+                        borderWidth: 1.5,
+                        borderType: BORDER_TYPE,
+                        shadowColor: GLOW_CLR,
+                        shadowBlur: 14
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            areaColor: AREA_HOT,
+                            borderColor: BORDER_CLR,
+                            borderWidth: 2.4,
+                            shadowColor: GLOW_CLR,
+                            shadowBlur: 30
+                        },
+                        label: { show: true, color: LABEL_HOT_CLR, fontSize: 12, fontWeight: 700 }
+                    }
+                },
+                series: [{
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    data: POINTS,
+                    symbolSize: 12,
+                    itemStyle: {
+                        color: '#ff3b3b',
+                        borderColor: '#ffffff',
+                        borderWidth: 1.5,
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(255,59,59,0.9)'
+                    },
+                    label: {
+                        show: true,
+                        formatter: '{b}',
+                        position: 'right',
+                        color: '#e8f2fb',
+                        fontSize: 11,
+                        textBorderColor: 'rgba(0,0,0,0.65)',
+                        textBorderWidth: 2
+                    },
+                    emphasis: {
+                        label: { show: true, fontSize: 13, fontWeight: 'bold' },
+                        itemStyle: { color: '#ff6b6b' }
+                    }
+                }]
+            };
+        }
+
+        function initChart(echartsLib, geoJson) {
+            echartsLib.registerMap(MAP_KEY, geoJson);
+            host.innerHTML = '';
+            var chart = echartsLib.init(host, null, { renderer: 'canvas' });
+            chart.setOption(buildOption());
+            window.__provinceMapChart = chart;
+
+            var resize = function () { chart.resize(); };
+            window.addEventListener('resize', resize);
+            if (window.ResizeObserver && host.parentElement) {
+                new ResizeObserver(resize).observe(host.parentElement);
+            }
+
+            // 点击地标 → 右侧文字档案（保持原有交互不变）
+            if (window.ProvinceDetail) window.ProvinceDetail.bind(chart);
+        }
+
+        showTip('正在接入红色星图 · 加载地图数据');
+        loadEChartsLib()
+            .then(function (echartsLib) {
+                return loadProvinceGeo().then(function (geo) {
+                    return { lib: echartsLib, geo: geo };
+                });
             })
+            .then(function (res) { initChart(res.lib, res.geo); })
             .catch(function (err) {
                 console.warn('[province-map]', err);
-                host.innerHTML = '<p style="color:#62788f;text-align:center;padding-top:180px;">地图数据加载失败，请检查网络后刷新</p>';
+                showTip('地图资源加载失败：' + (err.message || '未知错误') +
+                    '<br>本页需要联网（CDN）加载 ECharts 与中国地图数据，请检查网络后刷新页面');
             });
     })();
     </script>
