@@ -186,18 +186,29 @@
         if (!host) return;
 
         // ------------------------------------------------------------
-        // 资源加载（沿用 index.html 的方式：多源 CDN + 备用源）
+        // 资源加载
+        //   1) 优先用「本站同源」文件：./echarts.min.js + ./maps/xxx.json
+        //      —— 不经过 CDN、也不带站外 Referer，线上最稳，基本秒开
+        //   2) 同源文件缺失时，再依次尝试 CDN / 阿里云 DataV / echarts china.json
+        //   注意：阿里云 geo.datav.aliyun.com 有防盗链，带「站外 Referer」访问会返回 403。
+        //         本地 file:// 打开没有 Referer、localhost 又在白名单里，所以本地一直正常，
+        //         但放到公网域名后 DataV 会 403，地图就一直停在「加载中」。
         // ------------------------------------------------------------
+        var LOCAL_ECHARTS = './echarts.min.js';        // 本站 ECharts（同源）
+        var LOCAL_GEO     = './maps/hebei.json';       // 本站本省地图数据（同源）
+        var NET_TIMEOUT   = 8000;                      // 单个网络源超时（毫秒），超时立即换下一个源
+
         var ECHARTS_CDN = [
             'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js',
-            'https://unpkg.com/echarts@5.5.0/dist/echarts.min.js'
+            'https://unpkg.com/echarts@5.5.0/dist/echarts.min.js',
+            'https://cdn.bootcdn.net/ajax/libs/echarts/5.5.0/echarts.min.js'
         ];
-        // 本省地图数据：阿里云 DataV（完整版 → 边界版）
+        // 本省地图数据：阿里云 DataV（完整版 → 边界版），仅作同源数据缺失时的兜底
         var PROVINCE_GEO_CDN = [
             'https://geo.datav.aliyun.com/areas_v3/bound/' + ADCODE + '_full.json',
             'https://geo.datav.aliyun.com/areas_v3/bound/' + ADCODE + '.json'
         ];
-        // 兜底：从 echarts 官方 china.json 中抽出本省
+        // 最后兜底：从 echarts 官方 china.json 中抽出本省
         var CHINA_GEO_CDN = [
             'https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/china.json',
             'https://unpkg.com/echarts@4.9.0/map/json/china.json'
@@ -208,23 +219,42 @@
                 'letter-spacing:.1em;font-size:.85rem;line-height:1.9;">' + html + '</p>';
         }
 
-        function loadScript(src) {
+        // 带超时的脚本加载：卡住也算失败，直接换下一个源
+        function loadScript(src, timeout) {
             return new Promise(function (resolve, reject) {
                 var s = document.createElement('script');
+                var settled = false;
+                var timer = setTimeout(function () {
+                    if (settled) return;
+                    settled = true;
+                    reject(new Error('script timeout: ' + src));
+                }, timeout || NET_TIMEOUT);
                 s.src = src;
                 s.async = true;
-                s.onload = function () { resolve(); };
-                s.onerror = function () { reject(new Error('script load failed: ' + src)); };
+                s.onload = function () {
+                    if (settled) return;
+                    settled = true;
+                    clearTimeout(timer);
+                    resolve();
+                };
+                s.onerror = function () {
+                    if (settled) return;
+                    settled = true;
+                    clearTimeout(timer);
+                    reject(new Error('script load failed: ' + src));
+                };
                 document.head.appendChild(s);
             });
         }
 
         function loadEChartsLib() {
             if (window.echarts) return Promise.resolve(window.echarts);
+            // 同源副本优先，其次 CDN
+            var sources = [LOCAL_ECHARTS].concat(ECHARTS_CDN);
             var i = 0;
             function next() {
-                if (i >= ECHARTS_CDN.length) return Promise.reject(new Error('ECharts 加载失败（网络不可用）'));
-                var src = ECHARTS_CDN[i++];
+                if (i >= sources.length) return Promise.reject(new Error('ECharts 加载失败（本站文件与 CDN 均不可用）'));
+                var src = sources[i++];
                 return loadScript(src).then(function () {
                     if (window.echarts) return window.echarts;
                     return next();
@@ -235,10 +265,22 @@
             return next();
         }
 
-        function fetchJson(url) {
-            return fetch(url, { cache: 'force-cache' }).then(function (r) {
+        // 带超时的 JSON 拉取：下载卡住时立刻失败，去试下一个源
+        function fetchJson(url, timeout, cacheMode) {
+            var opts = { cache: cacheMode || 'force-cache' };
+            var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            if (ctrl) opts.signal = ctrl.signal;
+            var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeout || NET_TIMEOUT) : null;
+            function done() {
+                if (timer) { clearTimeout(timer); timer = null; }
+            }
+            return fetch(url, opts).then(function (r) {
+                done();
                 if (!r.ok) throw new Error('HTTP ' + r.status + ' · ' + url);
                 return r.json();
+            }, function (err) {
+                done();
+                throw err;
             });
         }
 
@@ -277,10 +319,17 @@
         }
 
         function loadProvinceGeo() {
-            return tryEach(PROVINCE_GEO_CDN, checkProvinceGeo).catch(function () {
-                return tryEach(CHINA_GEO_CDN, provinceFromChina).catch(function () {
-                    throw new Error('省级地图数据加载失败（网络不可用）');
+            // 1) 本站同源数据（不联网、不受防盗链影响）→ 2) DataV → 3) china.json 抽省
+            return fetchJson(LOCAL_GEO, 6000, 'default').then(function (data) {
+                var local = checkProvinceGeo(data);
+                if (!local) throw new Error('本站地图数据为空 · ' + LOCAL_GEO);
+                return local;
+            }).catch(function () {
+                return tryEach(PROVINCE_GEO_CDN, checkProvinceGeo).catch(function () {
+                    return tryEach(CHINA_GEO_CDN, provinceFromChina);
                 });
+            }).catch(function () {
+                throw new Error('省级地图数据加载失败（本站缺少 ' + LOCAL_GEO + '，网络源也不可用）');
             });
         }
 
@@ -396,7 +445,7 @@
             .catch(function (err) {
                 console.warn('[province-map]', err);
                 showTip('地图资源加载失败：' + (err.message || '未知错误') +
-                    '<br>本页需要联网（CDN）加载 ECharts 与中国地图数据，请检查网络后刷新页面');
+                    '<br>本页优先读取同源文件（./echarts.min.js、./maps/），请确认这些文件已随页面一起上传，然后刷新重试');
             });
     })();
     </script>
