@@ -126,15 +126,21 @@
 <!-- 虚拟展厅部分 -->
 <section id="museum" class="section virtual-museum">
     <h2 class="section-title"><i class="fa-solid fa-landmark"></i> 虚拟展厅</h2>
-    <p>360度全景参观红色革命遗址，鼠标拖动可旋转视角</p>
+    <p>360度全景参观革命纪念馆与历史建筑，鼠标拖动可旋转视角</p>
     
-    <!-- 展厅选择 - 只保留两个按钮 -->
-    <div class="exhibition-buttons">
-        <button class="exhibition-btn active" onclick="loadExhibition('xibaipo')">
+    <!-- 展厅选择 -->
+    <div class="exhibition-buttons" id="exhibitionButtons">
+        <button class="exhibition-btn active" data-exhibition="xibaipo" onclick="loadExhibition('xibaipo', event)">
             <i class="fa-solid fa-mountain-sun"></i> 西柏坡纪念馆
         </button>
-        <button class="exhibition-btn" onclick="loadExhibition('yanan')">
+        <button class="exhibition-btn" data-exhibition="yanan" onclick="loadExhibition('yanan', event)">
             <i class="fa-solid fa-mountain"></i> 延安革命纪念馆
+        </button>
+        <button class="exhibition-btn" data-exhibition="gugong" onclick="loadExhibition('gugong', event)">
+            <i class="fa-solid fa-crown"></i> 故宫
+        </button>
+        <button class="exhibition-btn" data-exhibition="pingjin" onclick="loadExhibition('pingjin', event)">
+            <i class="fa-solid fa-khanda"></i> 平津战役纪念馆
         </button>
     </div>
     

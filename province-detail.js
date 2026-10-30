@@ -229,6 +229,42 @@
         }
     };
 
+    /* ---------- 场馆封面（全部为本地图片，来源与授权见 images/museums/CREDITS.md） ---------- */
+    var COVER_DIR = 'images/museums/';
+
+    var MUSEUM_COVERS = {
+        /* ===== 北京 ===== */
+        '天安门广场':         { img: 'tiananmen.jpg',    note: '天安门城楼与广场全貌', credit: 'N509FZ / Wikimedia Commons · CC BY-SA 4.0' },
+        '北大红楼':           { img: 'honglou.jpg',      note: '北大红楼（沙滩红楼）外景', credit: 'Siyuwj / Wikimedia Commons · CC BY-SA 4.0' },
+        '抗战纪念馆':         { img: 'kangzhan.jpg',     note: '中国人民抗日战争纪念馆', credit: '三猎 / Wikimedia Commons · CC BY-SA 4.0' },
+        '香山革命纪念地':     { img: 'shuangqing.jpg',   note: '香山双清别墅', credit: 'N509FZ / Wikimedia Commons · CC BY-SA 4.0' },
+        '长辛店二七纪念馆':   { img: 'changxindian.jpg', note: '长辛店劳动补习学校旧址', credit: 'N509FZ / Wikimedia Commons · CC BY-SA 4.0' },
+        /* ===== 天津 ===== */
+        '周恩来邓颖超纪念馆': { img: 'zhoudeng.jpg',     note: '周恩来邓颖超纪念馆', credit: 'Augusthaiho / Wikimedia Commons · CC BY-SA 4.0' },
+        '平津战役纪念馆':     { img: 'pingjin.jpg',      note: '平津战役纪念馆', credit: 'KangTyngrwey / Wikimedia Commons · CC BY-SA 4.0' },
+        '中共中央北方局旧址': { img: 'beifangju.jpg',    note: '中共中央北方局旧址', credit: 'TJArchi-Studio / Wikimedia Commons · CC BY-SA 2.0' },
+        '平津战役前线指挥部': { img: 'qianzhi.jpg',      note: '平津战役胜利 · 北平和平解放入城式（历史影像）', credit: '历史影像 / Wikimedia Commons · Public Domain' },
+        /* ===== 河北 ===== */
+        '西柏坡纪念馆':       { img: 'xibaipo.jpg',      note: '西柏坡纪念馆', credit: 'N509FZ / Wikimedia Commons · CC BY-SA 4.0' },
+        '冉庄地道战遗址':     { img: 'ranzhuang.jpg',    note: '冉庄地道战遗址', credit: 'Chulanker / Wikimedia Commons · CC BY-SA 4.0' },
+        '狼牙山五壮士陈列馆': { img: 'langyashan.jpg',   note: '西望狼牙山', credit: 'stuttgartgoal / Wikimedia Commons · CC BY-SA 3.0' },
+        '李大钊纪念馆':       { img: 'lidazhao.jpg',     note: '李大钊故居庭院（北京西城，同属李大钊纪念地）', credit: 'CNHowey / Wikimedia Commons · CC BY-SA 4.0' },
+        '晋察冀边区革命纪念馆': { img: 'jinchaji.jpg',   note: '晋察冀边区妇女报报社旧址（边区旧址之一）', credit: 'Vikarna / Wikimedia Commons · CC BY-SA 4.0' }
+    };
+
+    // 按地标名取封面数据；没有配置封面时返回 null（面板不会出现空图位）
+    function coverOf(name) {
+        var c = MUSEUM_COVERS[name];
+        if (!c) return null;
+        var info = MUSEUM_INFO[name];
+        return {
+            src: COVER_DIR + c.img,
+            title: info ? info.title : name,
+            note: c.note || '',
+            credit: c.credit || ''
+        };
+    }
+
     /* ---------- 渲染辅助 ---------- */
     function esc(s) {
         return String(s == null ? '' : s)
@@ -238,9 +274,18 @@
             .replace(/"/g, '&quot;');
     }
 
-    function renderDetail(panel, info) {
+    function renderDetail(panel, info, name) {
+        var cover = coverOf(name);
+        var coverHtml = cover
+            ? '<figure class="pd-cover" tabindex="0" role="button" aria-label="查看 ' + esc(cover.title) + ' 封面大图">' +
+              '  <img class="pd-cover-img" src="' + esc(cover.src) + '" alt="' + esc(cover.title) + ' 场馆封面" loading="lazy" decoding="async">' +
+              '  <span class="pd-cover-hint"><i class="fa-solid fa-up-right-from-square"></i> 点击查看大图</span>' +
+              '</figure>'
+            : '';
+
         panel.innerHTML =
             '<div class="pd-inner">' +
+            coverHtml +
             '  <div class="pd-tag"><i class="fa-solid fa-location-dot"></i> ' + esc(info.tag || '红色地标') + '</div>' +
             '  <h3 class="pd-title">' + esc(info.title) + '</h3>' +
             '  <div class="pd-type">' + esc(info.type) + '</div>' +
@@ -258,6 +303,102 @@
             '  <div class="pd-meta-item"><i class="fa-solid fa-clock"></i><span>开放</span><em>' + esc(info.open) + '</em></div>' +
             '  <div class="pd-meta-item"><i class="fa-solid fa-compass"></i><span>坐标</span><em>' + esc(info.coord) + '</em></div>' +
             '</div>';
+
+        bindCover(panel, cover);
+    }
+
+    /* ---------- 封面点击 → 全屏大图 ---------- */
+    function bindCover(panel, cover) {
+        if (!cover) return;
+        var fig = panel.querySelector('.pd-cover');
+        if (!fig) return;
+
+        var img = fig.querySelector('.pd-cover-img');
+        if (img) {
+            // 图片缺失时降级成文字占位，不出现裂图
+            img.addEventListener('error', function () {
+                fig.classList.add('is-empty');
+                fig.removeAttribute('role');
+                fig.removeAttribute('tabindex');
+                fig.innerHTML = '<span class="pd-cover-fallback"><i class="fa-solid fa-camera-retro"></i>' +
+                    esc(cover.title) + ' · 封面图暂缺</span>';
+            });
+        }
+
+        function open(e) {
+            if (e && e.type === 'keydown') {
+                if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+                e.preventDefault();
+            }
+            if (fig.classList.contains('is-empty')) return;
+            openLightbox(cover);
+        }
+
+        fig.addEventListener('click', open);
+        fig.addEventListener('keydown', open);
+    }
+
+    var lightbox = null;
+
+    function ensureLightbox() {
+        if (lightbox && document.body.contains(lightbox)) return lightbox;
+
+        lightbox = document.createElement('div');
+        lightbox.id = 'museumLightbox';
+        lightbox.className = 'museum-lightbox';
+        lightbox.setAttribute('role', 'dialog');
+        lightbox.setAttribute('aria-modal', 'true');
+        lightbox.setAttribute('aria-label', '场馆封面大图');
+        lightbox.innerHTML =
+            '<button class="ml-close" type="button" aria-label="关闭封面大图">✕</button>' +
+            '<figure class="ml-figure">' +
+            '  <img class="ml-img" alt="" decoding="async">' +
+            '  <figcaption class="ml-cap">' +
+            '    <strong class="ml-title"></strong>' +
+            '    <span class="ml-note"></span>' +
+            '    <span class="ml-credit"></span>' +
+            '  </figcaption>' +
+            '</figure>';
+        document.body.appendChild(lightbox);
+
+        // 点遮罩空白处关闭
+        lightbox.addEventListener('click', function (e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        // 关闭按钮用独立监听，避免依赖 Element.closest
+        var closeBtn = lightbox.querySelector('.ml-close');
+        if (closeBtn) closeBtn.addEventListener('click', function (e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            closeLightbox();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' || e.key === 'Esc') closeLightbox();
+        });
+
+        return lightbox;
+    }
+
+    function openLightbox(cover) {
+        var box = ensureLightbox();
+        var img = box.querySelector('.ml-img');
+        img.src = cover.src;
+        img.alt = cover.title + ' 场馆封面';
+        box.querySelector('.ml-title').textContent = cover.title;
+        box.querySelector('.ml-note').textContent = cover.note || '';
+        box.querySelector('.ml-credit').textContent = cover.credit || '';
+        box.classList.add('open');
+        document.body.classList.add('ml-open');
+
+        var btn = box.querySelector('.ml-close');
+        if (btn && btn.focus) btn.focus();
+    }
+
+    function closeLightbox() {
+        if (!lightbox || !lightbox.classList.contains('open')) return;
+        lightbox.classList.remove('open');
+        document.body.classList.remove('ml-open');
     }
 
     /* ---------- 点击交互 ---------- */
@@ -271,7 +412,7 @@
             var info = MUSEUM_INFO[name];
             if (!info) return;
 
-            renderDetail(panel, info);
+            renderDetail(panel, info, name);
             panel.classList.add('has-detail');
 
             // 让被点击的点位在视觉上保持高亮
@@ -284,7 +425,7 @@
             panel.innerHTML =
                 '<div class="pd-placeholder">' +
                 '  <i class="fa-solid fa-hand-pointer"></i>' +
-                '  <p>点击地图上的红色标记<br>查看该地标的详细介绍</p>' +
+                '  <p>点击地图上的红色标记<br>查看场馆封面与详细介绍</p>' +
                 '</div>';
         }
     }

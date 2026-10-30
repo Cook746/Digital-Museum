@@ -3174,6 +3174,7 @@ body {
     gap: 15px;
     margin: 20px 0;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .exhibition-btn {
@@ -3198,6 +3199,28 @@ body {
     background: #b71c1c;
     border-color: #b71c1c;
     box-shadow: 0 5px 20px rgba(183, 28, 28, 0.4);
+}
+
+/* 四个展厅按钮：中等屏幕两列，窄屏单列 */
+@media (max-width: 900px) {
+    .exhibition-btn {
+        flex: 1 1 calc(50% - 15px);
+        min-width: 0;
+        padding: 12px 18px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .exhibition-buttons {
+        gap: 10px;
+    }
+
+    .exhibition-btn {
+        flex: 1 1 100%;
+        padding: 11px 14px;
+        font-size: 14px;
+    }
 }
 
 /* 全景展示区 */
@@ -5305,5 +5328,220 @@ body {
 
     .auth-code-btn {
         padding: 10px 14px;
+    }
+}
+
+/* ============================================
+   省域地图 · 场馆封面 + 封面大图（灯箱）
+   图片均为本地文件：images/museums/xxx.jpg
+=========================================== */
+
+/* 详情面板顶部的场馆封面 */
+.pd-cover {
+    position: relative;
+    margin: 0 0 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: zoom-in;
+    outline: none;
+}
+
+.pd-cover-img {
+    display: block;
+    width: 100%;
+    height: 168px;
+    object-fit: cover;
+    transition: transform 0.65s ease;
+}
+
+.pd-cover:hover .pd-cover-img,
+.pd-cover:focus-visible .pd-cover-img {
+    transform: scale(1.06);
+}
+
+.pd-cover:focus-visible {
+    border-color: rgba(255, 92, 92, 0.75);
+    box-shadow: 0 0 0 2px rgba(255, 51, 85, 0.35);
+}
+
+/* 底部渐隐，保证提示文字在任何照片上都清晰 */
+.pd-cover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 58%;
+    background: linear-gradient(180deg, transparent, rgba(3, 8, 16, 0.8));
+    pointer-events: none;
+}
+
+.pd-cover-hint {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: #eaf3fb;
+    background: rgba(255, 51, 85, 0.28);
+    border: 1px solid rgba(255, 92, 92, 0.5);
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+}
+
+.pd-cover-hint i {
+    font-size: 0.68rem;
+    color: #ffb3b3;
+}
+
+/* 图片缺失时的文字占位 */
+.pd-cover.is-empty {
+    cursor: default;
+}
+
+.pd-cover-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 168px;
+    color: #7d94ac;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+}
+
+.pd-cover-fallback i {
+    color: #ff5c5c;
+    opacity: 0.8;
+}
+
+/* ---------- 封面大图灯箱 ---------- */
+.museum-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 4vmin;
+    background: rgba(2, 5, 11, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.museum-lightbox.open {
+    display: flex;
+    animation: mlFade 0.22s ease;
+}
+
+@keyframes mlFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.ml-figure {
+    margin: 0;
+    max-width: min(1100px, 94vw);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ml-img {
+    max-width: 100%;
+    max-height: 74vh;
+    object-fit: contain;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.65);
+    background: #0a1018;
+}
+
+.ml-cap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    color: #cfe0ef;
+    font-size: 0.9rem;
+}
+
+.ml-title {
+    color: #fff;
+    letter-spacing: 0.06em;
+}
+
+.ml-note {
+    color: #9fb6cc;
+    font-size: 0.84rem;
+}
+
+.ml-credit {
+    margin-left: auto;
+    color: #62788f;
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+}
+
+.ml-close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #e8f2fb;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.ml-close:hover,
+.ml-close:focus-visible {
+    background: #b71c1c;
+    border-color: #b71c1c;
+    transform: rotate(90deg);
+    outline: none;
+}
+
+body.ml-open {
+    overflow: hidden;
+}
+
+@media (min-width: 1200px) {
+    /* 宽屏时面板更宽，封面相应加高，避免出现细长条 */
+    .pd-cover-img,
+    .pd-cover-fallback {
+        height: 200px;
+    }
+}
+
+@media (max-width: 640px) {
+    .pd-cover-img,
+    .pd-cover-fallback {
+        height: 148px;
+    }
+
+    .ml-img {
+        max-height: 64vh;
+    }
+
+    .ml-credit {
+        margin-left: 0;
+        width: 100%;
     }
 }

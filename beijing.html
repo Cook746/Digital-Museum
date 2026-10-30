@@ -10,22 +10,41 @@
     <link rel="stylesheet" href="./theme-dark.css">
     <link rel="stylesheet" href="./ai-assistant.css">
     <style>
+        /* 页面级尺寸变量：宽屏下内容居中拉满，避免右侧留白 */
+        :root {
+            --prov-max: 1560px;
+            --prov-pad: clamp(20px, 4vw, 56px);
+            --prov-h: 560px;
+        }
         body { min-height: 100vh; }
         .province-top {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 18px 8vw; border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             background: rgba(5,7,13,0.7); backdrop-filter: blur(12px);
             position: sticky; top: 0; z-index: 50;
+        }
+        .province-top-inner {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            width: 100%; max-width: var(--prov-max); margin: 0 auto;
+            padding: 18px var(--prov-pad);
         }
         .province-top a { color: #9fb6cc; text-decoration: none; font-size: .9rem; letter-spacing: .08em; }
         .province-top a:hover { color: #ff5c5c; }
         .province-tag { font-size: .75rem; letter-spacing: .3em; color: #ff5c5c; }
-        .province-hero { padding: 90px 8vw 40px; max-width: 1080px; }
+        /* 统一内容容器：hero / 地图 / 卡片同宽同边距，宽屏居中 */
+        .province-hero,
+        .province-map-section,
+        .province-cards {
+            width: 100%; max-width: var(--prov-max);
+            margin: 0 auto;
+            padding-left: var(--prov-pad);
+            padding-right: var(--prov-pad);
+        }
+        .province-hero { padding-top: 90px; padding-bottom: 40px; }
         .province-kicker { color: #5fd0ff; letter-spacing: .32em; font-size: .8rem; margin-bottom: 14px; }
         .province-hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: #fff; margin: 0 0 18px; letter-spacing: .06em; }
         .province-hero h1 i { color: #ff4d6d; text-shadow: 0 0 18px rgba(255,77,109,.8); margin-right: 12px; }
         .province-hero p.lead { color: #a8bdcd; line-height: 1.9; max-width: 720px; margin: 0 0 36px; }
-        .province-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; padding: 0 8vw 80px; max-width: 1080px; }
+        .province-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; padding-bottom: 80px; }
         .province-card {
             border-radius: 16px; padding: 22px;
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
@@ -34,21 +53,19 @@
         .province-card h3 { color: #e8f2fb; margin: 0 0 10px; font-size: 1.05rem; letter-spacing: .05em; }
         .province-card h3 i { color: #ff8a3c; margin-right: 8px; }
         .province-card p { color: #8fa3bf; line-height: 1.8; font-size: .9rem; margin: 0; }
-        .province-note { padding: 0 8vw 90px; color: #62788f; letter-spacing: .12em; font-size: .8rem; }
-        .province-note i { color: #5fd0ff; margin-right: 8px; }
-        .province-map-section { padding: 0 8vw 40px; max-width: 1080px; }
+        .province-map-section { padding-bottom: 40px; }
         .province-map-title {
             color: #e8f2fb; font-size: 1.2rem; letter-spacing: .08em;
             margin: 0 0 16px; display: flex; align-items: center; gap: 8px;
         }
         .province-map-layout {
             display: grid;
-            grid-template-columns: 62% minmax(0, 1fr);
-            gap: 16px;
+            grid-template-columns: minmax(0, 1.8fr) minmax(340px, 1fr);
+            gap: 18px;
             align-items: start;
         }
         .province-map-canvas {
-            width: 100%; height: 480px;
+            width: 100%; height: var(--prov-h);
             border-radius: 16px; overflow: hidden;
             background: rgba(13, 44, 74, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -56,7 +73,7 @@
         /* ---------- 右侧地标详情面板 ---------- */
         .province-detail {
             position: sticky; top: 96px;
-            height: 480px; min-height: 480px;
+            height: var(--prov-h); min-height: var(--prov-h);
             overflow-y: auto;
             border-radius: 16px;
             padding: 22px 22px 26px;
@@ -115,25 +132,35 @@
         .pd-meta-item i { color: #5fd0ff; width: 14px; flex-shrink: 0; font-size: .78rem; }
         .pd-meta-item span { color: #62788f; flex-shrink: 0; letter-spacing: .1em; }
         .pd-meta-item em { color: #a8bdcd; font-style: normal; }
+        @media (max-width: 1280px) {
+            :root { --prov-h: 500px; }
+        }
+        @media (max-width: 1080px) {
+            :root { --prov-h: 460px; }
+        }
         @media (max-width: 900px) {
             .province-map-layout { grid-template-columns: 1fr; }
             .province-detail { position: static; height: auto; min-height: 0; }
+            .province-map-canvas { height: 420px; }
             .pd-placeholder { padding: 40px 0; }
         }
         @media (max-width: 768px) {
             .province-map-canvas { height: 360px; }
+            .province-hero { padding-top: 64px; }
         }
     </style>
 </head>
 <body>
     <header class="province-top">
-        <a href="index.html#red-map"><i class="fa-solid fa-arrow-left"></i> 返回红色星图</a>
-        <span class="province-tag">RED ARCHIVE · 北京</span>
+        <div class="province-top-inner">
+            <a href="index.html#red-map"><i class="fa-solid fa-arrow-left"></i> 返回红色星图</a>
+            <span class="province-tag">RED ARCHIVE · 北京</span>
+        </div>
     </header>
     <main class="province-hero">
         <div class="province-kicker">北京 · 红色纪行</div>
         <h1><i class="fa-solid fa-landmark"></i>北京红色文化专区</h1>
-        <p class="lead">从卢沟桥的月光，到香山双清别墅的晨曦，北京见证了中国革命走向胜利的多个关键瞬间。这里是新中国的首都，也是红色基因的起点之一。本页面为北京专属档案的入口，内容将持续补充。</p>
+        <p class="lead">从卢沟桥的月光，到香山双清别墅的晨曦，北京见证了中国革命走向胜利的多个关键瞬间。这里是新中国的首都，也是红色基因的起点之一。点击地图上的红色地标，即可查看该场馆的封面与红色档案。</p>
     </main>
     <div class="province-map-section">
         <h2 class="province-map-title"><i class="fa-solid fa-map-location-dot"></i> 红色地标分布</h2>
@@ -145,7 +172,7 @@
     <section class="province-cards">
         <div class="province-card">
             <h3><i class="fa-solid fa-location-dot"></i>红色地标</h3>
-            <p>卢沟桥、宛平城、香山革命纪念地、天安门广场……后续将在此展示景点介绍与参观信息。</p>
+            <p>卢沟桥、宛平城、香山革命纪念地、天安门广场……点击上方地图中的红色标记，即可调取该地标的档案与场馆封面。</p>
         </div>
         <div class="province-card">
             <h3><i class="fa-solid fa-hourglass-half"></i>历史坐标</h3>
@@ -153,10 +180,9 @@
         </div>
         <div class="province-card">
             <h3><i class="fa-solid fa-flag"></i>精神传承</h3>
-            <p>红色故事、人物事迹与当代传承活动，敬请期待。</p>
+            <p>红色故事、人物事迹与当代传承，可继续向页面右下角的 AI 学习助手提问。</p>
         </div>
     </section>
-    <p class="province-note"><i class="fa-solid fa-circle-info"></i>页面建设中 · 后续将补充影像、导览与互动内容</p>
     <script src="./province-detail.js"></script>
     <script>
     (function () {

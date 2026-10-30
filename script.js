@@ -2773,20 +2773,12 @@ function startExhibitionTask() {
     alert("[目标] 学习任务开始！\n\n请在展厅中找到以下3个重要点位：\n1. 七届二中全会会场\n2. 毛泽东旧居\n3. 中央军委作战室\n\n每找到一个点位，点击标记了解详情。");
 }
 
-// 6. 页面加载时初始化
-document.addEventListener('DOMContentLoaded', function() {
-    // 如果没有全景图片文件夹，创建提示
-    setTimeout(() => {
-        if (!document.querySelector('.panorama-container img')) {
-            loadPanorama('xibaipo');
-        }
-    }, 1000);
-});
+// 6. 页面加载时初始化（展厅统一由下方 loadExhibition 加载 720 云全景，此处不再自动调用旧版 loadPanorama）
 // ============================================
 // 虚拟展厅 - 嵌入720云功能（简化版）
 // ============================================
 
-// 展厅数据配置 - 只保留两个展厅
+// 展厅数据配置
 const exhibitionsConfig = {
     xibaipo: {
         title: "西柏坡纪念馆",
@@ -2811,8 +2803,33 @@ const exhibitionsConfig = {
             "观察毛泽东旧居陈设",
             "学习延安精神核心内涵"
         ]
+    },
+    gugong: {
+        title: "故宫",
+        url: "https://www.720yun.com/t/374jepeOkO3?scene_id=16076780",
+        description: "旧称紫禁城，明清两代皇家宫殿，现存规模最大、保存最完整的木结构古建筑群",
+        address: "北京市东城区景山前街4号",
+        year: "始建于1406年 · 1420年建成",
+        tips: [
+            "沿中轴线观察前朝后寝的宫城格局",
+            "留意太和殿的屋顶脊兽与等级规制",
+            "体会红墙黄瓦背后的礼制与营造智慧"
+        ]
+    },
+    pingjin: {
+        title: "平津战役纪念馆",
+        url: "https://www.720yun.com/t/71vktlfq7f9?scene_id=69319357",
+        description: "全面展示平津战役历史的专题纪念馆，1948年11月至1949年1月决战华北",
+        address: "天津市红桥区平津道8号",
+        year: "1948-1949年",
+        tips: [
+            "了解'先打两头、后取中间'的作战方针",
+            "观察战役沙盘与兵器实物陈列",
+            "理解北平和平解放的历史意义"
+        ]
     }
 };
+
 
 // 当前展厅ID
 let currentExhibitionId = 'xibaipo';
@@ -2823,23 +2840,24 @@ let currentExhibitionId = 'xibaipo';
 function loadExhibition(exhibitionId, event) {
     console.log('切换展厅:', exhibitionId);
     
-    // 安全处理：如果有event参数才更新按钮样式
-    if (event && event.target && event.target.classList) {
-        document.querySelectorAll('.exhibition-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-    } else {
-        // 如果没有event，根据exhibitionId设置active
-        document.querySelectorAll('.exhibition-btn').forEach(btn => {
-            const isActive = (exhibitionId === 'xibaipo' && btn.textContent.includes('西柏坡')) ||
-                            (exhibitionId === 'yanan' && btn.textContent.includes('延安'));
-            btn.classList.toggle('active', isActive);
-        });
-    }
-    
     const exhibition = exhibitionsConfig[exhibitionId];
     if (!exhibition) return;
+    
+    // 记录当前展厅，供全屏 / 导览 / 独立窗口按钮使用
+    currentExhibitionId = exhibitionId;
+    
+    // 更新按钮选中态：优先用事件源，其次按 data-exhibition 匹配
+    const buttons = document.querySelectorAll('.exhibition-btn');
+    let targetBtn = null;
+    if (event && event.currentTarget && event.currentTarget.classList
+        && event.currentTarget.classList.contains('exhibition-btn')) {
+        targetBtn = event.currentTarget;
+    } else {
+        targetBtn = document.querySelector('.exhibition-btn[data-exhibition="' + exhibitionId + '"]');
+    }
+    buttons.forEach(btn => {
+        btn.classList.toggle('active', btn === targetBtn);
+    });
     
     // 清空容器
     const container = document.getElementById('exhibitionContainer');
@@ -2953,32 +2971,8 @@ function toggleGuide() {
 
 // 页面初始化
 document.addEventListener('DOMContentLoaded', function() {
-    // 默认加载西柏坡展厅
-    setTimeout(() => {
-        // 直接加载，不显示加载提示
-        const container = document.getElementById('exhibitionContainer');
-        const exhibition = exhibitionsConfig['xibaipo'];
-        
-        if (exhibition) {
-            const iframe = document.createElement('iframe');
-            iframe.id = '720yunIframe';
-            iframe.src = exhibition.url;
-            iframe.title = exhibition.title + ' - 360度虚拟展厅';
-            iframe.allow = 'fullscreen; vr';
-            iframe.allowFullscreen = true;
-            iframe.frameBorder = '0';
-            iframe.scrolling = 'no';
-            iframe.style.cssText = `
-                width: 100%;
-                height: 100%;
-                border: none;
-                display: block;
-            `;
-            
-            container.appendChild(iframe);
-            updateSidebarInfo(exhibition);
-        }
-    }, 500);
+    // 默认加载西柏坡展厅（不显示加载提示，保持黑屏到全景就绪）
+    setTimeout(() => loadExhibition('xibaipo'), 500);
 });
 // ============================================
 // DeepSeek AI 助手：UI / 流式对话 / 本地知识库兜底
