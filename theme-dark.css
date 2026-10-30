@@ -787,19 +787,6 @@ select option {
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 26px rgba(255, 59, 59, 0.35) !important;
 }
 
-/* AI 助手悬浮气泡（原 white 底 → 深色玻璃） */
-html body div#ai-assistant::before {
-    background: linear-gradient(160deg, rgba(20, 29, 46, 0.96), rgba(8, 11, 19, 0.98)) !important;
-    color: var(--text-soft) !important;
-    border-left: 4px solid var(--red) !important;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 22px rgba(255, 59, 59, 0.25) !important;
-    letter-spacing: 0.06em !important;
-}
-
-html body div#ai-assistant::after {
-    border-top-color: rgba(8, 11, 19, 0.98) !important;
-}
-
 /* 成就提示列表红色项目符号 */
 .achievements-tips li::before {
     color: var(--red);
